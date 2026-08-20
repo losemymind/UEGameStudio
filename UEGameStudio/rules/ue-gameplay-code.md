@@ -1,6 +1,6 @@
 # ue-gameplay-code — 玩法代码路径规则
 
-> 路径作用域：`src/gameplay/**`。该路径下所有代码自动受此规则约束。
+> 路径作用域：`Source/<GameModule>/Gameplay/**`（如 `Source/MyGame/Gameplay/`）。该路径下所有代码自动受此规则约束。
 
 ## 强制要点
 

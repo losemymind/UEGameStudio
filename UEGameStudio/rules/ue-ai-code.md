@@ -1,6 +1,6 @@
 # ue-ai-code — AI 代码路径规则
 
-> 路径作用域：`src/ai/**`。该路径下所有代码自动受此规则约束。
+> 路径作用域：`Source/<GameModule>/AI/**`（如 `Source/MyGame/AI/`）。该路径下所有代码自动受此规则约束。
 
 ## 强制要点
 

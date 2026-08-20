@@ -1,6 +1,6 @@
 # ue-shader-code — 着色器代码路径规则
 
-> 路径作用域：`assets/shaders/**`。该路径下所有 shader 自动受此规则约束。
+> 路径作用域：`Shaders/**`（模块级 USF/USH，如 `Source/MyGame/Shaders/`）+ `Content/Shaders/**`（虚拟路径 `/Game/Shaders/**`）。该路径下所有 shader 自动受此规则约束。
 
 ## 强制要点
 

@@ -1,6 +1,6 @@
 # ue-data-files — 数据文件路径规则
 
-> 路径作用域：`assets/data/**`。该路径下所有数据文件自动受此规则约束。
+> 路径作用域：`Content/Data/**`（DataTable / DataAsset / 配置文件，虚拟路径 `/Game/Data/**`）。该路径下所有数据资产自动受此规则约束。
 
 ## 强制要点
 

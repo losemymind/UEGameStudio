@@ -1,6 +1,6 @@
 # ue-engine-code — 引擎代码路径规则
 
-> 路径作用域：`src/core/**`。该路径下所有代码自动受此规则约束。
+> 路径作用域：`Source/<GameModule>/Core/**`（如 `Source/MyGame/Core/`，游戏内引擎级/核心子系统）。该路径下所有代码自动受此规则约束。
 
 ## 强制要点
 

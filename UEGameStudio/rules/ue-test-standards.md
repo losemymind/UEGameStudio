@@ -1,6 +1,6 @@
 # ue-test-standards — 测试标准路径规则
 
-> 路径作用域：`tests/**`。该路径下所有测试代码自动受此规则约束。
+> 路径作用域：`Source/**/Tests/**`（UE 自动化测试，`IMPLEMENT_SIMPLE_AUTOMATION_TEST`；同模块内 `Source/<GameModule>/Tests/` 或独立 `Source/<GameModule>.Tests/`）。该路径下所有测试代码自动受此规则约束。
 
 ## 强制要点
 

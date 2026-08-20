@@ -1,6 +1,6 @@
 # ue-network-code — 网络代码路径规则
 
-> 路径作用域：`src/networking/**`。该路径下所有代码自动受此规则约束。
+> 路径作用域：`Source/<GameModule>/Network/**`（如 `Source/MyGame/Network/`）。该路径下所有代码自动受此规则约束。
 
 ## 强制要点
 
