@@ -1,0 +1,142 @@
+# lessons.yaml — 经验教训 / 策略 / 事实
+
+# 按 templates/lesson-schema.yaml 的 schema 编写。每条须通过 `SEA/scripts/validate-memory.py` 校验。
+
+entries:
+  - id: m-20260813-004
+    type: fact
+    category: engineering
+    claim: "本仓库 YAML 文件（lessons/preferences/verified_facts）顶部说明行必须以 # 注释开头，否则 YAML 解析报 mapping values are not allowed here"
+    evidence: ["复制测试中 lessons.yaml 与 verified_facts.yaml 各失败一次，加 # 后通过"]
+    contrast: 失败侧——说明行未加 # 导致两个校验脚本双双报错
+    confidence: 0.95
+    hits: 2
+    last_used: 2026-08-13
+    source: self-reflect
+
+  - id: m-20260813-005
+    type: strategy
+    category: experience
+    claim: 复制进化运行时到工作区后，技能存在 skills/（脚本校验用）与 .opencode/skills/（agent 加载用）双份拷贝，改动技能时必须两处同步
+    evidence: [复制测试确认两目录均含 4 技能，validate-skill.py 校验根目录 skills/]
+    contrast: 失败侧——若只改一处，脚本与运行时行为不一致
+    confidence: 0.9
+    hits: 1
+    last_used: 2026-08-13
+    source: self-reflect
+
+  - id: m-20260814-007
+    type: fact
+    category: engineering
+    claim: "YAML 条目中 value 含 # 字符（如 claim 里写'# 注释'）会被 YAML 当注释吞掉后半内容；必须用引号包裹（'...' 或 \"...\"）才能保留完整文本"
+    evidence:
+      - "session 2026-08-14: m-20260813-004 的 claim 含'# 注释'被 YAML 吞成 55/110 字符，加引号后恢复完整"
+      - "yaml.safe_load 测试：未引号 claim 读回 55 字符，引号后 110 字符"
+    contrast: 失败侧——最初误判为 sync-workspace 的 safe_dump 截断，实际是源文件 YAML 解析吞字
+    confidence: 0.97
+    hits: 1
+    last_used: 2026-08-14
+    source: self-reflect
+
+  - id: m-20260814-008
+    type: strategy
+    category: engineering
+    claim: "脚本独立进程无法感知当前会话模型：调用 evaluate-skill/ratchet-gate 做 L1 判官时必须显式传 --model <会话模型>；内联判官协议（--emit 生成判定请求 → agent 用会话模型判定 → --apply 收集）可免 SEA_JUDGE_URL/API_KEY 配置"
+    evidence:
+      - "session 2026-08-14: ratchet-gate --collect 未传 --model 时回退 gpt-4o-mini，修复为读请求文件内记录模型后正确继承 deepseek"
+      - "AGENTS.md 评估纪律：L1 判官必须显式传 --model"
+    contrast: 失败侧——误以为脚本能自动感知会话模型，实际独立进程无法感知
+    confidence: 0.95
+    hits: 1
+    last_used: 2026-08-14
+    source: self-reflect
+
+  - id: m-20260814-009
+    type: strategy
+    category: engineering
+    claim: "中文文本检索不能只靠整词匹配（中文分词后短语易成整词导致查询词不命中）：search-memory.py 用整词 + 相邻字符二元组双特征，对中文短语稳健命中"
+    evidence:
+      - "session 2026-08-14: 查询'自进化'整词不命中 claim 里'的至高目标是自进化'，加字符 2-gram 后正确命中"
+      - "search-memory.py 检索'自进化' 0.453 / '复制 技能 同步' 0.667"
+    contrast: 失败侧——只按标点分词整词匹配，中文短语查询返回无结果
+    confidence: 0.92
+    hits: 1
+    last_used: 2026-08-14
+    source: self-reflect
+
+  - id: m-20260814-010
+    type: fact
+    category: engineering
+    claim: "Python 文件名含连字符（如 evaluate-skill.py、search-memory.py）无法直接 import 为模块；跨脚本复用需 importlib.spec_from_file_location 按路径加载"
+    evidence:
+      - "session 2026-08-14: search-topology/report-metrics 复用 evaluate-skill 时 ModuleNotFoundError，改 importlib 后通过"
+      - "两次同类错误（report-metrics、search-topology）"
+    contrast: 失败侧——以为同目录脚本可普通 import，实际连字符文件名非法
+    confidence: 0.95
+    hits: 2
+    last_used: 2026-08-14
+    source: self-reflect
+
+  - id: m-20260814-011
+    type: strategy
+    category: experience
+    claim: "L1 主动评估能暴露技能'教怎么做强、教何时不做弱'的短板：failure/boundary 用例低分 → 补显式拒绝路径（不生成/不沉淀/门槛门）可显著提升真实评估分"
+    evidence:
+      - "session 2026-08-14: SEA评估 发现三技能 failure/boundary 用例 0.55-0.60 分，补拒绝小节后全部 +0.175"
+      - "agent-craft 0.725→0.900 / task-retrospective 0.725→0.900 / tool-craft 0.700→0.875"
+    contrast: 失败侧——只补 success 用例的覆盖，不补拒绝路径，failure 用例持续低分
+    confidence: 0.93
+    hits: 1
+    last_used: 2026-08-14
+    source: self-reflect
+
+  - id: m-20260820-012
+    type: strategy
+    category: engineering
+    claim: "蒸馏外部技能/agent 仓库时的价值分层：agent-skills 教'技能怎么写'（SKILL.md 解剖+反合理化表+证据化验证门），agency-agents 提供'agent 怎么组织'（单源多工具渲染+UE agent 内容），CCGS 提供'游戏流程怎么编排'（UE 专家拆分+版本锚定+路径规则）——三层互补而非互斥"
+    evidence:
+      - "session 2026-08-20: 三个参考仓库经 explore subagent 深度分析后蒸馏成 DISTILLED-REFERENCE.md（仓库根）"
+      - "CCGS 版本锚定纪律（VERSION.md+知识截止声明）与 SEA P4 版本自适应天然一致"
+    contrast: 失败侧——若只看单仓库会误判'技能/agent 二选一'，实际三者分别是方法论/内容/编排
+    confidence: 0.9
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
+
+  - id: m-20260820-013
+    type: fact
+    category: engineering
+    claim: "audit-skill.py 的 DANGEROUS_CMD_RE 中 rm 正则（rm\\s+...）会误报英文单词以 rm 结尾+空格的文本（如 platform configuration、performance 前的 'rm '），纯静态正则无法区分命令与自然文本；检出需人工复核判定"
+    evidence:
+      - "session 2026-08-20: 成品技能 ue-release-checklist 的 SKILL.md description 含 'platform configuration' 触发 '危险命令' 误报；正则实际匹配 'rm configuration...'（platform 尾部 rm+空格）"
+    contrast: 失败侧——若不经人工复核直接改技能正文（改词/加引号），会扭曲自然语言去迁就正则
+    confidence: 0.95
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
+
+  - id: m-20260820-014
+    type: strategy
+    category: experience
+    claim: "UE 成品包按'先核心后扩展'分批建设比一次铺满更稳：第一批 4 agent + 8 skill（核心流程），第二批 7 agent + 10 skill（UE 深专长/流程技能），每批走展平 validate-skill 校验，风险可控、基线可对比"
+    evidence:
+      - "session 2026-08-20: 第二批扩展后展平 validate-skill 18 技能 + evolutions 全通过；audit-skill 无新告警（仅 1 处已知误报）"
+      - "DISTILLED-CATALOG §4 分批策略落地"
+    contrast: 失败侧——若一次建 25+ agent 全量，校验面大且单点错误难定位
+    confidence: 0.9
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
+
+  - id: m-20260820-015
+    type: strategy
+    category: engineering
+    claim: "游戏开发 agent 分类应'职能层级 + 引擎专属分离'而非'全引擎专属'：引擎无关的职能角色（director/lead/programmer/designer/qa）可跨引擎复用，只有真正引擎专属的才进 engine/<engine>/；CCGS Skill Testing Framework 的 directors/leads/specialists/operations/qa/engine 六分类是成熟范式"
+    evidence:
+      - "session 2026-08-20: 用户纠正'按全 UE 专属定位不合适，CCGS 框架的分类和通用性更好'；重构后 agents 39（6 类）+ skills 72（9 类）展平 validate-skill 全通过"
+      - "CCGS catalog.yaml 权威分类（directors 4/leads 7/specialists 13/operations 7/qa 3/engine 15）"
+    contrast: 失败侧——把 game-designer/lead-programmer 等通用角色硬绑 UE，既重复又限制了跨引擎复用与通用性
+    confidence: 0.95
+    hits: 1
+    last_used: 2026-08-20
+    source: user-correct
