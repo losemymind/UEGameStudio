@@ -18,7 +18,7 @@
 
 ## 安装脚本说明
 
-本包内 `agents/` 与 `skills/` 采用**分类子文件夹**组织（便于维护）。安装时可**展平复制**到目标目录（agent 文件平铺、技能目录平铺到目标 `skills/` 根），也可直接递归复制保留分类结构——opencode 加载器与 SEA 校验脚本（0.3.10 起支持递归扫描）两种结构均兼容。
+本包内 `agents/` 与 `skills/` 采用**分类子文件夹**组织（便于维护）。安装时可**展平复制**到目标目录（agent 文件平铺、技能目录平铺到目标 `skills/` 根），也可直接递归复制保留分类结构——opencode 加载器递归扫描、自进化运行时校验脚本（支持递归扫描）两种结构均兼容。
 
 ## 方式一：安装到全局（推荐：多个项目共享）
 
@@ -55,7 +55,7 @@ Get-ChildItem -Recurse -LiteralPath "$src\skills" -Filter SKILL.md | ForEach-Obj
 }
 ```
 
-> 安装后技能在目标 `skills/` 下为平铺结构（`skills/<技能名>/SKILL.md`），opencode 递归加载、SEA 校验脚本均可用。`_evolutions/`（技能演进注册表）默认不随技能安装；若目标项目已装 SEA 并要纳入棘轮门，把 `skills/_evolutions/` 一并复制。
+> 安装后技能在目标 `skills/` 下为平铺结构（`skills/<技能名>/SKILL.md`），opencode 递归加载、自进化运行时校验脚本均可用。`_evolutions/`（技能演进注册表）默认不随技能安装；若目标项目已装自进化运行时并要纳入棘轮门，把 `skills/_evolutions/` 一并复制。
 
 ---
 
@@ -64,10 +64,6 @@ Get-ChildItem -Recurse -LiteralPath "$src\skills" -Filter SKILL.md | ForEach-Obj
 1. **重启** opencode，使新 agents/skills 生效。
 2. 确认 agents 可被调用：新建会话，要求主 agent 派发 `unreal-specialist`（engine/unreal）或 `lead-programmer`（leads）等 subagent。
 3. 确认 skills 被加载：输入触发技能描述的任务，观察技能是否被自动匹配。
-4. 若目标环境已装 SEA，可跑结构校验：
-   ```powershell
-   python SEA/scripts/validate-skill.py --skills-dir .opencode/skills
-   ```
 
 ## 卸载
 
@@ -83,5 +79,5 @@ Get-ChildItem -Recurse -LiteralPath "$src\skills" -Filter SKILL.md | ForEach-Obj
 
 ## 配套（可选）
 
-- **SEA 运行时**：安装 [SEA](https://github.com/losemymind/SEA) 到目标项目，获得记忆蒸馏/棘轮评估/技能进化能力。本成品包纯资产，不强制依赖；技能可纳入 SEA 进化闭环（评测集 `test-prompts.json` 随演进渐进补充）。
+- **自进化运行时（SEA 等）**：如需记忆蒸馏/棘轮评估/技能进化能力，可安装独立的自进化运行时并把本包技能纳入其进化闭环（评测集 `test-prompts.json` 随演进渐进补充）。本成品包为纯资产，不依赖任何运行时即可使用。
 - **版本锚定**：引擎专属 agent（`engine/unreal/*`）的「版本纪律」要求断言 UE API 前先核实 `docs/engine-reference/unreal/VERSION.md`；建议项目建立该目录并按 agent 纪律维护。

@@ -24,7 +24,7 @@
 | 通用约定路径（技能正文） | UE 项目实际路径 |
 |---|---|
 | `src/`（源码） | `Source/<GameModule>/`（如 `Source/MyGame/`） |
-| `src/gameplay/`、`src/ai/` 等 | `Source/<GameModule>/Gameplay/`、`.../AI/`（见 `rules/`） |
+| `src/gameplay/`、`src/ai/` 等 | `Source/<GameModule>/Gameplay/`、`.../AI/`（见 `rules/` 目录） |
 | `assets/`（美术/音频/VFX/着色器/数据） | `Content/`（虚拟路径 `/Game/`）；对应子目录 `Content/Art|Audio|VFX|Shaders|Data/` |
 | `assets/data/` | `Content/Data/`（DataTable / DataAsset / 配置） |
 | `assets/shaders/` | `Content/Shaders/` 或 `Source/<GameModule>/Shaders/`（USF/USH） |

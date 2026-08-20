@@ -2,6 +2,16 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 成品目录自包含：移除全部上级目录引用（DISTILLED-* / SEA / 相对上级路径）
+
+用户要求：成品目录（`UEGameStudio/UEGameStudio/`）只安装自身，不得引用上级工程目录文件。
+
+- **DISTILLED-* 引用**：README/rules（README + 10 条 ue-*.md）/ evolutions.json（70 条 signal）移除 `DISTILLED-REFERENCE.md` / `DISTILLED-CATALOG.md` 引用，改为中性描述。
+- **SEA 运行时引用（~90 处）**：39 个 agents 的「记忆/学习」小节 + 5 个 unreal agents + docs/engine-reference/unreal/VERSION.md + INSTALL/README 全部中性化——`SEA/memory/` → 项目记忆库、`SEA/scripts/*.py` 命令移除、`SEA/CHANGELOG.md` → CHANGELOG、`task-retrospective` 技能 → 任务复盘、`SEA/memory/verified_facts.yaml` → 版本锚定事实；docs 的 verify-versions 命令移除。
+- **相对上级路径**：references/README 的 `../../references/` 示例、INSTALL 的 SEA 校验脚本命令、README 的 SEA 运行时链接移除/中性化。
+- **成果**：成品目录 grep 三仓库名/缩写/链接/DISTILLED/SEA 路径/task-retrospective/../ 全部 0 残留；`../` 仅剩 `.../AI/`（省略号路径，非上级引用）。
+- **验证**：validate-skill 70 OK；audit-skill 70 OK；scan-secrets 0；agents frontmatter 39 全部完整；替换后无病句（修复"沉淀经验经验""复盘：复盘"等重复词）。
+
 ## 2026-08-20 — 成品目录清除蒸馏源仓库信息
 
 用户要求：成品目录（`UEGameStudio/UEGameStudio/`）文件不包含蒸馏的三个参考网站信息（agent-skills / agency-agents / Claude-Code-Game-Studios 及其作者/缩写/链接）。

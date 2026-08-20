@@ -6,7 +6,7 @@
 
 - 命名：`lowercase-hyphen-separated.md`
 - 一份清单只服务一类主题，避免复制漂移
-- 技能通过相对路径引用（如 `../../references/definition-of-done.md`）
+- 技能通过相对路径引用 `references/` 下文件（安装后 `references/` 与 `skills/` 同层，相对路径以实际安装布局为准）
 
 ## 建议清单（按需创建）
 

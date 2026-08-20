@@ -21,8 +21,8 @@
 
 1. 断言 UE API / 上限 / 能力前，先读本文件确认版本。
 2. 涉及 5.4–5.7 新 API 时，标注 `may have changed in [version] — verify`，或联网核实后写明来源。
-3. 核实到的事实写入 `SEA/memory/verified_facts.yaml`（`verified: true` + 来源 + 版本）；失效事实标记 `deprecated` 并触发修订。
-4. 每 90 天或引擎版本变更后跑 `python SEA/scripts/verify-versions.py` 检查逾期与未核实条目。
+3. 核实到的事实写入项目版本锚定事实记录（`verified: true` + 来源 + 版本）；失效事实标记 `deprecated` 并触发修订。
+4. 每 90 天或引擎版本变更后做版本事实健康检查，发现逾期或未核实条目即修订。
 
 ## 支撑文件（渐进披露，按需创建/核实）
 
