@@ -13,7 +13,7 @@ description: 逐节引导撰写美术圣经（Art Bible）——创建约束所�
 ### 阶段 0：参数与上下文检查
 1. 解析 `--review [full|lean|solo]`
 2. 读 `game-concept.md`（缺失则报错），提取标题/核心幻想/支柱/视觉锚点/平台
-3. 读 `.claude/docs/technical-preferences.md` 的性能预算与引擎
+3. 读 `docs/technical-preferences.md` 的性能预算与引擎
 
 ### 阶段 1：框架
 AskUserQuestion 询问范围（全 9 节 / 视觉核心 1–4 / 仅资产标准 / 续补）与参考作品（自由文本）

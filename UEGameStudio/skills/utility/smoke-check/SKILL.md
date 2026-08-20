@@ -7,6 +7,8 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 
 这是"实现完成"与"可移交 QA"之间的门禁。它运行自动化测试套件、检查覆盖缺口、与开发者批量验证关键路径，并产出 PASS/FAIL 报告。规则很简单：**冒烟检查失败的构建不得进入 QA**。
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 冲刺 story 实现完成后、手动 QA 开始前（QA 移交门禁）
 - 修复某个具体失败后需要快速复检（`quick` 模式）
@@ -16,7 +18,7 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 ### 检测测试环境
 1. 检查 `tests/` 目录是否存在（不存在则停止并提示运行 `/test-setup`）。
 2. 检查 `.github/workflows/` 是否配置了 CI 测试工作流。
-3. 从 `.claude/docs/technical-preferences.md` 提取引擎，用于选择测试命令。
+3. 从 `docs/technical-preferences.md` 提取引擎，用于选择测试命令。
 4. 检查 `production/qa/smoke-tests.md` 或 `tests/smoke/` 是否存在；检查最近的 QA 计划。
 
 ### 运行自动化测试

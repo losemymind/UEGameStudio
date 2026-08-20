@@ -5,6 +5,8 @@ description: 概念原型：在写 GDD 之前验证核心想法是否值得设�
 
 # 概念原型
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 头脑风暴/配置引擎后、写 GDD 前，验证核心机制是否好玩
 - 生产中想快速验证某个机制或技术问题（用 `--spike`）
@@ -15,7 +17,7 @@ description: 概念原型：在写 GDD 之前验证核心想法是否值得设�
 1. 先确定可证伪假设（"如果玩家做 X 会感到 Y，若发生 Z 即证明"）与最冒险的假设；概念太模糊无法形成假设就停下缩小问题。
 
 ### 加载概念上下文
-1. 读 game-concept 的核心幻想与核心循环，读 CLAUDE.md 与 technical-preferences 获取引擎与语言。
+1. 读 game-concept 的核心幻想与核心循环，读 AGENTS.md 与 technical-preferences 获取引擎与语言。
 
 ### 选择原型路径
 1. 按类型选路径：动作/平台/手感类 → 引擎；逻辑/卡牌/策略类 → 纸面或 HTML；节奏/叙事 → 纸面。经验法则："手感对不对→引擎；规则有没有趣→纸面；逻辑对不对→HTML 或纸面"。

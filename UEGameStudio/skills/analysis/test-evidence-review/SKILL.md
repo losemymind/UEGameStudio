@@ -5,6 +5,8 @@ description: 评审测试文件与人工证据文档的质量，超越存在性�
 
 # 测试证据质量评审
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - QA 交接签核前
 - 任何测试质量存疑的 story

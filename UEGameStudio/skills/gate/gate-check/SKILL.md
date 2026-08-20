@@ -5,6 +5,8 @@ description: 校验项目是否准备好推进到下一开发阶段，产出 PAS
 
 # 阶段门校验
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 用户询问"准备好进入某个阶段了吗"或"能否推进"
 - 需要正式判定当前阶段能否进入下一阶段（Concept → Systems Design → Technical Setup → Pre-Production → Production → Polish → Release）

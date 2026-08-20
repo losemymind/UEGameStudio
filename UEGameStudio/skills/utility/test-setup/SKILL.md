@@ -7,6 +7,8 @@ description: 测试框架 + CI 脚手架：按引擎生成 tests/ 目录结构�
 
 检测已配置引擎，生成对应测试运行器配置，创建标准目录布局，并接通 CI/CD 让每次 push 都跑测试。冲刺开始时装测试框架花 30 分钟；第四个冲刺才装要花 3 个冲刺。
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - Technical Setup 阶段、任何实现开始前一次性搭建测试基础设施
 - 需要生成 tests/ 目录与 `.github/workflows/tests.yml`

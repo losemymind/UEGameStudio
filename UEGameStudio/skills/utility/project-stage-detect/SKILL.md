@@ -5,6 +5,8 @@ description: 全项目审计：扫描目录与工件，识别项目当前开发�
 
 # 项目阶段检测
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 接手已有项目，需要摸清现状
 - 加入/接手一个代码库，需要了解缺口

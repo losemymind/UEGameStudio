@@ -13,7 +13,7 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 ## 流程
 ### 1. 加载文档与上下文
 1. 解析 --depth full/lean/solo（默认 full）
-2. 全文读目标 GDD、CLAUDE.md、相关设计文档
+2. 全文读目标 GDD、AGENTS.md、相关设计文档
 3. 依赖图校验：对 Dependencies 节列出的每个系统，Glob 验证其 GDD 文件是否存在，标记断裂引用
 4. 读 game-concept.md / narrative/（若存在）检查世界观与设计支柱冲突
 5. 若存在 design/gdd/reviews/[doc]-review-log.md，读最近一条作为复评审基线

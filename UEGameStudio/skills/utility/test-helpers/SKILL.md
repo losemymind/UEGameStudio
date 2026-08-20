@@ -7,6 +7,8 @@ description: 生成引擎特定的测试辅助库：读取现有测试模式，�
 
 当公共的 setup/teardown/断言模式被抽象成辅助函数后，写测试更快更一致。本技能生成贴合项目实际引擎、语言与系统的 `tests/helpers/` 库，让每个开发者少写样板、多写断言。
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - `/test-setup` 搭好框架后（首次）
 - 多个测试文件重复相同的 setup 样板时

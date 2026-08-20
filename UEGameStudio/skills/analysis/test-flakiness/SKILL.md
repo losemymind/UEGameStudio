@@ -5,6 +5,8 @@ description: 通过读取 CI 运行日志或测试结果历史检测非确定性
 
 # 不稳定测试检测
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - Polish 阶段（多次运行后统计信号可靠）
 - 开发者开始把 CI 失败当作"可能不稳定"而忽视时

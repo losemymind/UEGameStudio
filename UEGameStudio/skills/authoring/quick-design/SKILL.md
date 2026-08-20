@@ -5,6 +5,8 @@ description: 小改动的轻量设计规格——调优、微调、小机制、�
 
 # 快速设计规格
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 改动约 4 小时实现以内：调优（改数值）、微调（小行为改动）、添加（现有系统加 1-2 个小机制）、新小系统（约一周内独立功能）
 - 改动太大（新系统带显著跨系统依赖 / 超一周 / 根本改变核心规则）→ 重定向到 `/design-system`

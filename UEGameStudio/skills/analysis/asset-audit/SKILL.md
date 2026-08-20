@@ -5,6 +5,8 @@ description: 审计游戏资产是否符合命名规范、文件尺寸预算、�
 
 # 资产审计
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 发布前做资产卫生检查
 - 怀疑命名、尺寸、格式或管线不合规
@@ -12,7 +14,7 @@ description: 审计游戏资产是否符合命名规范、文件尺寸预算、�
 
 ## 流程
 ### 1. 读取规范
-- 读取美术圣经/资产规范文档与 CLAUDE.md 命名约定
+- 读取美术圣经/资产规范文档与 AGENTS.md 命名约定
 
 ### 2. 扫描资产目录
 - 用 Glob 扫描 `assets/art|audio|vfx|shaders|data` 等目录
@@ -58,6 +60,6 @@ description: 审计游戏资产是否符合命名规范、文件尺寸预算、�
 
 ## Verification（证据化验证门）
 - [ ] 报告含 verdict，且与各违规表计数一致（附摘要证据）
-- [ ] 命名判定依据明确引用了规范文档/CLAUDE.md 约定，而非个人习惯
+- [ ] 命名判定依据明确引用了规范文档/AGENTS.md 约定，而非个人习惯
 - [ ] 孤立资产均注明「建议删除 + 需人工复核」，缺失资产均有对应引用来源
 - [ ] 全程只读，未删除或修改任何资产文件

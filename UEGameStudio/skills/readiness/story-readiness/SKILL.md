@@ -5,6 +5,8 @@ description: 校验一个 story 文件是否具备实施条件：检查内嵌的
 
 # 故事可实施性校验
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 在分配 story 给开发者之前
 - 用户询问某个 story 是否已可实施

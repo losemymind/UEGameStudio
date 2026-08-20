@@ -13,7 +13,7 @@ description: 架构完成后，从所有已接受 ADR、技术偏好与引擎参
 ## 流程
 ### 1. 加载所有输入
 1. Glob `docs/architecture/adr-*.md`，只读 Status: Accepted 的 ADR，记录每条规则的 ADR 编号与标题
-2. 读 `.claude/docs/technical-preferences.md`（命名规范、性能预算、批准库、禁止模式）
+2. 读 `docs/technical-preferences.md`（命名规范、性能预算、批准库、禁止模式）
 3. 读引擎 `VERSION.md`、`deprecated-apis.md`（→禁用 API）、`current-best-practices.md`（若有）
 
 ### 2. 从每个 ADR 提取规则

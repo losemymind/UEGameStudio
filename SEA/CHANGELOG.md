@@ -2,6 +2,16 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 路径/平台引用全库修复（A/B/C 三类）
+
+用户指出 rules/ 路径与 UE 风格不匹配；全库核查发现 agents/skills 同样存在路径与平台引用问题，本次三类全修：
+
+- **A 类（平台引用错误）**：14 个技能引用 Claude Code 专属 `CLAUDE.md` / `.claude/docs/technical-preferences.md` → 改为 opencode 等效 `AGENTS.md` / `docs/technical-preferences.md`（24 处替换）。setup-engine 等核心流程从"写 CLAUDE.md"改为"写 AGENTS.md"。
+- **B 类（通用路径无 UE 映射）**：引用 `src/`/`assets/`/`tests/`/`prototypes/` 的 17 个技能 + 4 个 agents（qa-tester/qa-lead/game-designer/prototyper）各补一行路径映射说明（保留多引擎通用路径，指向 UE 映射）；asset-spec 额外澄清 `design/assets/` 为规格文档非资产本体。
+- **C 类（路径约定未集中声明）**：新增 `references/project-paths.md`（单一事实源）——CCGS 文档约定表 + 通用路径→UE 映射表（`src/`→`Source/<GameModule>/`、`assets/`→`Content/`、`tests/`→`Source/**/Tests/`、`prototypes/`→`Prototypes/`）+ 平台说明；`references/README.md` 登记。
+- **验证**：validate-skill 72 技能 OK；audit-skill 72 OK；L0 均分 0.733（未降）；validate-agent-improvements OK；scan-secrets 0 检出。
+- **方法**：主 agent 脚本批量替换 A 类（24 处）+ 21 文件说明行插入 + project-paths.md 手写；`playtest-report` 为正则误报（`playtests/` 含 `tests/`）不处理。
+
 ## 2026-08-20 — 补齐评测集与防退化机制（成品包 0.3.0→0.4.0 + 框架 0.3.9→0.3.10）
 
 验证「提取/总结/蒸馏的 agents 与 skills 是否符合最高要求」发现 9 项缺口，本次全部补齐：

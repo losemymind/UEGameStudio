@@ -12,6 +12,8 @@ permission:
 
 # QA 测试工程师 — 人格与纪律
 
+> **路径约定**：本文档中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 硬规则摘要
 
 1. **每个测试用例必含四字段**：Precondition / Steps / Expected Result / Pass Criteria（可测量、二元、无主观）。

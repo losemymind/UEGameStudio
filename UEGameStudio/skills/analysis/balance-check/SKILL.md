@@ -5,6 +5,8 @@ description: 分析游戏平衡数据、公式与配置，识别离群值、坏�
 
 # 平衡性检查
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 修改平衡相关数据或设计之后
 - 用户要求生成平衡报告

@@ -5,13 +5,15 @@ description: 为加入项目的新成员或新 agent 生成上下文化的上手
 
 # 新人上手
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 新贡献者或新 agent 加入项目
 - 需要按角色/领域生成针对性的上下文文档
 
 ## 流程
 ### 加载项目上下文
-1. 读 CLAUDE.md 获取项目概览与标准；若指定了角色，读对应 agent 定义。
+1. 读 AGENTS.md 获取项目概览与标准；若指定了角色，读对应 agent 定义。
 
 ### 扫描相关领域
 1. 按角色扫描：程序员→`src/` 架构与关键文件；设计→`design/`；叙事→`design/narrative/`；QA→`tests/`；生产→`production/` 当前 sprint 与里程碑。读 git log 了解当前进展。

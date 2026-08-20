@@ -5,6 +5,8 @@ description: 核心实施技能：读取 story 文件并实现它——加载完
 
 # 实施 Story
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - `/story-readiness [story-path]` 通过之后
 - `/code-review` 与 `/story-done` 之前
@@ -16,7 +18,7 @@ description: 核心实施技能：读取 story 文件并实现它——加载完
 
 ### 阶段 2：加载完整上下文
 1. **先校验必需文件**：TR 注册表与治理 ADR 缺失 → 置 BLOCKED 并停止；control manifest 缺失 → 警告但继续
-2. 并行读取：story 文件、TR 注册表（需求以注册表为准，不依赖 story 内可能过期的文本）、治理 ADR、control manifest、引擎偏好（`.claude/docs/technical-preferences.md`）
+2. 并行读取：story 文件、TR 注册表（需求以注册表为准，不依赖 story 内可能过期的文本）、治理 ADR、control manifest、引擎偏好（`docs/technical-preferences.md`）
 3. **Manifest 版本比对**：story 内嵌版本与当前 manifest 日期不一致时，AskUserQuestion 让用户选（按新规则实施 / 按旧规则并记录 Manifest-Note / 停止）
 4. **依赖校验**：每个依赖 story 的 Status 必须是 Complete/Done，否则询问（继续接受风险 / 停止 / 补标 Complete）
 5. 静默更新 `sprint-status.yaml` 与 story 的 `Last Updated` 字段

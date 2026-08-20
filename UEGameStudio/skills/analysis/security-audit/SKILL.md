@@ -5,6 +5,8 @@ description: 审计游戏安全漏洞：存档篡改、作弊向量、网络漏�
 
 # 安全审计
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 任何公开发布前（Polish→Release 门槛强制项）
 - 启用任何在线/多人功能前

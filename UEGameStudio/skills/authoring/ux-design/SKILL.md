@@ -18,7 +18,7 @@ description: 逐节引导撰写屏幕/流程/HUD 的 UX 规格——读取游戏
 ### 2. 收集上下文（先读再问）
 1. 读 `game-concept.md`（缺失则警告）、`player-journey.md`（缺失则记到 Open Questions）
 2. Glob GDD 的 UI Requirements 节，作为本规格的需求输入（HUD 需读全部系统的）
-3. 读既有 `design/ux/*.md` 的导航/流程节、交互模式库目录、art-bible 视觉方向、无障碍需求、`.claude/docs/technical-preferences.md` 的输入与平台
+3. 读既有 `design/ux/*.md` 的导航/流程节、交互模式库目录、art-bible 视觉方向、无障碍需求、`docs/technical-preferences.md` 的输入与平台
 4. 呈现上下文摘要，问是否还有要读的
 
 ### 3. 创建文件骨架

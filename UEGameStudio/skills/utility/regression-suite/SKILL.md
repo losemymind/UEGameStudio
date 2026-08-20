@@ -7,6 +7,8 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 
 确保每个 bug 修复都有能"抓到原始 bug"的测试背书，并让回归套件随游戏演化保持最新，同时检测新增功能是否缺少对应回归覆盖。回归套件不是新的测试类别，而是对 `tests/` 中已存在测试的**精选清单**，共同覆盖游戏关键路径与已知失败点。
 
+> **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+
 ## 何时使用
 - 修复 bug 后（确认写了回归测试或识别缺口）
 - 发布门前（Polish 门要求回归套件存在）
