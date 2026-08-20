@@ -2,6 +2,17 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 收尾沉淀：验证蒸馏成果 + 全量补齐会话经验入记忆库
+
+按收尾协议蒸馏本会话（验证三仓库蒸馏成果 → 补齐评测集/机制 → 路径平台修复 → 职责梳理 → 重叠合并）经验：
+
+- **m-20260820-016**（strategy/engineering）：蒸馏资产必须验证"可验证/可进化"层——test-prompts.json（含 verifiable heldout）+ 三节防退化机制，否则内容层完成却无法进棘轮
+- **m-20260820-017**（strategy/engineering，user-correct）：Claude Code 仓库蒸馏到 opencode 须清平台引用（CLAUDE.md→AGENTS.md、.claude→docs），通用路径经 project-paths.md 映射 UE
+- **m-20260820-018**（strategy/experience）：功能重叠处理三步——概览→深度读证→先分工说明后强重叠合并为双模式，勿误伤有委派声明的真分工对
+- **m-20260820-019**（fact/engineering）：框架技能校验脚本需递归扫描（rglob）兼容分类子文件夹，一级 iterdir 会误报/漏扫
+
+- **验证**：validate-memory 通过（16 条目）；dedup 0 重复；scan-secrets 0 检出
+
 ## 2026-08-20 — 重叠技能蒸馏合并（72 → 70）
 
 对强重叠技能执行"蒸馏合并为一个，删除多余"：

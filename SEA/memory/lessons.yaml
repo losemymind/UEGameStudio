@@ -140,3 +140,55 @@ entries:
     hits: 1
     last_used: 2026-08-20
     source: user-correct
+
+  - id: m-20260820-016
+    type: strategy
+    category: engineering
+    claim: "蒸馏外部仓库的资产后必须验证'可验证/可进化'层：每个技能带 test-prompts.json（含 verifiable heldout 棘轮计分集）与防退化机制（反合理化表/Red Flags/Verification），否则内容层完成却无法进 SEA 棘轮评估（评估器比生成器更重要）"
+    evidence:
+      - "session 2026-08-20: 验证发现 72 技能 0 评测集 + 0 三节机制（0.3.0 重建时评测集丢失）；全库补齐后 report-metrics 70 技能 70 带评测集"
+      - "evaluate-skill 无 test-prompts 的技能直接跳过不打分（check_skill 返回空）"
+    contrast: 失败侧——只检查 frontmatter 与正文存在（结构合规）就判资产达标，实际评测/演进能力为零
+    confidence: 0.93
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
+
+  - id: m-20260820-017
+    type: strategy
+    category: engineering
+    claim: "从 Claude Code 生态仓库（CCGS/agent-skills）蒸馏技能/agent 到 opencode/OpenWork 时，必须清除平台专属引用：CLAUDE.md → AGENTS.md、.claude/docs/technical-preferences.md → docs/technical-preferences.md，并 grep 平台专属标记确认无残留；通用路径（src/assets/tests）经 references/project-paths.md 单一事实源映射到 UE（Source/<GameModule>/Content/）"
+    evidence:
+      - "session 2026-08-20: 全库 grep 发现 14 技能引用 CLAUDE.md/.claude，批量替换 24 处；rules 路径 src/ → Source/<GameModule>/（用户纠正'路径和 UE 风格不匹配'）"
+      - "新增 references/project-paths.md 被 22 技能/agent 引用"
+    contrast: 失败侧——蒸馏照搬 CLAUDE.md 会在 opencode 项目写入毫无作用的文件且漏掉 AGENTS.md；通用路径不映射则 agent 去 Glob 不存在的 src/
+    confidence: 0.95
+    hits: 1
+    last_used: 2026-08-20
+    source: user-correct
+
+  - id: m-20260820-018
+    type: strategy
+    category: experience
+    claim: "技能/agent 功能重叠处理三步：① frontmatter description 概览定位疑似对 ② 深度读证重叠（触发/流程/产物） ③ 先交叉引用分工说明（P2），强重叠蒸馏合并为'双模式'技能并删除多余者（changelog 吸收 patch-notes 成 --player-facing、release-checklist 吸收 launch-checklist 成 --level launch），同步删 evolutions 孤儿条目与 README/INSTALL 数量"
+    evidence:
+      - "session 2026-08-20: 对 39 agents + 72 skills 核查；合并后 72→70 技能，validate-skill/audit/report-metrics 全通过，均分 0.731"
+      - "被吸收技能的产物路径（patch-notes.md 等）保留为文件约定，仅技能入口合并"
+    contrast: 失败侧——对每对重叠都直接合并会误伤有委派层级声明的'真分工'对（game-designer/systems-designer、narrative-director/world-builder 等 6 对核验后保留）
+    confidence: 0.9
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
+
+  - id: m-20260820-019
+    type: fact
+    category: engineering
+    claim: "SEA 框架技能校验脚本原为一级目录扫描（skills_dir.iterdir()），技能采用分类子文件夹（gate/review/.../<技能>/SKILL.md）时会误报'缺少 SKILL.md'或漏扫；须改为 rglob('SKILL.md') 递归扫描并跳过路径中任一 _ 开头目录"
+    evidence:
+      - "session 2026-08-20: validate-skill/evaluate-skill/audit-skill/ratchet-gate/report-metrics 五脚本全部改为递归扫描，修复后 70 技能全通过"
+      - "evaluate-skill --skill 需按目录名解析（next(p.parent for p in rglob))）"
+    contrast: 失败侧——分类子文件夹下 validate-skill 报 9 个分类目录'缺少 SKILL.md'、report-metrics 只数到 9 技能
+    confidence: 0.95
+    hits: 1
+    last_used: 2026-08-20
+    source: self-reflect
