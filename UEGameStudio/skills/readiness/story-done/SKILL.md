@@ -40,6 +40,7 @@ description: 故事完成评审：读完 story 文件，逐条对照实现验证
 1. solo/lean 跳过 QL-TEST-COVERAGE；full 才 spawn qa-lead
 2. 传入 story 路径与类型、测试文件路径、## QA Test Cases、## Acceptance Criteria
 3. ADEQUATE → 继续；GAPS → ADVISORY；INADEQUATE → BLOCKING
+4. **分工**：本门的质量判定（断言覆盖/边界/命名/证据完整性）与 `test-evidence-review` 的 verdict 同构——`test-evidence-review` 是独立的专项审计（批量 story / 里程碑评审用），本门是 story 关闭时的轻量集成检查。若近期已对该 story 跑过 `test-evidence-review`，直接采用其 verdict 作为本门结论，避免重复评审。
 
 ### 6. 主程序员代码评审门
 1. solo 跳过；lean 用 AskUserQuestion 询问是否已跑 /code-review 并记录；full 才 spawn lead-programmer

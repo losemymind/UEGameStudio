@@ -2,6 +2,18 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — Agents/Skills 职责边界与功能重叠梳理（P0-P3 全修）
+
+全库核查 39 agents + 72 skills 的职责边界与功能相似性，发现并处理：
+
+- **P0-1 changelog ↔ patch-notes 强重叠**：`changelog` 移除「玩家向版本」产出（阶段 5 改为提示移交 `/patch-notes`，description/约束/反例/Red Flags/Verification 同步），统一为「内部版」，玩家向归 `patch-notes`。
+- **P0-2 release-checklist ↔ launch-checklist 强重叠**：明确分工——`release-checklist`=版本级发布门（构建/认证/商店/质量，每版本可跑）、`launch-checklist`=最终公开发布门（跨部门含营销/社区/法律/运营）；顺序 release→launch，launch 可引用 release 结论。
+- **P1 skill-improve ↔ skill-craft 机制重复**：skill-improve 补分工说明——轻量直改路径（不写 evolutions 注册表），接 SEA 的技能演进走 skill-craft（候选→评估→HITL→solidify→棘轮）。
+- **P2 交叉引用**：review-all-gdds 引用 consistency-check 为前置（可复用其输出）；story-done 的 QA 覆盖门声明与 test-evidence-review 同构（可采信其 verdict 避免重复）。
+- **P3 unreal-specialist description**：改为「技术权威与裁决者 + 委派 ue-* 子专家」，移除与 GAS/复制/UMG 子专家的深度实现重叠表述。
+- **核验为清晰不处理的边界**：game-designer/systems-designer、narrative-director/world-builder/writer、art-director/ux-designer/ui-programmer、audio-director/sound-designer、qa-lead/qa-tester 等均有委派/升级声明（职责层级关系，非重叠）。
+- **验证**：validate-skill 72 OK；audit-skill 72 OK；L0 均分 0.732（改动为正文小改，无评测集破坏）。
+
 ## 2026-08-20 — 路径/平台引用全库修复（A/B/C 三类）
 
 用户指出 rules/ 路径与 UE 风格不匹配；全库核查发现 agents/skills 同样存在路径与平台引用问题，本次三类全修：

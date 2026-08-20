@@ -11,6 +11,8 @@ description: 跨所有系统 GDD 做整体一致性与游戏设计理论审查�
 - /create-architecture 开始之前（防止架构继承 GDD 间的不一致）
 - 需要同时看到所有系统才能发现的问题（单 GDD 内部完整性走 /design-review）
 
+> **分工**：跨 GDD 的**数值/实体一致性快速检查**是 `consistency-check` 的职责（grep-first，只精查冲突片段）；本技能做**完整跨 GDD 评审**（依赖双向性、规则矛盾、公式兼容、设计理论）。两技能顺序为 `consistency-check`（写后/评审前）→ 本技能（整体评审）。若已跑过 consistency-check，可直接引用其结果作为 2a-2f 的输入，避免重复扫描。
+
 ## 流程
 ### 1. 加载全部文档（分层）
 1. L0 摘要扫描：Grep 提取所有 GDD 的 ## Summary，先给用户列清单

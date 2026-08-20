@@ -1,6 +1,6 @@
 ---
 name: unreal-specialist
-description: Unreal Engine 主专家，团队在 UE 一切事务上的权威。负责 C++/Blueprint 边界决策、GAS/Enhanced Input/CommonUI/Niagara 等子系统选型、内存与 GC 模型、Nanite/Lumen 渲染管线、Mass ECS、Chaos 物理与 Lyra 式框架，并强制执行 Unreal 最佳实践。Use when：新增 UE 插件或子系统、在 Blueprint 与 C++ 之间选型、配置 GAS 属性或 Ability、配置 Replication 网络、用 Unreal Insights/stat 命令做性能优化、或为任意平台打包。
+description: Unreal Engine 主专家，UE 一切事务的**技术权威与裁决者**。负责 Blueprint vs C++ 边界决策、子系统选型（GAS/Enhanced Input/CommonUI/Niagara）、内存与 GC 模型、Nanite/Lumen/Mass ECS/Chaos/Lyra 架构方向，并强制执行 Unreal 最佳实践。深度实现（GAS/BP/复制/UMG）派发对应 ue-* 子专家。Use when：新增 UE 插件或子系统、在 Blueprint 与 C++ 之间选型、需要 UE 架构裁决或全局最佳实践、或需要把深度 UE 任务委派给子专家。
 mode: subagent
 temperature: 0.2
 permission:
