@@ -7,12 +7,12 @@
 
 ## 这是什么
 
-把游戏开发工作室的完整智能化工序蒸馏为**可复用、可验证、可进化**的资产。分类方式对齐 [Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) 的 Studio Hierarchy 与 Skill Testing Framework：
+把游戏开发工作室的完整智能化工序蒸馏为**可复用、可验证、可进化**的资产。分类方式对齐业界成熟的工作室职能层级（Studio Hierarchy）与技能测试框架（Skill Testing Framework）：
 
 - **agents/** — 按职能层级分类（directors / leads / specialists / operations / qa / engine），引擎无关的职能角色通用，只有引擎专属专家才进 `engine/<engine>/`
 - **skills/** — 按生命周期分类（gate / review / readiness / pipeline / authoring / analysis / team / sprint / utility）
 
-内容来自三仓库蒸馏（agent-skills / agency-agents / Claude-Code-Game-Studios），蒸馏基准见本仓库根 `DISTILLED-REFERENCE.md` 与 `DISTILLED-CATALOG.md`。
+内容来自业界成熟 agent 技能库与游戏工作室工作流的方法论蒸馏与本地化适配；蒸馏基准见本仓库根 `DISTILLED-REFERENCE.md` 与 `DISTILLED-CATALOG.md`。
 
 ## 资产清单
 

@@ -1,6 +1,6 @@
 # rules/ — UE 路径作用域编码规则
 
-> 本目录存放**路径作用域编码标准**：按源码路径自动生效的强制规则，来自 Claude-Code-Game-Studios 的 11 条规则（DISTILLED-CATALOG §3.3），适配 UE 项目后为 10 条。
+> 本目录存放**路径作用域编码标准**：按源码路径自动生效的强制规则，源自业界游戏工作室代码规范（11 条规则，见 `DISTILLED-CATALOG.md` §3.3），适配 UE 项目后为 10 条。
 >
 > 机制：规则绑定到路径 glob，凡落入该路径的代码/文档必须遵守；违反即视为可观察的质量信号。安装到项目后可作为 opencode rules 或 SEA 校验脚本的输入。
 
@@ -30,4 +30,4 @@
 
 - 每条规则一个 `.md` 文件，内容 = 强制要点 + 反例（违规信号）。
 - 引擎专属的命名/API 细节以 `docs/engine-reference/unreal/VERSION.md` 锚定版本为准（先核实再断言）。
-- 来源：Claude-Code-Game-Studios 路径作用域规则，蒸馏基准见仓库根 `DISTILLED-REFERENCE.md` §6.3。
+- 来源：业界游戏工作室路径作用域编码规则，蒸馏基准见仓库根 `DISTILLED-REFERENCE.md` §6.3。

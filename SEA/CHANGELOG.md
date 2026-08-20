@@ -2,6 +2,14 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 成品目录清除蒸馏源仓库信息
+
+用户要求：成品目录（`UEGameStudio/UEGameStudio/`）文件不包含蒸馏的三个参考网站信息（agent-skills / agency-agents / Claude-Code-Game-Studios 及其作者/缩写/链接）。
+
+- **清除项**：README 的 Donchitos 仓库链接与三仓库名；rules/README + 10 条 ue-*.md 来源行（Claude-Code-Game-Studios → 业界游戏工作室）；references/project-paths.md 与 references/README 的 CCGS 文档约定 → 项目文档约定；docs/engine-reference/unreal/VERSION.md 的 CCGS 参考仓库 → 业界 UE 版本锚定实践；evolutions.json 70 条 signal 的"三仓库蒸馏（CCGS 全流程 + agent-skills 写作规范 + agency-agents 内容）"→ 中性描述。
+- **保留**：SEA 术语"蒸馏"（自进化机制，非网站）；`DISTILLED-REFERENCE.md` / `DISTILLED-CATALOG.md` 引用（仓库根自身文档）；SEA 运行时链接 `github.com/losemymind/SEA`（本项目进化框架）。
+- **验证**：成品目录 grep 三仓库名/缩写/作者名/链接 0 残留；validate-skill 70 OK；report-metrics 70 技能 70 带评测集。
+
 ## 2026-08-20 — 收尾沉淀：验证蒸馏成果 + 全量补齐会话经验入记忆库
 
 按收尾协议蒸馏本会话（验证三仓库蒸馏成果 → 补齐评测集/机制 → 路径平台修复 → 职责梳理 → 重叠合并）经验：

@@ -12,7 +12,7 @@
 
 | 文件 | 内容 | 被谁引用 |
 |---|---|---|
-| `project-paths.md` | 项目路径与结构约定单一事实源（CCGS 文档约定 + 通用路径→UE 映射） | 全部引擎无关技能 |
+| `project-paths.md` | 项目路径与结构约定单一事实源（项目文档约定 + 通用路径→UE 映射） | 全部引擎无关技能 |
 | `definition-of-done.md` | 项目级完成标准（Correctness/Quality/Integration/Documentation/Ship-readiness） | design-system / code-review / release-checklist |
 | `ue-naming-conventions.md` | UE 命名规范速查（A/U/F/E/I 前缀、BP_/BPI_/BPFL_ 前缀、变量 PascalCase） | ue-blueprint-specialist（agent）/ code-review |
 | `ue-review-checklist.md` | 五轴 + UE 专项审查清单 | code-review |

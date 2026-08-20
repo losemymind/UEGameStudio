@@ -1,10 +1,10 @@
 # project-paths.md — 项目路径与结构约定（单一事实源）
 
-> 本文件定义本项目工作流的**路径约定**。通用技能（gate/review/readiness/pipeline/authoring/analysis/team/sprint/utility 下引擎无关部分）引用的 `src/`、`assets/`、`tests/`、`design/`、`production/` 等为**项目级约定路径**（CCGS 工作流结构）；落到具体引擎时按下表映射。安装到 UE 项目后，agent 必须按本表定位真实目录，不得照搬抽象路径去 Glob。
+> 本文件定义本项目工作流的**路径约定**。通用技能（gate/review/readiness/pipeline/authoring/analysis/team/sprint/utility 下引擎无关部分）引用的 `src/`、`assets/`、`tests/`、`design/`、`production/` 等为**项目级约定路径**（工作室工作流结构）；落到具体引擎时按下表映射。安装到 UE 项目后，agent 必须按本表定位真实目录，不得照搬抽象路径去 Glob。
 >
 > 引擎专属源码路径的强制规则见 `rules/`（UE 风格 `Source/<GameModule>/`）。
 
-## 一、CCGS 文档约定（引擎无关，项目内固定）
+## 一、项目文档约定（工作室工作流，引擎无关，项目内固定）
 
 | 约定路径 | 内容 | 对应技能 |
 |---|---|---|
@@ -42,4 +42,4 @@
 
 ## 维护
 
-新增技能/agent 引用路径前，先查本表：约定路径写入 CCGS 列，UE 实际路径写入映射列；引擎无关路径（文档）不加映射行。本文件被全部引擎无关技能引用，改动需同步 `references/README.md`。
+新增技能/agent 引用路径前，先查本表：约定路径写入项目文档约定列，UE 实际路径写入映射列；引擎无关路径（文档）不加映射行。本文件被全部引擎无关技能引用，改动需同步 `references/README.md`。

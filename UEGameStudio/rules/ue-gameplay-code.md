@@ -18,4 +18,4 @@
 
 ## 来源
 
-Claude-Code-Game-Studios 路径作用域规则，蒸馏基准见仓库根 `DISTILLED-REFERENCE.md` §6.3 / `DISTILLED-CATALOG.md` §3.3。
+业界游戏工作室路径作用域编码规则，蒸馏基准见仓库根 `DISTILLED-REFERENCE.md` §6.3 / `DISTILLED-CATALOG.md` §3.3。
