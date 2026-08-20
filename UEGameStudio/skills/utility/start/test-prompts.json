@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "start",
+  "description": "验证首次进入项目的引导技能是否先问清阶段再路由、不假设阶段、不自动执行",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "新用户首次进入项目，说「我刚来，不知道从哪里开始」。",
+      "expect": "先静默收集项目现状（引擎是否配置、有无游戏概念/源码/设计文档），再用结构化选项（A 毫无想法 / B 模糊想法 / C 清晰概念 / D 已有工作）询问用户所处位置，不做任何阶段假设，不直接跳入任何工作流。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "用户回答选项 C（已有清晰概念）。",
+      "expect": "路由到 brainstorm → setup-engine → prototype 概念阶段路径，写 production/stage.txt 为 Concept（单行文件），若 production/review-mode.txt 不存在则询问审查模式并写入。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "用户只说「我做一个 3D 游戏」，agent 便假设其会用 Unreal 并自动运行 setup-engine。",
+      "expect": "技能应拒绝这种假设：先问清阶段与现状再路由，绝不自动运行下一个技能，只推荐下一步并等待用户确认。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "用户选了 D（已有工作），但项目目录实际为空。",
+      "expect": "技能应纠正此情况（不硬套既有流程），倾听并灵活适配，而非继续按 D 的先进程度分支执行。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

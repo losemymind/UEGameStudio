@@ -286,7 +286,12 @@ def run_judge_mode(args, skills_dir):
     if not skill:
         print("[ERROR] --mode judge 需要 --skill <技能名>", file=sys.stderr)
         return 1
-    skill_dir = skills_dir / skill
+    skill_dir = next(
+        (p.parent for p in skills_dir.rglob("SKILL.md") if p.parent.name == skill),
+        None,
+    )
+    if skill_dir is None:
+        skill_dir = skills_dir / skill
     md = skill_dir / "SKILL.md"
     tp = skill_dir / "test-prompts.json"
     if not md.exists() or not tp.exists():
@@ -454,11 +459,13 @@ def main():
         return 1
 
     results = []
-    for sub in sorted(skills_dir.iterdir()):
-        if not sub.is_dir() or sub.name.startswith("_"):
+    for md in sorted(skills_dir.rglob("SKILL.md")):
+        skill_dir = md.parent
+        rel_parts = skill_dir.relative_to(skills_dir).parts
+        if any(part.startswith("_") for part in rel_parts):
             continue
         try:
-            name, prompts, scores = check_skill(sub)
+            name, prompts, scores = check_skill(skill_dir)
         except Exception as e:
             print(f"[ERROR] {e}", file=sys.stderr)
             continue

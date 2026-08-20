@@ -59,3 +59,21 @@ description: 存量项目/旧版模板升级审计：审计既有项目产物是
 - 把 `/adopt` 当成 `/project-stage-detect`——前者是"能不能用"，后者是"有什么"。
 - 未展示摘要就直接写文件——用户看不到范围与成本。
 - 重生成进行中的 story 以补格式字段——会破坏进行中的工作；字段缺失时检查自动通过是有意设计。
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「文件都在，格式差点应该没影响」 | 格式敏感技能会静默失败，只查存在会漏掉 BLOCKING，须查 GDD 8 个必需小节、ADR Status 等内部格式。 |
+| 「审计完直接把计划写进去，用户会看的」 | 未展示摘要就写文件，用户看不到范围与成本，必须先展示 Gap Preview 并经确认。 |
+| 「顺手把进行中的 story 重生成补齐字段」 | 重生成会破坏进行中工作；字段缺失时新格式检查自动通过是有意设计。 |
+
+## Red Flags（违规信号）
+- 审计结论只按「文件存在/缺失」给出，没有格式级别的 BLOCKING/HIGH/MEDIUM/LOW 分级。
+- 把 adopt 输出成「有什么」的盘点，而非「能不能配合模板技能工作」。
+- 未经 AskUserQuestion 确认就写 docs/adoption-plan-[date].md。
+
+## Verification（证据化验证门）
+- [ ] GDD 审计覆盖 8 个必需小节与 Status 字段；ADR 覆盖 Status/ADR Dependencies/Engine Compatibility 等 5 个标题。
+- [ ] 差距分四级并统计每级数量，零 BLOCKING 且零 HIGH 时报告「模板兼容」。
+- [ ] 迁移计划按 BLOCKING→HIGH→MEDIUM→LOW 编号，每条含问题/修复命令/时间估算/勾选框。
+- [ ] 基础设施引导固定顺序正确（修 ADR 格式 → /architecture-review → /create-control-manifest → /sprint-plan update → /gate-check）。

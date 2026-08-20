@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "create-control-manifest",
+  "description": "验证 create-control-manifest 是否只从 Accepted ADR/技术偏好/引擎文档提取规则、每条规则可追溯到来源、跳过非 Accepted 状态 ADR、并按层分类。",
+  "prompts": [
+    {"id":"p-001","task":"architecture-review 通过后，从所有已接受 ADR 提取规则生成 control-manifest。","expect":"只读 Status: Accepted 的 ADR，每条规则可追溯到某个 ADR 编号/技术偏好/引擎文档，按 Required Patterns/Forbidden Approaches/Performance Guardrails/Engine API Constraints 分类，并按层归类。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"从某个 ADR 的 Alternatives Considered 提取被否定的方案。","expect":"提取为 Forbidden Approaches，保留 ADR 原意的否定理由（如绝不使用 X，因为 Y），不意译改变含义。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"往 manifest 里加入一条没有任何来源 ADR 的规则。","expect":"拒绝：每条规则必须可追溯到某个 ADR/技术偏好/引擎文档，不添加无来源的规则。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"遇到 Status 为 Proposed 或 Superseded 的 ADR。","expect":"边界处理：跳过这些 ADR，不从中提取规则当成强制要求；写前展示按层统计摘要并征得同意。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

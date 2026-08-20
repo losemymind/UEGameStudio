@@ -55,3 +55,21 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 - 以"改动很小/时间紧"为由跳过对抗式评审
 - 静默采纳 creative-director 的意见而隐藏专家分歧
 - 评审后未经批准就改写 systems-index 或 review-log
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「标题都在就算 8 节齐了」 | 完整性看的是每节是否有实质内容，只数标题会把空壳文档判 APPROVED |
+| 「改动很小/时间紧，专家评审跳过这次」 | full 模式对抗式专家评审是强制步骤，跳过等于放弃发现问题的机会 |
+| 「creative-director 结论和专家有分歧，我取个一致的就好」 | 分歧必须并列呈现由用户裁决，静默选定一方会隐藏风险并破坏来源可追溯 |
+
+## Red Flags（违规信号）
+- Completeness 判定为 X/8 齐全，但未见对每节实质内容的核对证据
+- full 模式下报告出现专家意见，但无 Task spawn 痕迹、意见未标注来源 agent
+- 评审过程中出现对 systems-index / review-log 的写操作，或未经 AskUserQuestion 批准的落盘
+
+## Verification（证据化验证门）
+- [ ] 8 必节是否逐节核对了实质内容并记录缺失章节（Completeness: X/8）
+- [ ] full 模式是否真实 Task 并行 spawn 了对应领域专家子代理，且每条结论标注来源
+- [ ] 分歧是否在输出中并列呈现，而非静默采纳一方
+- [ ] 收尾交互（是否修订 / 是否更新 systems-index / review-log）是否经 AskUserQuestion

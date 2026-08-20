@@ -4,6 +4,201 @@
     "AGENTS.md": {
       "best_score": 0.85,
       "updated": "2026-08-14"
+    },
+    "UEGameStudio/agents/directors/art-director.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/directors/creative-director.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/directors/producer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/directors/technical-director.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/engine/unreal/ue-blueprint-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/engine/unreal/ue-gas-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/engine/unreal/ue-replication-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/engine/unreal/ue-umg-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/engine/unreal/unreal-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/audio-director.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/game-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/lead-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/level-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/narrative-director.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/qa-lead.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/leads/systems-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/analytics-engineer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/community-manager.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/devops-engineer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/economy-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/live-ops-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/localization-lead.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/operations/release-manager.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/qa/accessibility-specialist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/qa/qa-tester.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/qa/security-engineer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/ai-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/engine-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/gameplay-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/network-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/performance-analyst.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/prototyper.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/sound-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/technical-artist.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/tools-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/ui-programmer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/ux-designer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/world-builder.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    },
+    "UEGameStudio/agents/specialists/writer.md": {
+      "best_score": 1.0,
+      "updated": "2026-08-20",
+      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
     }
   }
 }

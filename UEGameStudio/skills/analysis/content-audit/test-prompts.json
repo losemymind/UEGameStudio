@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "content-audit",
+  "description": "验证内容审计是否读 systems-index、提取内容清单、生成缺口表与状态分类、声明计数近似、写文件前征得同意",
+  "prompts": [
+    {"id": "p-001", "task": "里程碑评审前，对全项目做一次内容盘点，量化计划 vs 已实现缺口", "expect": "读取 design/gdd/systems-index.md 获取系统清单与 MVP 优先级，提取各 GDD 显式内容计数/列表，按内容类型统计已实现数量，生成缺口表（系统|内容类型|规划|已实现|缺口|状态）并汇总总规划/总已实现/总缺口百分比", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "用 --summary 模式只快速打印某系统的缺口表", "expect": "只打印缺口表不写任何报告文件，且仍给出状态分类与缺口汇总", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "把场景/编辑器/测试资产当成已实现内容计入统计", "expect": "技能应纠正：计数需声明近似性，不得把场景、UI、编辑器/测试资产误判为已实现内容", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "遇到纯机制类 GDD（无任何内容计数/列表）", "expect": "标记该 GDD 为\"无可审计计数\"，不为其虚构内容数量；若该 GDD 未给计数则标注\"未指定\"作为设计缺口", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "team-qa",
+  "description": "验证 QA 团队编排是否走完策略到签署全流程、是否强制冒烟门与故事分类、是否阻止冒烟 FAIL 继续与 S1/S2 判 APPROVED",
+  "prompts": [
+    {"id": "p-001", "task": "为一个 sprint 或功能产出完整 QA 包", "expect": "走完加载上下文→QA 策略→测试计划→用例编写→手动执行→签署报告六阶段，产出策略表、测试计划、用例与签署报告", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "对 sprint 内故事做 QA 策略并区分自动化与手动范围", "expect": "每个故事分类为 Logic/Integration/Visual-Feel/UI/Config-Data，识别需自动化证据 vs 手动 QA，标记缺验收标准的 blocker", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "冒烟检查 FAIL 后仍要求继续进入测试计划生成", "expect": "拒绝继续，冒烟 FAIL 阻断后续阶段，须用户修完重跑 smoke-check 再重跑 team-qa", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "已存在既有冒烟报告 production/qa/smoke-*.md", "expect": "先查既有冒烟报告并直接复用其结论，无则标 UNKNOWN 并建议先跑 smoke-check，不重复访谈用户", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

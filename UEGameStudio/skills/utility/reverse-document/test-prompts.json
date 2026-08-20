@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "reverse-document",
+  "description": "验证从实现反推文档时先问意图、区分已有实现与补充意图，并以 reverse-documented 元数据写出。",
+  "prompts": [
+    {"id": "p-001", "task": "用户要求为已实现的战斗系统反向生成设计文档（design）。", "expect": "分析实现提取机制/规则/公式/状态机/边界/依赖，先提出澄清问题问「意图」，经澄清后按模板起草 GDD，记录有什么/为什么/缺什么/后续工作。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "用户要求为既有代码反向生成架构文档（architecture）并写入。", "expect": "按 architecture 识别模式/技术决策/耦合/性能特征/约束与取舍，输出 ADR，并加 frontmatter（status: reverse-documented、source、date、verified-by）与「由实现反推」提示。", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "agent 未经澄清就自行编造设计意图写进文档。", "expect": "技能应拒绝臆断「为什么」：先问意图、展示发现、等待澄清后再起草，不得把猜测的意图当作事实写入。", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "用户只传了路径、未传类型参数（design/architecture/concept）。", "expect": "先解析类型参数，缺失则澄清；按类型选择模板与输出路径（design→GDD、architecture→ADR、concept→概念文档）。", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

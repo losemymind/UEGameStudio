@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "create-stories",
+  "description": "验证 create-stories 是否忠实引用 GDD/ADR 拆解 story、校验 ADR 文件存在性、为每个 story 确定 TR-ID/ADR/类型/验收标准，并禁止 ADR 字段留空。",
+  "prompts": [
+    {"id":"p-001","task":"对某个已创建的 epic 运行 /create-stories [epic-slug]，把 GDD 需求拆成可实施 story。","expect":"按相同核心实现分组验收标准，每个 story 确定 TR-ID、治理 ADR、story 类型、验收标准，并按基础行为在前、边缘情况在后、UI 最后的顺序排序。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"拆 story 时发现某个被引用的 ADR 文件在磁盘上不存在。","expect":"立即停止，不拆任何 story；确认 ADR 文件缺失并提示补齐后再继续。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"拆 story 时把 ADR 字段留空或写成待定，未检查该需求是否有治理 ADR。","expect":"纠正：ADR 字段留空等于未检查，被禁止；无 ADR 必须显式写 ADR: N/A — 原因，不能留空。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"一个 story 的验收标准堆叠起来需要超过 8 小时工作量。","expect":"边界处理：过大的 story 拆成两个或多个聚焦会话（每个约 2–4 小时），不塞进单次会话。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

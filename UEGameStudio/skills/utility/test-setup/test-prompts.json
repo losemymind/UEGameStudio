@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "test-setup",
+  "description": "验证测试框架+CI 脚手架是否按引擎生成、不覆盖已有文件、未配置引擎则停止",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "Unreal 引擎项目搭建测试基础设施。",
+      "expect": "生成 Source/Tests/README.md，说明 UE Automation Testing Framework、类名 F[SystemName]Test、分类 \"MyGame.[System].[Feature]\"、headless 命令 UnrealEditor -nullrhi -ExecCmds=\"Automation RunTests\"；CI 用 runs-on: self-hosted（本地 runner 装 UE Editor，设 UE_EDITOR_PATH）。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "引擎已配置，生成 tests/ 目录与 CI 工作流。",
+      "expect": "创建 unit/integration/smoke/evidence/README 布局，写 tests/README.md（目录布局、运行命令、命名规范、Story 类型→测试证据映射、CI 说明），生成 .github/workflows/tests.yml 与冒烟种子 tests/smoke/critical-paths.md。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "agent 覆盖已有的手写测试文件。",
+      "expect": "技能应拒绝：永不覆盖已有测试文件，只创建缺失的（force 跳过「已存在」早退但仍不覆盖）。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "技术偏好中引擎未配置。",
+      "expect": "停止并提示 /setup-engine，不猜测引擎，不生成运行器与 CI 命令。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

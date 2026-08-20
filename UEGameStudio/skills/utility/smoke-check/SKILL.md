@@ -57,3 +57,23 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 - 自动去改代码或测试文件来"修"失败——越权且掩盖真实问题。
 - 忽略 MISSING 测试证据——它虽不 FAIL，但必须在 story 关闭前补上。
 - 未经批准就写报告文件——违反协作协议。
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「测试跑不起来，直接判 FAIL 就行」 | 约束「NOT RUN 不自动判 FAIL」，应记 NOT RUN 请开发者确认，避免冤枉构建。 |
+| 「失败我顺手改一行就修好了」 | 约束「永不自动修复失败」，越权且掩盖真实问题。 |
+| 「MISSING 只是建议，忽略没关系」 | 反例「忽略 MISSING」，须在 story 关闭前补上。 |
+| 「报告我直接写了」 | 约束「写报告前必须获得批准」。 |
+
+## Red Flags（违规信号）
+- 把 NOT RUN 自动判为 FAIL。
+- 编辑源码/测试文件来修复失败。
+- 手动核验未用 AskUserQuestion。
+- 未经批准写入 smoke-[date].md。
+
+## Verification（证据化验证门）
+- [ ] 自动化测试结果含总数/通过/失败/失败测试名；NOT RUN 未被判 FAIL。
+- [ ] 覆盖逐 story 有 COVERED/MANUAL/MISSING/EXPECTED/UNKNOWN 判定，MISSING 已记录供 /story-done 跟进。
+- [ ] 手动核验用 AskUserQuestion 分批（≤3 次），结果有记录。
+- [ ] 结论（PASS/PASS WITH WARNINGS/FAIL）符合判定规则，报告经批准后写入。

@@ -32,7 +32,7 @@ SENSITIVE_PATH_RE = [
 ]
 # 危险命令
 DANGEROUS_CMD_RE = [
-    re.compile(r"rm\s+(-[a-z]*f[a-z]*\s+)?-?.*(/|\.|~)"),
+    re.compile(r"(?<![\w])rm\s+(-[a-z]*f[a-z]*\s+)?-?.*(/|\.|~)"),
     re.compile(r"curl[^\n|]*\|\s*(ba)?sh"),
     re.compile(r"wget[^\n|]*\|\s*(ba)?sh"),
     re.compile(r"Invoke-Expression|iex\s*\("),
@@ -117,6 +117,17 @@ def resolve_skills_dir(args_skills_dir):
     return candidates[-1]
 
 
+def collect_skill_dirs(skills_dir):
+    """递归收集所有含 SKILL.md 的技能目录（跳过路径中任一 _ 开头目录）。"""
+    dirs = []
+    for md in skills_dir.rglob("SKILL.md"):
+        d = md.parent
+        if any(p.startswith("_") for p in d.relative_to(skills_dir).parts):
+            continue
+        dirs.append(d)
+    return sorted(dirs, key=lambda d: str(d))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--skills-dir", type=str, default=None,
@@ -131,14 +142,12 @@ def main():
 
     targets = []
     if args.skill:
-        d = skills_dir / args.skill
-        if not d.is_dir():
+        targets = [d for d in collect_skill_dirs(skills_dir) if d.name == args.skill]
+        if not targets:
             print(f"[ERROR] 技能不存在: {args.skill}", file=sys.stderr)
             return 1
-        targets = [d]
     else:
-        targets = [d for d in sorted(skills_dir.iterdir())
-                   if d.is_dir() and not d.name.startswith("_")]
+        targets = collect_skill_dirs(skills_dir)
 
     all_findings = []
     for d in targets:

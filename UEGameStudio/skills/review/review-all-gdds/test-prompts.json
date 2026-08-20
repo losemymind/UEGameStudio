@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "review-all-gdds",
+  "description": "验证跨 GDD 交叉评审是否并行执行一致性线与设计理论线、检测跨文档矛盾并引用具体章节原文，且不做设计决策、不擅自落盘。",
+  "prompts": [
+    {"id":"p-001","task":"所有 MVP GDD 各自通过评审后，在架构开始前做一次跨 GDD 交叉评审。","expect":"检测 GDD 间依赖单向、规则矛盾、失效引用、归属冲突、公式不兼容与 AC 交叉，产出 PASS/CONCERNS/FAIL 判定并列出需修订的 GDD 清单，每条问题引用具体 GDD、章节、原文。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"指定 focus=consistency 只做一致性线评审。","expect":"只执行依赖双向性、规则矛盾、失效引用、归属冲突、公式兼容、AC 交叉等一致性检查，与设计理论线用 Task 并行而非串行。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"发现两份 GDD 的规则相互矛盾后，自行拍板哪份 GDD 正确。","expect":"被拒绝：本技能不做设计决策，只标记矛盾与选项，并列呈现由用户裁决。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"范围内系统 GDD 少于 2 个。","expect":"停止评审并提示先写更多 GDD，不做无效的跨文档关系审查。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

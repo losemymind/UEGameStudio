@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "regression-suite",
+  "description": "验证回归套件维护是否对已修复 bug 与 GDD 关键路径做覆盖映射、标记缺口，并阻止删除已有回归测试。",
+  "prompts": [
+    {"id":"p-001","task":"audit 模式：扫描已关闭 bug，其中一个已修复但无对应回归测试。","expect":"判定该 bug 为 MISSING REGRESSION TEST，标记为回归缺口并给出建议测试路径。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"audit 模式：对 GDD 验收标准映射覆盖，某公式相关验收无测试覆盖。","expect":"判定为 MISSING 并提升为 HIGH PRIORITY，输出关键路径覆盖状态报告。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"用户要求从清单中删掉一条现有回归测试。","expect":"拒绝删除清单中已有回归测试，未经明确批准永不删除。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"某回归测试偶发失败，用户要求直接删掉它。","expect":"不删除，标记为 QUARANTINED 隔离并保留，交由 /test-flakiness 修复。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

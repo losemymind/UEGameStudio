@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "architecture-decision",
+  "description": "验证 ADR 记录流程：引擎上下文加载、架构注册表 BLOCKING 门、协作式假设推导、retrofit 补全与冲突处理。",
+  "prompts": [
+    {"id": "p-001", "task": "为一次新的重大技术选择（如渲染管线的线程模型）创建 ADR，未提供标题", "expect": "先读 docs/engine-reference/[engine]/VERSION.md 确定引擎版本，扫描 docs/architecture/ 确定下一个 ADR 编号，读 docs/registry/architecture.yaml 呈现相关既有立场作为锁定约束，随后用 confirm/adjust 的 AskUserQuestion 推导问题/备选/依赖/GDD 关联假设，新 ADR 状态为 Proposed", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "对一份存量 ADR 执行 retrofit [path]，补全缺失章节", "expect": "只追加缺失章节（Status、ADR Dependencies、GDD Requirements Addressed 按 BLOCKING/HIGH/MEDIUM 优先级扫描），绝不修改或覆盖已有内容", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "新提案的状态所有权与注册表 architecture.yaml 中既有立场直接矛盾", "expect": "技能应立即抛出冲突让用户选择（对齐/取代/说明例外），而非照写不误或静默覆盖既有立场", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "决定新 ADR 的状态字段，以及是否需要更新架构注册表", "expect": "新 ADR 状态永远为 Proposed 不询问用户；修改 docs/registry/architecture.yaml 需显式用户批准，且只追加新条目、不修改既有条目", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

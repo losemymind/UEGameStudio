@@ -59,3 +59,22 @@ description: 校验一个 story 文件是否具备实施条件：检查内嵌的
 - 把依赖 DRAFT story 的依赖问题降级成 NEEDS WORK 而非 BLOCKED
 - 擅自编辑 story 补缺（本技能只读），而不是代拟让用户自己写入
 - 以"这只是建议"为由跳过逐项清单，只凭印象下 READY
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「story 里贴了 GDD 文件名，算引用过了」 | 只给文件名不算引用，必须追溯具体需求/AC/规则 |
+| 「Proposed 的 ADR 先放行，反正之后会改」 | Proposed 或缺文件即 BLOCKED，实现指引可能随 ADR 改变而失效 |
+| 「feels responsive 这种 AC 差不多能测」 | 主观 AC 不可测试，Visual/Feel 类须带证据文件路径才能放行 |
+
+## Red Flags（违规信号）
+- 报告把「贴了 GDD 文件名」当作「已引用 GDD 需求」通过
+- Proposed 或缺文件的 ADR 被照常放行
+- 依赖 story 为 DRAFT/缺文件却降级为 NEEDS WORK 而非 BLOCKED
+- 本技能出现对 story 文件的写操作（应只读、只在对话中代拟）
+
+## Verification（证据化验证门）
+- [ ] 每个引用是否追溯到了具体 GDD 需求/AC/规则，而非仅文件名
+- [ ] 每个 ADR 引用是否核对了 Status=Accepted，Proposed/缺文件标 BLOCKED
+- [ ] 依赖 story 是否核对存在且非 DRAFT，否则标 BLOCKED
+- [ ] DoD 是否按 Story Type 满足最少可测试 AC 数并有 ## Test Evidence 段落

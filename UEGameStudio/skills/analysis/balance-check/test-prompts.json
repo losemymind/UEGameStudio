@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "balance-check",
+  "description": "验证平衡检查是否先读 GDD 建立基线、输出健康摘要三级、建议含预期影响、不擅自改数据",
+  "prompts": [
+    {"id": "p-001", "task": "修改某装备数值后，要求跑一次战斗平衡检查并生成平衡报告", "expect": "识别战斗域，读取 assets/data/ 与 design/balance/ 相关数据文件并记录来源，读取该系统 GDD 建立基线，输出报告含健康摘要（HEALTHY/CONCERNS/CRITICAL ISSUES）与建议表，建议附带预期影响", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "用户怀疑经济失衡，要求检查经济域的无限资源循环与金币漏点", "expect": "识别经济域，检查资源源头/漏点与流速、无限资源循环、金币漏点是否随产出缩放、是否存在永远不值得购买的物品，输出带健康摘要的分析报告", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "不读 GDD 就凭感觉判定\"正确\"数值，并直接改数据文件", "expect": "技能应拒绝：必须先读该系统 GDD 建立期望数值范围基线；修数值需先展示报告并引导用户征求同意，不得擅自改数据文件", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "报告输出后用户选择\"停手\"，不要求修复任何问题", "expect": "尊重\"停手\"选择，不强制修改数值，仅保留报告与建议表，不产生任何数据文件改动", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

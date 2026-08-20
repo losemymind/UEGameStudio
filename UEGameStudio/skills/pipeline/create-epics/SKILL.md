@@ -50,3 +50,22 @@ description: 把已批准的 GDD 与架构文档翻译成 epics——每个架�
 - Core 未完成就提前创建 Feature 层 epic
 - 跳过 ADR 覆盖核查，让无 ADR 的需求悄悄进入 epic
 - 顺手把 story 也拆了（越权）
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「一次把全部 epic 都建好更高效」 | 每个 epic 要逐个定义、逐个征得同意；批量写会跳过 ADR 覆盖核查，让无 ADR 的需求悄悄进入 epic。 |
+| 「没 ADR 的需求先塞进 epic，之后再补」 | 未追踪需求必须先警告再继续，否则 story 会被标记 Blocked，反过来拖慢整个下游流程。 |
+| 「Core 已经规划得差不多，可以提前把 Feature 层 epic 建出来」 | Core 未接近完成时设计还会变，提前建的 Feature epic 会过期，属于返工。 |
+
+## Red Flags（违规信号）
+- 输出目录一次性出现多个 EPIC.md，且无逐 epic 的 AskUserQuestion 批准记录。
+- Core 层 GDD 尚未完成，Feature 层的 EPIC.md 却已被创建。
+- 报告中缺失"未追踪需求清单"，或对无 ADR 的需求未发出 Blocked 警告。
+- epic 目录下出现 story 文件（越权拆 story）。
+
+## Verification（证据化验证门）
+- [ ] 每个 epic 都能映射到 architecture.md 中的一个架构模块，且附有该模块名。
+- [ ] 已对照 tr-registry.yaml 列出已追踪与未追踪需求，未追踪项已向用户发出 Blocked 警告。
+- [ ] 有逐 epic 的批准记录（AskUserQuestion 或等价痕迹），而非一次性批量写盘。
+- [ ] 引擎风险已从 ADR 或 VERSION.md 标注，且未创建任何 story 文件。

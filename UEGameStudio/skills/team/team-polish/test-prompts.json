@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "team-polish",
+  "description": "验证打磨团队编排是否走完评估到签署全流程、是否保证优化不改玩法与低画质降级、是否阻止只做性能或跳过最低配置测试",
+  "prompts": [
+    {"id": "p-001", "task": "把一个已实现的功能/区域优化打磨到发布质量", "expect": "走完评估→优化→视觉打磨→音频打磨→加固→签署六阶段，产出性能前后指标与 READY FOR RELEASE / NEEDS MORE WORK 评估", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "性能优化同时要求低画质下特效优雅降级", "expect": "优化热点并验证不改变玩法；technical-artist 保证粒子/着色器/屏幕震动在低画质下优雅降级", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "优化过程中改变了玩法行为且未做回归验证", "expect": "拒绝优化改变玩法行为，必须验证优化不改变玩法，改变即回退并重新验证", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "无目标功能/区域、无任何参数时调用", "expect": "输出用法并退出，不派生子 agent", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

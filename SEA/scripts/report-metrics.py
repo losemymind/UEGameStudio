@@ -83,8 +83,13 @@ def memory_metrics():
 
 
 def skill_metrics(skills_dir: Path):
-    skills = [d for d in sorted(skills_dir.iterdir())
-              if d.is_dir() and not d.name.startswith("_")]
+    skills = []
+    for md in skills_dir.rglob("SKILL.md"):
+        d = md.parent
+        if any(p.startswith("_") for p in d.relative_to(skills_dir).parts):
+            continue
+        skills.append(d)
+    skills = sorted(skills, key=lambda d: str(d))
     scored = 0
     total_score = 0.0
     for d in skills:

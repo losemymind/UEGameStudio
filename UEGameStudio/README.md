@@ -3,7 +3,7 @@
 > 面向游戏开发智能化的**直接可安装** Agents 与 Skills 成品包。
 > 目标平台：opencode / OpenWork（subagent + skill 机制）。支持安装到**单个游戏项目**或**全局**。
 >
-> 当前版本：`0.3.0`（见 `VERSION`；安装说明见 `INSTALL.md`）
+> 当前版本：`0.4.0`（见 `VERSION`；安装说明见 `INSTALL.md`）
 
 ## 这是什么
 
@@ -74,9 +74,11 @@ UEGameStudio/
 │   ├── operations/   #   运营/发布（7）
 │   ├── qa/           #   质量与安全（3）
 │   └── engine/unreal/ #  UE 引擎专属（5）
-├── skills/           # 72 个技能（按生命周期分类）
+├── skills/           # 72 个技能（按生命周期分类，每个含 SKILL.md + test-prompts.json）
 │   ├── gate/ review/ readiness/ pipeline/ authoring/
 │   ├── analysis/ team/ sprint/ utility/
-│   └── _evolutions/  # 技能演进注册表
+│   └── _evolutions/  # 技能演进注册表（72 条 CAPTURED 谱系 + L0 基线）
+├── rules/            # 10 条路径作用域编码规则（ue-*）
+├── docs/             # engine-reference/unreal/VERSION.md 版本锚定
 └── references/       # 共享清单
 ```

@@ -2,7 +2,7 @@
 
 > 本文件是框架自进化机制的**权威总览**。任何机制/脚本/流程变更必须同步更新本文件，保持与代码一致。
 
-当前版本：`0.3.9`（见 `VERSION`）
+当前版本：`0.3.10`（见 `VERSION`）
 
 ## 总览流程图
 
@@ -118,8 +118,8 @@
 | dedup-check.py | 记忆 | 近重复检测 |
 | memory-decay.py | 记忆 | 衰减/遗忘候选 |
 | search-memory.py | 记忆 | 检索召回（关键词+结构索引，返回条目+置信度） |
-| validate-skill.py | 技能 | frontmatter + evolutions schema |
-| evaluate-skill.py | 横切 | L0 启发式 / L1 LLM 判官真实评估（内联协议 --emit/--apply，--split/--budget/--model） |
+| validate-skill.py | 技能 | frontmatter + evolutions schema（递归扫描，兼容分类子文件夹与平铺结构） |
+| evaluate-skill.py | 横切 | L0 启发式 / L1 LLM 判官真实评估（内联协议 --emit/--apply，--split/--budget/--model；递归扫描兼容分类子文件夹） |
 | ratchet-gate.py | 横切 | 棘轮变更门（pending→L1 评估，通过线 0.7）+ 主动评估（--active 全技能无上限） |
 | audit-skill.py | 横切 | 供应链审计 |
 | scan-secrets.py | 横切 | PII/secret 扫描 |
@@ -157,3 +157,4 @@
 | 0.3.7 | 2026-08-14 | task-retrospective 修复回归（NOTES.md 冲突）+ 评估纪律「严格核对 expect」 |
 | 0.3.8 | 2026-08-17 | 版本术语统一：顶层 VERSION → 仓库 VERSION |
 | 0.3.9 | 2026-08-17 | 硬规则新增第 8、9 条：先计划后实施 + 充分利用 subagent |
+| 0.3.10 | 2026-08-20 | validate-skill/evaluate-skill/audit-skill/ratchet-gate/report-metrics 递归扫描（兼容技能分类子文件夹）；audit-skill 修复 rm 正则误报 |

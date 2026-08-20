@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "setup-engine",
+  "description": "验证引擎配置技能是否绝不猜版本、识别知识缺口、写前征得同意、正确标注技术栈",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "用户说「用 Unreal 5.5 做游戏」。",
+      "expect": "识别 5.5 超出训练数据基线（Unreal ~5.3/early 5.4），判 HIGH RISK，联网抓取迁移指南/破坏性变更/废弃 API 建完整参考目录，写 CLAUDE.md/参考文档前展示并征得同意。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "用户无参调用，需要引导选择引擎。",
+      "expect": "先问既往经验（有经验则倾向该引擎），无经验再按平台/游戏类型/团队/语言偏好/预算等决策矩阵给出 1–2 个推荐并让用户拍板，绝不猜版本。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "agent 直接猜一个「最新稳定版」未经联网核实或用户确认就写入 CLAUDE.md。",
+      "expect": "技能应拒绝：绝不猜引擎版本，必须联网核实或用户确认后才能写入。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "Godot 项目选定 GDScript 语言。",
+      "expect": "技术栈 Language 字段只写「GDScript」，不得附加「C++ via GDExtension」。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

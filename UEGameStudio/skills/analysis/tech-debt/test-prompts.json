@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "tech-debt",
+  "description": "验证技术债技能是否正确解析子命令、扫描并分类债务指示器、按公式重排优先级、写文件前征得同意、只追加不覆盖",
+  "prompts": [
+    {"id": "p-001", "task": "每 sprint 对代码库做一次债务扫描（scan 子命令）", "expect": "搜索 TODO/FIXME/HACK/@deprecated、重复代码块、超 500 行文件、超 50 行函数，分类为架构/代码质量/测试/文档/依赖/性能债务，征得同意后追加写入登记表（不覆盖）并给出 verdict", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "对现有债务登记表执行 prioritize 重排优先级", "expect": "按 (影响×频率)/修复工作量 打分重排，并推荐下个 sprint 纳入的项，输出更新后的优先级排序", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "未经用户同意直接写 docs/tech-debt-register.md，且覆盖既有登记条目", "expect": "技能应拒绝：写文件前必须征得同意；登记表只追加不覆盖既有条目，避免历史丢失", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "不带任何子命令直接调用技能", "expect": "提示 scan/add/prioritize/report 用法并给出 verdict FAIL，不执行扫描也不写任何文件", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "playtest-report",
+  "description": "验证试玩报告是否在 analyze 模式下交叉对照设计文档、把发现路由到四类后续行动，并阻止只转述笔记不结构化。",
+  "prompts": [
+    {"id":"p-001","task":"运行 new 模式生成空白试玩报告模板。","expect":"输出含会话信息/测试焦点/玩法流程/缺陷表/量化数据/本次前三优先级的完整模板。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"运行 analyze 分析原始试玩笔记，其中发现与设计文档冲突的观察。","expect":"交叉对照设计文档、标记与设计意图冲突的观察，并把发现路由到设计变更/平衡/缺陷/打磨四类。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"用户要求\"把笔记原样整理一下就行\"。","expect":"拒绝只转述笔记，坚持结构化填写并交叉对照设计意图标记冲突。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"报告已生成但用户尚未确认保存。","expect":"仅询问是否写入 production/qa/playtests/，未经批准不写文件。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "perf-profile",
+  "description": "验证性能剖析是否先加载预算、输出预算表与热点表，并给出带预估影响的优先级建议。",
+  "prompts": [
+    {"id":"p-001","task":"发布前做性能检查，要求 full 全系统剖析。","expect":"从设计文档/CLAUDE.md 加载性能预算，输出预算表（预算 vs 当前估算 vs 状态 OK/WARNING/OVER）与热点表。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"怀疑某系统存在 CPU 热点，要求分析并给优化建议。","expect":"聚焦该系统，产出按优先级排序的优化建议，每条含位置/预期收益/风险/方案。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"要求直接开始优化代码，跳过出报告。","expect":"阻止直接动手优化，先出剖析报告让用户决策；且不把静态分析结论当实测结论。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"热点修复工作量达到 M/L 级别。","expect":"启用范围与工期决策，让用户选择 实施优化/缩减范围/接受并延后/升级架构决策。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

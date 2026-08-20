@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "release-checklist",
+  "description": "验证发布前清单是否按平台差异化生成，并覆盖代码库健康、质量门、认证/商店门与 Go/No-Go 签字。",
+  "prompts": [
+    {"id": "p-001", "task": "用户显式调用 /release-checklist，目标平台为 console，准备发布某个版本。", "expect": "生成含 console 专属块（TRC/TCR/Lotcheck、平台手柄提示、挂起/恢复、用户切换、断网、存储满、家长控制、奖杯/成就、一方认证提交）的清单，并产出 Go/No-Go 结论与签字项（QA 负责人/技术总监/制作人/创意总监）。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "用户显式调用 /release-checklist，目标平台为 mobile，准备发布某个版本。", "expect": "生成含 mobile 专属块（商店指南、权限、隐私政策、数据安全标签、触控多尺寸、电池、后台行为、推送权限、内购、应用体积）的清单，而非通用清单。", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "用户在普通会话中提及要发布版本，但未显式调用 /release-checklist，agent 却自动生成发布清单。", "expect": "技能应拒绝/不自动触发，仅在用户显式调用 /release-checklist 时才运行，非发布节点不得反复生成清单。", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "用户调用 /release-checklist 但未指定目标平台。", "expect": "目标平台默认按 all 处理，生成通用块（代码库健康、构建验证、质量门、内容完整度）并追加 pc/console/mobile 全部平台差异块。", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

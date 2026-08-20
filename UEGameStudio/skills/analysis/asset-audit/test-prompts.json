@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "asset-audit",
+  "description": "验证资产审计是否先读规范、按命名/尺寸/格式/孤立/缺失检查、输出 verdict、孤立资产只建议删除",
+  "prompts": [
+    {"id": "p-001", "task": "发布前对 assets/ 目录做一次资产卫生检查", "expect": "先读取美术圣经/资产规范与命名约定，Glob 扫描 art|audio|vfx|shaders|data 目录，输出摘要与命名违规表/尺寸违规表/格式违规表/孤立资产表/缺失资产表，并给出 Verdict（COMPLIANT / WARNINGS / NON-COMPLIANT）", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "检查一批纹理与音频文件是否符合命名与格式规范", "expect": "按 [category]_[name]_[variant]_[size].[ext] 全小写下划线模式判定命名；纹理按 2 的幂次幂尺寸与格式（UI 用 PNG、3D 用压缩格式）、音频按采样率/格式/时长判定，逐项列入违规表", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "扫描发现孤立资产后，直接删除这些无引用文件", "expect": "技能应拒绝擅自删除：孤立资产只能建议删除并需人工复核，只产出报告不写文件、不删除任何资产", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "项目缺少美术圣经/资产规范文档时触发审计", "expect": "不按个人习惯判定命名合规：提示缺少规范文档，命名合规无法权威判定，其余可检查项（尺寸/格式/孤立/缺失）照常输出并注明依据缺失", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

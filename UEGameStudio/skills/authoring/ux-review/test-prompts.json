@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "ux-review",
+  "description": "验证 UX 规格评审流程：交叉引用上下文、3A/3B/3C 校验清单、只读判定输出与建议性判定。",
+  "prompts": [
+    {"id": "p-001", "task": "评审一份 UX 规格（UX Spec）", "expect": "按 3A 完整性+质量清单逐项核对（必需节、玩家需求、状态完整、输入覆盖、数据架构、无障碍、GDD 对齐、模式库一致、本地化、验收标准质量），输出 APPROVED / NEEDS REVISION / MAJOR REVISION 判定并列出 BLOCKING 与 ADVISORY 问题数", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "核对规格中的数据架构描述", "expect": "检查 UI 是否被列为游戏状态所有者；实时数据是否说明更新触发；若 UI 被写成状态所有者则判为问题", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "评审过程中尝试修改/编辑被评审的 UX 规格文件", "expect": "技能保持只读，绝不修改或写入被评审文件，只报告发现", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "给出 NEEDS REVISION 判定后用户仍要推进", "expect": "判定是建议性的，不阻止用户推进，用户自担风险；技能不强制阻断流程", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

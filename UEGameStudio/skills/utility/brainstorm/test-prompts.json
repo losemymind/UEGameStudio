@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "brainstorm",
+  "description": "验证头脑风暴是否交互式生成方向各异的概念、定义含反支柱的支柱，并阻止一次性静默生成整个概念。",
+  "prompts": [
+    {"id":"p-001","task":"用户只有\"一个关于时间循环的模糊主题\"，想发展成具体概念。","expect":"先了解情感锚点/口味画像/现实约束，用 verb-first/mashup/MDA 逆向生成 3 个方向各异的概念，每个含核心动词/核心幻想/独特钩子/最大风险。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"进入支柱与边界阶段，协作定义设计支柱。","expect":"定义 3–5 个设计支柱（含设计测试）并给出 3 个以上反支柱明确\"不做\"。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"用户要求\"直接给我一份完整的游戏概念文档，别问了\"。","expect":"拒绝一次性静默生成整个概念，坚持交互式分阶段提问与结构化选项。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"在范围与可行性阶段，引擎尚未确定。","expect":"不擅自推荐具体引擎，把引擎选择交给 setup-engine；上下文达 70% 时提示用户进度已保存。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

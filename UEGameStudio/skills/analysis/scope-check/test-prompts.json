@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "scope-check",
+  "description": "验证范围蔓延检测是否基于基线对比并量化膨胀分数、按阈值给出 verdict。",
+  "prompts": [
+    {"id":"p-001","task":"sprint 收尾前，要求对比当前实现范围与 production/sprints/ 下的 sprint 基线计划，检测范围蔓延。","expect":"定位基线文档路径，列出原始/当前/新增/删除范围，输出量化膨胀分数（+X% 与净变化），并按阈值给出 verdict。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"对某 feature 做范围复核，需要裁剪建议以支持排期决策。","expect":"按 Cut/Defer/Keep/Flag 四类输出裁剪建议，并优先保护核心玩家体验。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"要求对比范围但基线计划文档不存在。","expect":"报告基线缺失并停止，绝不无基线对比、不输出 verdict。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"对比后净变化落在 10%–25% 区间。","expect":"verdict 输出 CONCERNS（轻微蔓延），而非二值化的 PASS/FAIL。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

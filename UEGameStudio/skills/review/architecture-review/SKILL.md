@@ -67,3 +67,23 @@ description: 校验架构的完整性与一致性：构建 GDD 技术需求到 A
 - 把 GAP（缺 ADR）当冲突记进 consistency-failures.md
 - 跳过引擎专家咨询，自己脑补引擎细节当专家意见
 - 以"判定只是建议"为由跳过可追踪矩阵的逐条核对
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「看了 GDD 的标题就能断言覆盖」 | 必须逐条在 ADR 的 "GDD Requirements Addressed" 与正文中查覆盖，只看标题会漏掉 Gap |
+| 「TR-ID 重排一下更整齐」 | TR-ID 稳定是未来 story 引用不失效的前提，绝不重排或删除既有条目 |
+| 「GAP 也算冲突，一起记进 consistency-failures.md」 | 缺 ADR 是架构完成前的正常现象，只有 🔴 CONFLICT 才记录 |
+| 「判定只是建议，矩阵不用逐条核」 | 可追踪矩阵是输出判定的事实依据，跳过逐条核对等于凭印象下结论 |
+
+## Red Flags（违规信号）
+- 可追踪矩阵只有 Covered/Gap 总数，无逐条需求的覆盖位置引用
+- 已有 TR-ID 被重新编号，或 deprecated 未获用户确认
+- 未经批准直接写报告 / tr-registry / systems-index，或状态值带括号后缀
+- 引擎专家意见无 Task spawn 痕迹，凭空出现
+
+## Verification（证据化验证门）
+- [ ] 每条技术需求是否有明确的 TR-ID 与 Covered/Partial/Gap 标记及 ADR 覆盖位置
+- [ ] 跨 ADR 冲突检测是否覆盖数据归属/集成契约/性能预算/依赖环，并给出依赖排序
+- [ ] 引擎版本一致性是否核对所有 ADR 的版本引用与 deprecated-apis
+- [ ] 写文件前是否内联展示草稿并经 AskUserQuestion 批准（多文件一次性列出）

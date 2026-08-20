@@ -74,3 +74,23 @@ description: 故事完成评审：读完 story 文件，逐条对照实现验证
 - Logic story 没单测仍放行（缺测试即 BLOCKING）
 - 悄悄替用户"修正"实现以迎合 AC，而不是报告失败并询问
 - 以"偏离只是建议、用户可覆盖"为由，不记录偏离就关闭
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「文件在、测试能跑，AC 肯定都过」 | 必须逐条对照验证每个 AC，存在不等于满足 |
+| 「一半多 AC 没测，先判 COMPLETE 之后再补」 | >50% UNTESTED 必须升级 BLOCKING，不能判 COMPLETE |
+| 「偏离很小，不影响功能，不用记」 | 偏离是事实，必须中立记录，由用户决定可否接受，不可悄悄略过 |
+| 「我顺手把实现改一下让它过 AC」 | 绝不自动修复失败 AC，报告并询问 |
+
+## Red Flags（违规信号）
+- Logic/Integration story 无测试文件仍放行（缺测试即 BLOCKING）
+- 用 story 内过期需求文本核对，而非 tr-registry 当前文本
+- 未经 AskUserQuestion 批准即改写 Status: Complete
+- >50% UNTESTED 仍判 COMPLETE
+
+## Verification（证据化验证门）
+- [ ] 每条 AC 是否有 COVERED/UNTESTED 映射（测试-标准可追踪表）
+- [ ] >50% UNTESTED 是否升级 BLOCKING；≤50% 是否写入 Completion Notes
+- [ ] 偏离是否分类为 BLOCKING/ADVISORY/OUT OF SCOPE 并中立记录
+- [ ] 关闭前是否有 AskUserQuestion 批准记录，且给出下一个可认领 story

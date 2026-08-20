@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "bug-report",
+  "description": "验证缺陷报告技能在描述/分析/验证/关闭四种模式下是否生成含复现步骤与严重度评估的完整报告，并阻止未经 verify 的关闭。",
+  "prompts": [
+    {"id":"p-001","task":"玩家口述：\"打 BOSS 时闪退，大概第三阶段放全屏技能时\"，请生成缺陷报告。","expect":"生成结构化报告，含完整复现步骤与严重度评估字段，并 Grep/Glob 相关文件补充技术上下文。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"运行 analyze src/Combat/BossController.cpp，从代码中主动识别潜在缺陷。","expect":"逐个报告识别出的缺陷，每个含可能触发场景与推荐修复，而非只给结论。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"用户直接说\"这个 bug 已经修好了，直接关闭 BUG-0042\"，但未提供任何验证结果。","expect":"拒绝直接关闭，要求先走 verify 验证得到 VERIFIED FIXED 后才允许关闭。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"verify 模式下复现步骤无法重跑，无法确认修复是否生效。","expect":"给出 CANNOT VERIFY 判定而非武断写 VERIFIED FIXED 或 STILL PRESENT；写文件前询问批准。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

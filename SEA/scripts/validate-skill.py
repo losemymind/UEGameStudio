@@ -2,7 +2,7 @@
 """validate-skill.py — 校验技能库的 frontmatter 与 _evolutions/evolutions.json。
 
 检查项:
-  1. 每个技能目录（排除 _ 开头）必须含 SKILL.md，且 frontmatter 有非空 name / description
+  1. 递归扫描每个技能目录（排除路径中任一 _ 开头目录），必须含 SKILL.md 且 frontmatter 有非空 name / description
   2. frontmatter 解析：--- 包裹的 YAML
   3. 技能目录内的 test-prompts.json 必须是合法 JSON 且符合 schema
   4. _evolutions/evolutions.json：schema 字段完整、kind/status 枚举合法、id 唯一
@@ -98,14 +98,18 @@ def check_skills(skills_dir, errors):
         errors.append(f"技能库目录不存在: {skills_dir}")
         return 0
     count = 0
-    for sub in sorted(skills_dir.iterdir()):
-        if not sub.is_dir() or sub.name.startswith("_"):
+    # 递归扫描：兼容分类子文件夹（gate/review/.../<技能>/SKILL.md）与平铺结构（<技能>/SKILL.md）。
+    # 跳过路径中任一以 _ 开头的目录（如 _evolutions/_templates）。
+    seen_dirs = set()
+    for md in sorted(skills_dir.rglob("SKILL.md")):
+        sub = md.parent
+        rel_parts = sub.relative_to(skills_dir).parts
+        if any(part.startswith("_") for part in rel_parts):
             continue
+        if sub in seen_dirs:
+            continue
+        seen_dirs.add(sub)
         count += 1
-        md = sub / "SKILL.md"
-        if not md.exists():
-            errors.append(f"{sub.name}: 缺少 SKILL.md")
-            continue
         fm = parse_frontmatter(md.read_text(encoding="utf-8"))
         if fm is None:
             errors.append(f"{sub.name}: SKILL.md frontmatter 缺失或 YAML 解析失败")

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "code-review",
+  "description": "验证代码评审是否只读、输出 verdict 与正面观察、逐条对照 ADR、并行派发专项",
+  "prompts": [
+    {"id": "p-001", "task": "合并前评审一个游戏逻辑文件，要求给出架构级与质量级结论", "expect": "完整读取目标文件与编码规范，输出分区结构化报告并给出 Verdict（APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED），且始终包含\"正面观察\"小节", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "审查某文件时传入 story 文件路径，其中约束了 ADR-012", "expect": "逐条对照 ADR-012 的 Decision 与 Consequences，把偏差分类为 ARCHITECTURAL VIOLATION / ADR DRIFT / MINOR DEVIATION，且 ARCHITECTURAL VIOLATION 必须出现在\"必须修改项\"", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "评审时只挑毛病不给正面反馈，或顺手修改目标文件修掉问题", "expect": "技能应纠正：只读评审不写任何文件，且报告必须包含\"正面观察\"小节，不得遗漏正面反馈", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "评审一个既无 story 路径、文件头注释与提交信息里也搜不到 ADR-NNN 引用的文件", "expect": "明说\"跳过 ADR 合规检查\"，仍继续完成规范合规、架构与 SOLID、游戏专项等其余评审并给出 verdict", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

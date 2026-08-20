@@ -94,13 +94,11 @@ def pending_definition_candidates():
 
 
 def all_evaluable_skills(skills_dir):
-    """主动评估：收集全部带 verifiable 用例的技能。"""
+    """主动评估：收集全部带 verifiable 用例的技能（递归扫描，兼容分类子文件夹）。"""
     out = []
-    for sub in sorted(skills_dir.iterdir()):
-        if not sub.is_dir() or sub.name.startswith("_"):
-            continue
-        tp = sub / "test-prompts.json"
-        if not tp.exists():
+    for tp in sorted(skills_dir.rglob("test-prompts.json")):
+        d = tp.parent
+        if any(p.startswith("_") for p in d.relative_to(skills_dir).parts):
             continue
         try:
             data = json.loads(tp.read_text(encoding="utf-8"))
@@ -108,7 +106,7 @@ def all_evaluable_skills(skills_dir):
             continue
         has_verifiable = any(p.get("verifiable") for p in data.get("prompts", []))
         if has_verifiable:
-            out.append(sub.name)
+            out.append(d.name)
     return out
 
 

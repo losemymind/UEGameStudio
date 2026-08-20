@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "sprint-status",
+  "description": "验证 sprint 进度快照的只读性、燃尽评估阈值、停滞检测与缺失数据时的停止行为。",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "用户问当前 sprint 进度怎么样，给定 sprint 计划与 sprint-status.yaml。",
+      "expect": "输出 ≤50 行的进度快照，含状态表（必需）、需关注表、燃尽评估、风险中的 Must-Have、新风险与最多一条建议，且只读不修改任何文件。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "某进行中故事距 Last Updated 已超过 4 天。",
+      "expect": "将该故事标记为 STALE，并把燃尽裁定至少升级为 At Risk。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "用户要求直接修改 sprint 计划或故事状态，或提出范围裁剪建议。",
+      "expect": "技能必须拒绝：不改计划、不改状态、不做范围裁剪，并提示范围裁剪属于 sprint-plan update 的职责。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "sprint 目录不存在或为空时请求进度快照。",
+      "expect": "提示先跑 sprint-plan new 并停止，不臆造状态数据。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

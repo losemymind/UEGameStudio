@@ -2,6 +2,23 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 补齐评测集与防退化机制（成品包 0.3.0→0.4.0 + 框架 0.3.9→0.3.10）
+
+验证「提取/总结/蒸馏的 agents 与 skills 是否符合最高要求」发现 9 项缺口，本次全部补齐：
+
+- **72 个技能全部补 `test-prompts.json`**：每个 4 用例（success×2/failure/boundary，p-001/p-003 为 heldout 棘轮计分集、verifiable=true），L0 覆盖率 0.53–0.88（均值 ~0.73）。此前 0.3.0 重构重建 72 技能时评测集丢失，现恢复「可验证」能力。
+- **72 个技能全部补三大防退化机制**（对齐 DISTILLED-REFERENCE §4.1）：反合理化表（借口→反驳）、Red Flags（违规信号）、Verification（证据化验证门），追加到各 SKILL.md 末尾，不改 frontmatter/正文。
+- **版本锚定基础**：`UEGameStudio/docs/engine-reference/unreal/VERSION.md`（锚定 UE 5.7 + 知识截止 2025-05 + 知识缺口 5.4–5.7），解决 5 个 engine/unreal agent「版本纪律」引用悬空。
+- **10 条路径作用域编码规则**：`UEGameStudio/rules/`（ue-gameplay/engine/ai/network/ui/design-docs/shader/test-standards/prototype/data-files）。
+- **框架脚本递归扫描**：`validate-skill.py` / `evaluate-skill.py` / `audit-skill.py` / `ratchet-gate.py` / `report-metrics.py` 改为递归收集 SKILL.md，兼容技能分类子文件夹（展平安装不再必需）；顺带修复 `audit-skill.py` 的 `rm\s+` 正则误报（负向后顾，排除 "Platform" 等英文单词尾 rm）。
+- **仓库根 `VERSION`** 补齐（与 `SEA/VERSION` 一致），修复 `framework-version.py --check` 失败。
+- **evolutions.json** 登记 72 条 CAPTURED（solidified，含 L0 基线分），技能谱系可追踪、可棘轮。
+- **baselines.json** 登记 39 个 agent 结构基线（frontmatter + 11 核心小节完整度 = 1.0）。
+- **references/README.md** 修正过时技能引用（ue-game-spec 等旧名 → 现行 design-system/code-review 等）。
+- **方法**：10 个 general subagent 并行生成（按分类分组），主 agent 亲自验收（validate/evaluate/抽查三节与用例内容非套话）。
+- **版本**：框架 0.3.9→0.3.10（补丁，脚本递归）；成品包 0.3.0→0.4.0（次版本，补齐评测集与机制）。
+- **验证**：validate-skill 72 技能 + 72 evolutions 通过；validate-agent-improvements 通过；scan-secrets 0 检出。
+
 ## 2026-08-20 — 成品包重构：按 CCGS 框架分类重建（v0.2.0→0.3.0）
 
 用户纠正：之前按"全 UE 专属"定位的 agents 分类不合适，CCGS Skill Testing Framework 的「职能层级 + 引擎专属分离」分类方式与通用性更好。本次[BREAKING]重构：

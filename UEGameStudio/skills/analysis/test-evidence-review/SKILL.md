@@ -52,3 +52,21 @@ description: 评审测试文件与人工证据文档的质量，超越存在性�
 - 动手修改测试文件而非报告
 - 把偏薄断言吹毛求疵成 BLOCKING
 - 未经确认直接写报告文件
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「测试文件都在，就是够了的」 | 存在性只是 smoke-check，必须评审断言覆盖/边界/命名 |
+| 「断言偏薄，直接判 BLOCKING 严一点没错」 | 偏薄是 ADVISORY 范畴，吹毛求疵成 BLOCKING 违反约束 |
+| 「顺手把测试改对更快」 | 本技能只报告不修改，改动需走正常流程 |
+
+## Red Flags（违规信号）
+- 只列测试文件存在与否，无质量结论
+- verdict 未区分 ADEQUATE/INCOMPLETE/MISSING 或未区分 BLOCKING/ADVISORY
+- 证据日期早于最后一次大改却未标 POTENTIALLY STALE
+
+## Verification（证据化验证门）
+- [ ] 每条 story 有 Type 与 verdict（ADEQUATE/INCOMPLETE/MISSING），整体取最差
+- [ ] Logic/Integration 已评审断言覆盖、边界覆盖、命名（test_[场景]_[预期结果]）、公式可追溯
+- [ ] Visual/Feel/UI 已核对三签、截图路径引用且存在、日期覆盖
+- [ ] 0 断言判 BLOCKING，1–2 断言标偏薄而非 BLOCKING

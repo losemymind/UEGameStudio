@@ -46,3 +46,25 @@ description: 快速查看 sprint 进度快照，产出燃尽评估与新风险�
 - 提出范围裁剪建议（那是 sprint-plan update 的职责）
 - 忽略 sprint-status.yaml 而重复扫描 markdown
 - 输出冗长报告而非快照
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「顺手帮用户把阻塞的故事重新排一下」 | 本技能是只读快照，改计划/状态是 sprint-plan update 的职责，越权改动会污染真实状态。 |
+| 「状态表太长，截断几行不影响」 | 约束明确不截断状态表，截断会掩盖阻塞或未开始项，导致误判进度。 |
+| 「markdown 里状态挺全，不用读 sprint-status.yaml」 | sprint-status.yaml 是权威来源，跳过它会漏掉最新状态，回退 markdown 必须附警告。 |
+| 「给三条建议更周全」 | 约束要求最多一条具体建议，多给会退化成意见清单，失去快照的轻量性。 |
+
+## Red Flags（违规信号）
+- 对 sprint 计划文件或故事状态产生任何写操作
+- 输出中出现范围裁剪建议（那是 sprint-plan update 的职责）
+- 未优先读取 sprint-status.yaml 且未附回退警告
+- 输出超过 50 行或截断了状态表
+- 停滞故事（>4 天）未被标记 STALE 或燃尽未升级 At Risk
+
+## Verification（证据化验证门）
+- [ ] 输出 ≤50 行且含状态表、需关注表、燃尽评估、风险中的 Must-Have、新风险、≤1 条建议（逐节检查）
+- [ ] 已确认 sprint-status.yaml 被优先读取；若回退 markdown 扫描，输出中存在相应警告
+- [ ] 停滞故事已标 STALE 且燃尽裁定至少 At Risk（对比 Last Updated 时间差）
+- [ ] 全程无任何文件写入（检查 sprint 文件与状态文件的 mtime 未变）
+

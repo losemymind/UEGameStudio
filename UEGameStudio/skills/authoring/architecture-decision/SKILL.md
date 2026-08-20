@@ -55,3 +55,22 @@ description: 创建架构决策记录（ADR），记录一项重大技术决策�
 - 用开放式提问让用户从零设计，而非先推导假设再 confirm/adjust
 - 提案与既有 ADR 立场矛盾却照写不误
 - 同会话内跑 `/architecture-review`（会污染评审独立性）
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「引擎版本我知道，不用读 VERSION.md 了」 | 训练数据有 cutoff，post-cutoff 新增/废弃 API 只能靠引擎参考库核实，凭记忆会写出已废弃接口 |
+| 「提案和注册表立场冲突，但用户没要求检查，先照写」 | 注册表是 BLOCKING 门，冲突不解决就写会把矛盾固化进文档，后续 ADR 互相打架 |
+| 「顺手把注册表既有条目也改了，更整洁」 | 既有条目是不可变立场，只能新条目 + 旧条目标 `superseded_by`，直接改会丢失决策历史 |
+
+## Red Flags（违规信号）
+- ADR 里出现未读取引擎版本就引用的 API，且无 post-cutoff 风险标注
+- 用开放式提问让用户从零设计，而非先推导假设再 confirm/adjust
+- 未经批准就改 `docs/registry/architecture.yaml` 的既有条目
+- 同一会话内直接运行 `/architecture-review`（污染评审独立性）
+
+## Verification（证据化验证门）
+- [ ] 引擎版本已从 `docs/engine-reference/[engine]/VERSION.md` 读得，并在 ADR 中体现对应版本与风险等级
+- [ ] 注册表立场冲突已在写入前抛出并由用户明确选择（对齐/取代/说明例外），有对话记录
+- [ ] 新 ADR 状态字段 = Proposed，未向用户询问状态
+- [ ] 注册表更新（若有）经 AskUserQuestion 批准，且只含新增条目，无既有条目被改动

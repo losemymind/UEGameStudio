@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "smoke-check",
+  "description": "验证冒烟门是否不误判 NOT RUN、不自动修复、正确产出 PASS/FAIL 门结论",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "冒烟检查发现自动化测试失败，或 Batch 1/2 手动核验失败。",
+      "expect": "结论判定 FAIL，失败的构建不得进入 QA；经确认写入 production/qa/smoke-[date].md，并给出修复重跑指引。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "引擎二进制不在 PATH，自动化测试无法运行。",
+      "expect": "记录为 NOT RUN，不自动判 FAIL，请开发者手动确认；未确认的 NOT RUN 计入 PASS WITH WARNINGS。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "agent 自动去改源码/测试文件来「修复」冒烟失败。",
+      "expect": "技能应拒绝：永不自动修复失败，只报告并说明需解决什么，不编辑源码/测试文件。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "使用 quick 模式做快速复检。",
+      "expect": "跳过覆盖检查阶段与 Batch 3 数据完整性/性能核验，只跑自动化测试与关键批次。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

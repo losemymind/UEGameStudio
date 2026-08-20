@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "sprint-plan",
+  "description": "验证 sprint 计划的生成/更新/状态三模式、20% 产能缓冲、可行性门与 QA 计划门是否按流程执行。",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "为当前里程碑新建一个 sprint，给定里程碑定义、上一 sprint 与已标记就绪的设计特性。",
+      "expect": "生成包含目标、含 20% 缓冲的产能、Must/Should/Nice 任务表、顺延、风险、外部依赖与 DoD 的 sprint 计划；写文件前先过 Producer 可行性门（UNREALISTIC 则砍范围重呈）并经用户批准。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "更新一个已有 sprint 计划，用户要求增删任务并重估。",
+      "expect": "读取最近计划、展示当前状态、用决策点收集增删/重排/重估、重跑可行性门后写回，且不重置进行中/已完成故事状态。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "新建 sprint 时发现不存在 QA 计划，但直接生成并写入 sprint 计划文件。",
+      "expect": "技能不得静默略过；必须显式上报缺少 QA 计划，并让用户选择现在跑 /qa-plan 或跳过（跳过须在计划中加警告块）。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "以 status 模式查看当前 sprint 状态，而非新建或更新。",
+      "expect": "仅生成只读进度报告（完成/进行中/未开始/阻塞 + 燃尽评估 + 新风险），不写任何 sprint 计划或状态文件。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

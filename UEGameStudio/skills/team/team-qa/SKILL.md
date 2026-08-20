@@ -56,3 +56,22 @@ description: 编排 QA 团队走完整测试周期，从 QA 策略、测试计�
 - 忽略既有冒烟报告重复访谈用户
 - 未分类故事类型导致自动化/手动范围不清
 - 有 S1/S2 bug 却判 APPROVED
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「冒烟 FAIL 但时间紧，边测边等修复」 | 冒烟 FAIL 阻断后续阶段，须修完重跑 smoke-check 再重跑 team-qa |
+| 「有 S1/S2 bug 也能先 APPROVED」 | 有 S1/S2 未解决即 NOT APPROVED，签署报告不得放宽 |
+| 「忽略既有冒烟报告重新访谈用户」 | 先查既有冒烟报告复用结论，重复访谈浪费用户时间 |
+
+## Red Flags（违规信号）
+- 冒烟 FAIL 后仍进入测试计划生成
+- 故事未分类导致自动化/手动范围不清
+- 有 S1/S2 bug 却判 APPROVED
+- 写文件前未请求用户批准
+
+## Verification（证据化验证门）
+- [ ] QA 策略表含每个故事的 Logic/Integration/Visual-Feel/UI/Config-Data 分类及自动化/手动标注
+- [ ] 冒烟结果来自既有冒烟报告或 smoke-check 重跑（附来源），非 UNKNOWN
+- [ ] 签署报告裁定为 APPROVED / APPROVED WITH CONDITIONS / NOT APPROVED 且附 bug 清单
+- [ ] 完成前已静默更新 session-state

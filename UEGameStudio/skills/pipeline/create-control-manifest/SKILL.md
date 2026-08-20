@@ -47,3 +47,22 @@ description: 架构完成后，从所有已接受 ADR、技术偏好与引擎参
 - 从 Proposed（未接受）ADR 提取规则当成强制要求
 - 用自己的话改写 ADR 的 must/should 而改变原意
 - 不区分层，把所有规则混在一张表里
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「这条规则是行业惯例，直接加进去更保险」 | 每条规则必须可追溯到某个 ADR/技术偏好/引擎文档，不添加无来源的规则，否则清单失去可审计性。 |
+| 「Proposed 的 ADR 内容已经很成熟，先当强制要求提出来」 | 只读 Status: Accepted 的 ADR，Proposed 尚未接受，提取为强制要求会误导程序员。 |
+| 「must/should 换个说法更顺口，意思差不多」 | 照 ADR 原样提取，不意译改变含义；改写会悄悄改变规则的强制度。 |
+
+## Red Flags（违规信号）
+- 清单中出现无法对应任何 ADR 编号/技术偏好/引擎文档来源的规则。
+- 禁用 API 未全部来自 deprecated-apis.md。
+- 规则被改写后与 ADR 原 must/should 语义不一致（强制度被降低）。
+- 清单中混入了 Proposed/Deprecated/Superseded ADR 的规则。
+
+## Verification（证据化验证门）
+- [ ] 每条规则都能回溯到 ADR 编号/技术偏好/引擎文档，来源可逐一举证。
+- [ ] Manifest Version 等于生成日期，可供 story 内嵌用于检测过期规则。
+- [ ] 写前已展示按层统计的 required/forbidden/guardrail 数量并征得同意。
+- [ ] 所有禁用 API 均可追溯到 deprecated-apis.md，无凭空添加。

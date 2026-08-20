@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "retrospective",
+  "description": "验证复盘的数据支撑洞察、行动项 3-5 条上限、不追责原则与无数据时的停止行为。",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "对刚结束的 sprint-N 做复盘，给定 sprint 计划、sprint-status.yaml 与 git log。",
+      "expect": "输出含指标表、速率趋势、做得好/做得差（数据支撑）、阻塞表、估算准确度、顺延分析、技术债状态、上轮行动项跟进、下轮行动项、流程改进与总结；行动项 3-5 条且每条有负责人与截止。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "存在上一轮复盘文档，本轮复盘需要判断上轮行动项是否落地、问题是否复发。",
+      "expect": "读取既有复盘并输出上轮行动项跟进结果（是否落地）、问题是否复发与速率趋势对比。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "复盘结论点名追责某个具体开发人员（如归因于个人失误）。",
+      "expect": "必须归因系统/流程而非追责个人，聚焦可衡量的系统性问题。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "无任何 sprint/milestone 数据可用时请求复盘。",
+      "expect": "让用户选择手动提供数据或停止，不得臆造复盘内容。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

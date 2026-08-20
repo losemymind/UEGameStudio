@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "quick-design",
+  "description": "验证轻量设计规格流程：改动分类、上下文扫描、按类别起草、批准归档与过大改动重定向。",
+  "prompts": [
+    {"id": "p-001", "task": "对一个现有系统的数值做调优（Tuning）改动，写 quick spec", "expect": "呈现单表（参数/旧值/新值/理由）+ 调优旋钮映射 + 验收标准，并查询 assets/data/ 数据文件而非代码", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "新增一个小新系统（New Small System），约一周内独立功能", "expect": "按精简 GDD（Overview/Core Rules/Tuning Knobs/Acceptance Criteria）起草，且所有数值放 assets/data/*.json，不得硬编码", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "一个超过一周工作量、带显著跨系统依赖的功能改动，仍要求写 quick spec", "expect": "技能应判定改动过大并 REDIRECTED 到 /design-system，而非硬塞进 quick spec", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "上下文扫描时发现 systems-index.md 缺失", "expect": "记录跳过依赖层检查，继续流程但不假装依赖已核对", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

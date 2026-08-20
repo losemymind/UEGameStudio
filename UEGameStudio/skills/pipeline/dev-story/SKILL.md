@@ -79,3 +79,22 @@ description: 核心实施技能：读取 story 文件并实现它——加载完
 - 把完整文档内容序列化进 Task prompt（应让 agent 自己读文件）
 - 没有写测试文件就宣布 Logic story 完成
 - 遇到 ADR 与 story 冲突时自己猜一个方向实施
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「文档我都看过了，直接塞进 Task prompt 让子 agent 一次到位」 | brief 只给文件路径与定向阅读指引，让 agent 自己读文件；序列化文档会膨胀上下文并埋下过期内容的坑。 |
+| 「这个 Logic story 逻辑简单，测试后面再补」 | Logic/Integration 测试是 BLOCKING，非可选；每个验收标准至少一个测试函数，没有测试就不得宣布完成。 |
+| 「ADR 和 story 冲突，我挑一个更合理的方向直接实现」 | ADR 是法律，冲突时不默默偏离，必须标记到汇总，让用户裁决。 |
+
+## Red Flags（违规信号）
+- 编排器自己直接写 src/ 源码文件（应由子 agent 完成写入）。
+- story 被派发给路由表之外的角色 agent（如 UI story 给了 engine-programmer）。
+- 未校验 TR 注册表/ADR 存在就派发 agent，或依赖 story 的 Status 非 Complete 仍继续。
+- Logic/Integration story 提交时没有任何测试文件。
+
+## Verification（证据化验证门）
+- [ ] 每个 Logic/Integration story 都有对应测试文件，函数命名符合 test_[场景]_[期望结果]。
+- [ ] 派发的 agent 与主 agent 路由表及引擎专家路由表匹配，可举证。
+- [ ] Manifest 版本比对已执行，不一致时已记录用户选择（按新规则/按旧规则记录 Manifest-Note/停止）。
+- [ ] ADR 冲突与越界偏离已标记到汇总，并在本地测试确认通过后才提醒跑 /story-done。

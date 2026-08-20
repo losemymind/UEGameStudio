@@ -56,3 +56,23 @@ description: 配置项目游戏引擎并锁定版本：在 CLAUDE.md 中钉住�
 - 把 Unreal 5.4 之后的内容当作训练数据内知识，未标注 HIGH RISK。
 - 未经确认就改 CLAUDE.md 或覆盖已有引擎参考文档。
 - 给 GDScript 项目错误标注"C++ via GDExtension"为项目语言。
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「5.5 和 5.4 差不多，我按已知知识写就行，不用联网」 | 规则要求超出训练数据基线必须标 HIGH RISK 并联网填充参考文档，臆造会产生过期 API 误导。 |
+| 「用户没明确说版本，我猜个最新稳定版」 | 约束「绝不猜引擎版本，必须联网核实或用户确认」。 |
+| 「我直接把 CLAUDE.md 和参考文档改了，效率高」 | 约束「写前必须展示并征得同意，不覆盖已有文档」。 |
+| 「GDScript 项目顺手标注 C++ via GDExtension 更全面」 | 约束明确 Language 字段只写「GDScript」，反例已禁止此附加。 |
+
+## Red Flags（违规信号）
+- 未 WebSearch / 用户确认即写入具体引擎版本号。
+- 把 Unreal 5.4 之后的内容当训练数据内知识而未标 HIGH RISK。
+- 未经同意修改 CLAUDE.md 或覆盖已有引擎参考文档。
+- 给 GDScript 项目标注「C++ via GDExtension」为项目语言。
+
+## Verification（证据化验证门）
+- [ ] 版本来源有据（WebSearch 结果或用户确认），transcript 中有核实动作。
+- [ ] 超出基线版本被标注 HIGH/MEDIUM RISK，且对应参考文档已生成（迁移指南/破坏性变更/废弃 API）。
+- [ ] 写 CLAUDE.md/参考文档前有「展示 + 征得同意」记录。
+- [ ] 技术栈 Language 字段与所选引擎一致（GDScript 项目不含 C++ via GDExtension）。

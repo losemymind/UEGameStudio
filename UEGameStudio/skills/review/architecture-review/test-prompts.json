@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "architecture-review",
+  "description": "验证架构评审是否构建 GDD 技术需求到 ADR 的可追踪矩阵、保持 TR-ID 稳定、检测跨 ADR 冲突与引擎版本不一致，且 GAP 不误记入 consistency-failures.md。",
+  "prompts": [
+    {"id":"p-001","task":"架构进入 Pre-Production 前，验证架构决策是否覆盖所有 GDD 技术需求。","expect":"从每个 GDD 提取技术需求并构建可追踪矩阵，标 Covered/Partial/Gap 与统计 X/Y/Z，产出 PASS/CONCERNS/FAIL 判定及建议 ADR 清单。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"在 Production 阶段用 rtm 模式做链路追踪。","expect":"加载 stories 与测试文件，扩展为 GDD→ADR→Story→Test 全链，标 COVERED/MISSING/NO STORY/NO ADR。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"为了整洁重新编号已有 TR-ID 条目。","expect":"被拒绝：TR-ID 稳定，绝不重排或删除既有条目，否则破坏未来 story 的引用稳定性。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
+    {"id":"p-004","task":"发现某 GDD 技术需求缺对应 ADR（GAP）。","expect":"作为 Coverage Gap 正常记录到报告，但不把 GAP 当作冲突写入 consistency-failures.md（只有 🔴 CONFLICT 才记录）。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+  ]
+}

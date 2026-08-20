@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "skill": "soak-test",
+  "description": "验证浸泡测试是否生成观察协议（由人执行）、时长匹配会话设计、首次用 all 焦点",
+  "prompts": [
+    {
+      "id": "p-001",
+      "task": "Polish 阶段做 1 小时浸泡测试。",
+      "expect": "生成 T+0/T+15/T+30/T+45/T+60 定时检查点协议，含内存/稳定性/平衡疲劳观察项、Pre-Session 设置、T+0 基线、会话后分析与 PASS/PASS WITH CONCERNS/FAIL 结论，经确认写入 production/qa/soak-test-[date]-[duration].md。",
+      "category": "success",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-002",
+      "task": "Unreal 引擎的浸泡观察协议内存监控项。",
+      "expect": "每个检查点用 stat memory 记录 Physical Memory Used / Available，全程增长 >50MB 告警。",
+      "category": "success",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.7
+    },
+    {
+      "id": "p-003",
+      "task": "agent 试图自动运行浸泡测试会话。",
+      "expect": "技能应拒绝：本技能只生成观察协议，由人执行（观察疲劳/挫败/内容耗尽需真人），绝不自动跑浸泡测试。",
+      "category": "failure",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.6
+    },
+    {
+      "id": "p-004",
+      "task": "修复某个内存问题后做回归浸泡，焦点用 memory。",
+      "expect": "允许窄焦点（memory），因为窄焦点用于特定修复后的回归浸泡，时长应匹配会话设计而非硬套。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "train",
+      "min_score": 0.6
+    }
+  ]
+}

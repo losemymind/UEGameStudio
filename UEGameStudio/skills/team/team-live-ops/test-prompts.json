@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "team-live-ops",
+  "description": "验证线上运营编排是否走完赛季规划全流程、是否强制伦理审查与无 pay-to-win、是否阻止伦理违规或缺失仍判 COMPLETE",
+  "prompts": [
+    {"id": "p-001", "task": "规划一个完整赛季或限时活动内容更新", "expect": "走完范围→叙事→经济→分析→内容写作→沟通计划→评审签署七阶段，产出赛季设计文档、分析计划与沟通日历，签署摘要仅无未解决伦理违规时判 COMPLETE", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "设计高级战令奖励轨道并要求验证无 pay-to-win", "expect": "economy-designer 读 economy-rules，验证高级轨道无 pay-to-win；伦理审查对照 design/live-ops/ethics-policy.md 逐项核对", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-003", "task": "伦理政策缺失或发现伦理违规，仍要求判 COMPLETE", "expect": "拒绝判 COMPLETE，缺失须标记伦理审查已跳过、违规须标记 ETHICS FLAG 并阻断，让用户选择修订/覆盖/取消", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "design/live-ops/ethics-policy.md 不存在", "expect": "标记伦理审查已跳过，并明确告知用户该状态，不静默当作已通过", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}

@@ -52,3 +52,23 @@ description: 测试框架 + CI 脚手架：按引擎生成 tests/ 目录结构�
 - 引擎未配置就猜测引擎——会生成错误的运行器与 CI 命令。
 - 跳过 CI 工作流只建目录——测试不会在 push 时自动跑。
 - 忘了 Unreal 的 headless 命令细节（`-nullrhi`/`-ExecCmds`/self-hosted runner 装 UE Editor）——UE 无法在标准 ubuntu runner 上跑编辑器测试。
+
+## 反合理化表（借口 → 反驳）
+| 借口（会怎么说） | 反驳（为什么不对） |
+|---|---|
+| 「那个测试文件内容不对，我直接覆盖重写」 | 约束「永不覆盖已有测试文件，只创建缺失的」，可能覆盖手写定制。 |
+| 「没配引擎我先按最流行的猜一个生成」 | 约束「引擎检测不可协商，未配置就停止，不猜测」。 |
+| 「只建目录就行，CI 工作流后面再补」 | 反例「跳过 CI 只建目录」，测试不会在 push 自动跑，门控不通过。 |
+| 「Unreal headless 命令我凭印象写」 | 反例点明必须记准 -nullrhi/-ExecCmds/self-hosted runner 装 UE Editor，否则 UE 无法在 ubuntu runner 跑。 |
+
+## Red Flags（违规信号）
+- 覆盖/改写任何已存在的测试文件或工作流。
+- 引擎未配置时猜测引擎并生成运行器与 CI 命令。
+- 未建 CI 工作流（.github/workflows/tests.yml）只建目录。
+- 创建文件前未获批准。
+
+## Verification（证据化验证门）
+- [ ] 引擎取自技术偏好的 Engine: 字段，未配置时停止并有 /setup-engine 提示。
+- [ ] 生成的 Unreal 命令含 -nullrhi、-ExecCmds 与 self-hosted runner 说明（UE_EDITOR_PATH）。
+- [ ] tests/ 目录含 unit/integration/smoke/evidence/README，门控要求（tests/ 目录、CI 工作流、至少一个示例测试文件）满足。
+- [ ] 已有文件均未改动（无覆盖动作），创建前有批准记录。
