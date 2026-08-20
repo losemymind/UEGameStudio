@@ -348,7 +348,7 @@
       "skill": "changelog",
       "kind": "CAPTURED",
       "signal": "三仓库蒸馏（DISTILLED-REFERENCE.md / DISTILLED-CATALOG.md）：CCGS 全流程 + agent-skills 写作规范 + agency-agents 内容",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
+      "proposal": "UE 成品技能；2026-08-20 吸收 patch-notes（玩家向补丁说明）为 --player-facing 双模式；补齐 test-prompts.json（6 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
       "status": "solidified",
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
@@ -364,17 +364,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.699
-    },
-    {
-      "id": "evo-patch-notes-captured",
-      "skill": "patch-notes",
-      "kind": "CAPTURED",
-      "signal": "三仓库蒸馏（DISTILLED-REFERENCE.md / DISTILLED-CATALOG.md）：CCGS 全流程 + agent-skills 写作规范 + agency-agents 内容",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.771
     },
     {
       "id": "evo-retrospective-captured",
@@ -597,17 +586,6 @@
       "score_after": 0.785
     },
     {
-      "id": "evo-launch-checklist-captured",
-      "skill": "launch-checklist",
-      "kind": "CAPTURED",
-      "signal": "三仓库蒸馏（DISTILLED-REFERENCE.md / DISTILLED-CATALOG.md）：CCGS 全流程 + agent-skills 写作规范 + agency-agents 内容",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.782
-    },
-    {
       "id": "evo-localize-captured",
       "skill": "localize",
       "kind": "CAPTURED",
@@ -689,7 +667,7 @@
       "skill": "release-checklist",
       "kind": "CAPTURED",
       "signal": "三仓库蒸馏（DISTILLED-REFERENCE.md / DISTILLED-CATALOG.md）：CCGS 全流程 + agent-skills 写作规范 + agency-agents 内容",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
+      "proposal": "UE 成品技能；2026-08-20 吸收 launch-checklist（最终上线门）为 --level launch 双模式；补齐 test-prompts.json（5 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
       "status": "solidified",
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",

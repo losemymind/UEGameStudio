@@ -27,7 +27,7 @@
 | `qa/` | 3 | qa-tester · security-engineer · accessibility-specialist |
 | `engine/unreal/` | 5 | unreal-specialist · ue-gas-specialist · ue-blueprint-specialist · ue-replication-specialist · ue-umg-specialist（UE 引擎专属） |
 
-### Skills（72 个，9 类）
+### Skills（70 个，9 类）
 
 | 分类 | 数量 | 用途 |
 |---|---|---|
@@ -38,8 +38,8 @@
 | `authoring/` | 7 | architecture-decision · design-system · quick-design · ux-design · ux-review · art-bible · create-architecture |
 | `analysis/` | 12 | consistency-check · code-review · balance-check · asset-audit · content-audit · tech-debt · scope-check · estimate · perf-profile · security-audit · test-evidence-review · test-flakiness |
 | `team/` | 9 | team-ui · team-combat · team-narrative · team-audio · team-level · team-polish · team-release · team-live-ops · team-qa |
-| `sprint/` | 6 | sprint-plan · sprint-status · milestone-review · retrospective · changelog · patch-notes |
-| `utility/` | 26 | start · help · setup-engine · skill-test · skill-improve · test-setup · test-helpers · smoke-check · soak-test · release-checklist · launch-checklist · 等 |
+| `sprint/` | 5 | sprint-plan · sprint-status · milestone-review · retrospective · changelog（含玩家向补丁说明） |
+| `utility/` | 25 | start · help · setup-engine · skill-test · skill-improve · test-setup · test-helpers · smoke-check · soak-test · release-checklist（含上线级） · 等 |
 
 > **目录说明**：`agents/`、`skills/` 内采用分类子文件夹。安装脚本会**展平复制**到目标目录（见 `INSTALL.md`），opencode 加载器递归扫描、SEA 校验均兼容。
 
@@ -74,10 +74,10 @@ UEGameStudio/
 │   ├── operations/   #   运营/发布（7）
 │   ├── qa/           #   质量与安全（3）
 │   └── engine/unreal/ #  UE 引擎专属（5）
-├── skills/           # 72 个技能（按生命周期分类，每个含 SKILL.md + test-prompts.json）
+├── skills/           # 70 个技能（按生命周期分类，每个含 SKILL.md + test-prompts.json）
 │   ├── gate/ review/ readiness/ pipeline/ authoring/
 │   ├── analysis/ team/ sprint/ utility/
-│   └── _evolutions/  # 技能演进注册表（72 条 CAPTURED 谱系 + L0 基线）
+│   └── _evolutions/  # 技能演进注册表（70 条 CAPTURED 谱系 + L0 基线）
 ├── rules/            # 10 条路径作用域编码规则（ue-*）
 ├── docs/             # engine-reference/unreal/VERSION.md 版本锚定
 └── references/       # 共享清单

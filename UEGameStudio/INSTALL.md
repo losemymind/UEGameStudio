@@ -7,7 +7,7 @@
 | 组件 | 说明 | 安装到 |
 |---|---|---|
 | `agents/`（39 个） | 按职能层级分类的 subagent（directors/leads/specialists/operations/qa/engine-unreal） | 全局 agents 目录 或 `.opencode/agents/` |
-| `skills/`（72 个） | 按生命周期分类的技能（gate/review/pipeline/authoring/analysis/team/sprint/utility） | 全局 skills 目录 或 `.opencode/skills/` |
+| `skills/`（70 个） | 按生命周期分类的技能（gate/review/pipeline/authoring/analysis/team/sprint/utility） | 全局 skills 目录 或 `.opencode/skills/` |
 | `references/` | 共享清单（含 `project-paths.md` 路径约定，被 22 个技能/agent 引用） | 随 skills 复制到目标项目并保持相对位置（建议 `references/` 与 `skills/` 同层，技能内以 `references/project-paths.md` 相对引用） |
 
 > **目标目录**：

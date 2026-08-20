@@ -2,6 +2,15 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 重叠技能蒸馏合并（72 → 70）
+
+对强重叠技能执行"蒸馏合并为一个，删除多余"：
+
+- **`changelog` 吸收 `patch-notes`**（删除 patch-notes）：统一为变更文档技能，双模式——默认内部版（技术向）+ `--player-facing` 玩家向补丁说明（原 patch-notes 流程：语气指南/翻译/脱敏/平衡前后值/BLOCKED 门）。评测集融合为 6 用例覆盖两模式。引用更新：day-one-patch 的 `/patch-notes` → `/changelog --player-facing`；community-manager 保留产物路径 `production/releases/[version]/patch-notes.md`（文件名不变）。
+- **`release-checklist` 吸收 `launch-checklist`**（删除 launch-checklist）：统一为发布/上线清单技能，双模式——默认版本级（构建/认证/商店/质量，按平台）+ `--level launch` 最终上线级（7 部门含营销/社区/法律/运营 + 调试/占位/硬编码扫描 + READY/NOT READY/CONDITIONAL）。评测集融合为 5 用例。产物文件 `launch-checklist-[date].md` 保留为上线级保存名。
+- **数量**：72 → 70 技能；README/INSTALL/evolutions（72→70 条目）同步；被合并技能 evolutions 孤儿条目删除，保留条目 proposal 标注合并。
+- **验证**：validate-skill 70 OK；audit-skill 70 OK；report-metrics 70 技能 70 带评测集均分 0.731；合并技能 L0 changelog=0.682 / release-checklist=0.774。
+
 ## 2026-08-20 — Agents/Skills 职责边界与功能重叠梳理（P0-P3 全修）
 
 全库核查 39 agents + 72 skills 的职责边界与功能相似性，发现并处理：
