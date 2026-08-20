@@ -2,6 +2,17 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-20 — 蒸馏合并 ME 工作区 3 个 agent（成品 agents 39→40）
+
+对 `E:\GitHub\ME\.opencode\agents` 的 10 个 agent 评估后，蒸馏合并 3 个（其余 7 个与成品包重复不蒸馏）：
+
+- **`image-captioner`（新建，agents/utility/）**：图片→结构化文字描述（主体/空间/视觉/动作/风格），服务资产规格/关卡白模/UI 原型/参考图。去掉 ME 版的模型绑定（ollama/qwen3-vl）与内网 IP，通用化为任意视觉模型。
+- **`unreal-programming-expert` 的 MCP 工具集开发** → 并入 `engine/unreal/unreal-specialist` 新增「MCP / AI 工具集开发」小节（UFUNCTION(meta=AICallable)、MCP 前缀、插件级自包含、移植分级、构建验证）。
+- **`unreal-technical-artist` 的资产标准** → 并入 `specialists/technical-artist`（BC7/ASTC6x6/BC5 压缩、LOD0-3、DCC 预览禁用、Material Instance 变体、Static Switch 排列审计），核心使命与审查清单同步。
+- **不蒸馏的 7 个**：game-designer/level-designer/narrative-designer/economy-designer/game-audio-engineer/unreal-multiplayer-architect 与成品包重复；unreal-world-builder 与 unreal-specialist 已有内容重叠（仅参考）。
+- **README/INSTALL**：agents 39→40（新增 utility 类）；目录树加 `utility/`。
+- **验证**：3 个 agent frontmatter/结构 OK；无环境绑定残留（E:\ 路径/IP/ollama/model 全清）；agent 总数 40；validate-skill 70 OK；audit-skill 70 OK；validate-memory OK。
+
 ## 2026-08-20 — 成品目录自包含：移除全部上级目录引用（DISTILLED-* / SEA / 相对上级路径）
 
 用户要求：成品目录（`UEGameStudio/UEGameStudio/`）只安装自身，不得引用上级工程目录文件。

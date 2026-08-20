@@ -16,7 +16,7 @@
 
 ## 资产清单
 
-### Agents（39 个，6 类）
+### Agents（40 个，7 类）
 
 | 分类 | 数量 | 内容 |
 |---|---|---|
@@ -26,6 +26,7 @@
 | `operations/` | 7 | devops-engineer · release-manager · live-ops-designer · community-manager · analytics-engineer · economy-designer · localization-lead |
 | `qa/` | 3 | qa-tester · security-engineer · accessibility-specialist |
 | `engine/unreal/` | 5 | unreal-specialist · ue-gas-specialist · ue-blueprint-specialist · ue-replication-specialist · ue-umg-specialist（UE 引擎专属） |
+| `utility/` | 1 | image-captioner（图片→结构化文字，服务资产/关卡/UX 规格） |
 
 ### Skills（70 个，9 类）
 
@@ -67,13 +68,14 @@ UEGameStudio/
 ├── README.md         # 本文件
 ├── INSTALL.md        # 安装指南（全局 / 项目，含展平安装脚本）
 ├── VERSION           # 成品版本号
-├── agents/           # 39 个 agent（按职能层级分类）
+├── agents/           # 40 个 agent（按职能层级分类）
 │   ├── directors/    #   Tier1 决策层（4）
 │   ├── leads/        #   Tier2 部门主管（7）
 │   ├── specialists/  #   核心专家（13）
 │   ├── operations/   #   运营/发布（7）
 │   ├── qa/           #   质量与安全（3）
-│   └── engine/unreal/ #  UE 引擎专属（5）
+│   ├── engine/unreal/ #  UE 引擎专属（5）
+│   └── utility/      #   工具类（1：image-captioner）
 ├── skills/           # 70 个技能（按生命周期分类，每个含 SKILL.md + test-prompts.json）
 │   ├── gate/ review/ readiness/ pipeline/ authoring/
 │   ├── analysis/ team/ sprint/ utility/
