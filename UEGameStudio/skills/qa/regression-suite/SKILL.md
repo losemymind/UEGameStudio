@@ -8,6 +8,7 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 确保每个 bug 修复都有能"抓到原始 bug"的测试背书，并让回归套件随游戏演化保持最新，同时检测新增功能是否缺少对应回归覆盖。回归套件不是新的测试类别，而是对 `tests/` 中已存在测试的**精选清单**，共同覆盖游戏关键路径与已知失败点。
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 修复 bug 后（确认写了回归测试或识别缺口）
@@ -22,10 +23,10 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 
 ### 加载上下文
 1. 读既有 `tests/regression-suite.md`（总数、更新日期、STALE/QUARANTINED）。
-2. Glob 测试文件清单（unit/integration/regression）。
+2. 查找测试文件清单（unit/integration/regression）。
 3. `audit` 模式读 systems-index 与各 MVP 系统 GDD 的 Acceptance Criteria / Formulas / Edge Cases；`update` 模式只读当前冲刺已完成的 story。
-4. Glob `production/qa/bugs/*.md` 过滤 `Status: Closed/Fixed` 的 bug。
-5. `evidence` 模式 Glob `production/qa/evidence/` 下证据文档与截图。
+4. 查找 `production/qa/bugs/*.md` 并过滤 `Status: Closed/Fixed` 的 bug。
+5. `evidence` 模式查找 `production/qa/evidence/` 下证据文档与截图。
 
 ### 映射覆盖——关键路径
 1. 对每个 GDD 验收标准判定 COVERED / PARTIAL / MISSING / EXEMPT；公式或状态机相关的 MISSING 提升为 HIGH PRIORITY。
@@ -41,14 +42,14 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 2. 维护 `tests/regression-suite.md`：注册测试表、已知缺口、隔离（QUARANTINED）测试表。
 
 ### 写输出
-1. 经确认写入/更新清单；`update` 追加、`audit` 重写、`report` 不写。
+1. 经确认写入/更新清单；`update` 追加、`audit` 重写、`report` 不写。polish/release 门模式另经批准写 canonical `production/qa/regression-report.md`，引用同一构建的测试运行与 evidence 路径。
 
 ## 测试证据审查（合并自 test-evidence-review）
 
 对 Visual/Feel 和 UI 类 story，测试结果无法通过自动化断言验证，需要审查测试证据来确认测试的真实性。
 
 ### 证据审查流程
-1. **收集证据**：Glob `production/qa/evidence/` 下所有证据文档（`[slug]-evidence.md`）、截图（`*.png`）、录屏（`*.mp4`）、日志（`*.log`）
+1. **收集证据**：查找 `production/qa/evidence/` 下证据文档、截图、录屏与日志
 2. **逐项核对**：
    - **截图对比**：对比 before/after 截图，确认视觉效果符合预期，UI 元素位置/大小/颜色正确，无渲染异常
    - **日志验证**：读取 UE `Saved/Logs/` 中相关日志，确认无 Error/Warning 级别的新增异常，关键事件日志存在且时序正确
@@ -94,7 +95,7 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 
 ## 输入/输出
 - 输入：既有回归套件、测试文件清单、GDD 关键路径、已关闭 bug 清单、证据文档、测试运行日志
-- 输出：状态报告 + `tests/regression-suite.md` 清单 + 证据审查结果 + 偶发失败隔离/修复记录
+- 输出：状态报告 + `tests/regression-suite.md`；阶段门模式输出 `production/qa/regression-report.md` + 证据审查/隔离修复记录
 
 ## 约束
 - 未经明确批准，永不从清单中删除已有回归测试——删掉刻意写的测试本身就是回归风险。
@@ -105,7 +106,10 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 
 ## 反例（不要这样）
 - 删除清单里已有的回归测试——制造新的回归风险。
-- 把"隔离"当成"删除"——偶发失败测试应保留并标记，由 `/test-flakiness` 修复。
+- 把"隔离"当成"删除"——偶发失败测试应保留并标记，由 `regression-suite flakiness` 修复。
+
+## 合并别名契约
+- `test-flakiness` 是 `regression-suite flakiness` 的 legacy alias，不存在独立技能文件；隔离、重复运行、根因、修复和恢复门完全相同。
 - 只修 bug 不补回归测试且不标记缺口——bug 会在未来冲刺静默复发。
 - 未经批准就更新清单文件。
 - 证据审查时只看截图不检查日志，或日志只查 Error 级别忽略关键事件。
@@ -136,6 +140,7 @@ description: 回归套件维护：把测试覆盖映射到 GDD 关键路径、�
 - [ ] 证据审查已逐项核对截图/日志/证据文档，判定 VERIFIED/INSUFFICIENT EVIDENCE/EVIDENCE MISMATCH 有据可查。
 - [ ] 偶发失败测试已记录失败率、根因分类、隔离日期，QUARANTINED 表完整。
 - [ ] 修复后回流测试已连续 10 次 PASS，断言强度未降低。
+- [ ] polish/release 门使用 canonical `production/qa/regression-report.md`，且引用同一构建测试证据。
 
 ## 合并覆盖
 - **test-evidence-review**：测试证据审查工作流（截图对比——before/after 视觉效果、日志验证——UE Saved/Logs Error/Warning 检查与关键事件时序、证据文档交叉验证——PASS 声称与截图/日志一致性），判定 VERIFIED/INSUFFICIENT EVIDENCE/EVIDENCE MISMATCH，约束（截图必须含完整 UI 上下文、日志验证覆盖关键事件、无佐证材料不得判 VERIFIED）

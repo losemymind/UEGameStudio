@@ -6,6 +6,7 @@ description: 全项目审计：扫描目录与工件，识别项目当前开发�
 # 项目阶段检测
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 接手已有项目，需要摸清现状
@@ -15,16 +16,16 @@ description: 全项目审计：扫描目录与工件，识别项目当前开发�
 
 ## 流程
 ### 扫描关键目录
-1. 分析 `design/`（GDD 数、game-concept/pillars/systems-index）、`src/`（源文件数与系统）、`production/`（sprint/里程碑）、`prototypes/`、`docs/architecture/`（ADR 数）、`tests/`（覆盖率粗估）。
+1. 先读取 `docs/workflow-catalog.yaml` 并校验 schema；再分析 `design/`、`Source/`、`Content/`、`production/`、`prototypes/`、`docs/architecture/` 与 `Source/**/Tests/`。
 
 ### 判定项目阶段
-1. 优先读 `production/stage.txt`；缺失则按"从最先进往回"的启发式判定（Concept / Systems Design / Technical Setup / Pre-Production / Production / Polish / Release）。
+1. 优先读 `production/stage.txt`；随后用 catalog 中每阶段的 entry/exit artifacts 与 evidence 校验它。严格执行 `policy.artifact_validation`：路径须命中、内容非空、不是模板/占位符，并覆盖该阶段全部 `evidence_fields`；任一不满足即未完成。缺失时按 catalog `order` 从最先进阶段回溯，给出 canonical ID 和置信度；显式状态与证据矛盾时报告漂移而非覆盖。
 
 ### 协作式缺口识别
 1. 不单纯罗列缺失文件，而是针对每个缺口提出澄清问题（例如"有战斗代码却无战斗 GDD，是先做原型还是反向补文档？"）。
 
 ### 生成阶段报告
-1. 按模板输出：日期、阶段、阶段置信度、各域完整度、缺口清单、按优先级排序的下一步。
+1. 按模板输出：日期、catalog schema、阶段、阶段置信度、entry/exit evidence 命中、owner/reviewers、缺失 `evidence_fields`、catalog `on_reject`、`max_retries` 与剩余重试次数。
 
 ### 按角色过滤建议（可选）
 1. 根据角色参数（programmer/designer/producer/general）侧重不同域。
@@ -39,6 +40,7 @@ description: 全项目审计：扫描目录与工件，识别项目当前开发�
 ## 约束
 - 先问再写，绝不静默创建文件。
 - 缺口识别要提问澄清，不假设"缺了就该补"。
+- 不得维护第二套阶段产物路径或门条件。
 - 呈现选项，让用户决定下一步。
 
 ## 反例（不要这样）
@@ -59,7 +61,8 @@ description: 全项目审计：扫描目录与工件，识别项目当前开发�
 - 未经批准写 production/project-stage-report.md。
 
 ## Verification（证据化验证门）
-- [ ] 扫描覆盖 design/src/production/prototypes/docs/architecture/tests 等关键目录。
+- [ ] 已读取 workflow catalog，并扫描覆盖 design/Source/Content/production/prototypes/docs/architecture/Source/**/Tests。
 - [ ] 阶段判定优先读 stage.txt，缺失才用启发式并标注置信度。
-- [ ] 报告含日期、阶段、置信度、各域完整度、缺口清单、按优先级下一步。
+- [ ] 报告含 catalog schema、阶段、置信度、entry/exit evidence、owner/reviewers、缺口与 on_reject。
+- [ ] 每个 artifact 都按非空、非模板/占位符与 `evidence_fields` 完整性判定，并报告 `max_retries`。
 - [ ] 写入文件前经过批准，且支持按角色过滤（programmer/designer/producer/general）。

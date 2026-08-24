@@ -1,12 +1,12 @@
 ---
 name: art-bible
-description: 逐节引导撰写美术圣经（Art Bible）——创建约束所有资产生成的视觉身份规格书（9 节）。Use when：`/brainstorm` 获批之后、`/map-systems` 或任何 GDD 撰写之前。
+description: 逐节引导撰写美术圣经（Art Bible），创建约束所有资产生成的视觉身份规格书。Use when brainstorm 获批之后、design-system map 或任何 GDD 撰写之前。
 ---
 
 # 美术圣经
 
 ## 何时使用
-- `/brainstorm` 获批之后、`/map-systems` 或 GDD 撰写之前
+- `brainstorm` 获批之后、`design-system map` 或 GDD 撰写之前；`map-systems` 是该模式的 legacy alias
 - retrofit：`design/art/art-bible.md` 已存在则只补空/占位节
 
 ## 流程
@@ -16,7 +16,7 @@ description: 逐节引导撰写美术圣经（Art Bible）——创建约束所�
 3. 读 `docs/technical-preferences.md` 的性能预算与引擎
 
 ### 阶段 1：框架
-AskUserQuestion 询问范围（全 9 节 / 视觉核心 1–4 / 仅资产标准 / 续补）与参考作品（自由文本）
+请求用户选择范围（全 9 节 / 视觉核心 1–4 / 仅资产标准 / 续补）与参考作品
 
 ### 阶段 2：视觉身份基础（1–4 节）
 1. **Visual Identity Statement**：一句话视觉规则 + 2–3 条支撑原则（各锚定一个支柱）

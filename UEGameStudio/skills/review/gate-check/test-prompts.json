@@ -3,9 +3,10 @@
   "skill": "gate-check",
   "description": "验证阶段门校验是否产出 PASS/CONCERNS/FAIL 判定、验证真实产物内容、不自动补建文件凑 PASS，并对无法自动验证的项标 MANUAL CHECK NEEDED。",
   "prompts": [
-    {"id":"p-001","task":"用户问「我们准备好进入 Pre-Production 了吗」，项目已有多份 GDD 与架构文档。","expect":"先确认目标道门（不可跳过确认），再逐项 Glob/Read 验证 Required Artifacts 的真实内容（非空模板头），产出 PASS/CONCERNS/FAIL 判定并列出具体阻塞项与缺失产物。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-001","task":"用户问「我们准备好进入 pre-production 了吗」，项目已有多份 GDD 与架构文档。","expect":"先读取 workflow catalog 并确认目标门，再逐项验证 entry/exit artifact 的真实内容和 evidence_fields，按 owner/reviewers 并行委派，产出 PASS/CONCERNS/FAIL、阻塞项和 on_reject。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
     {"id":"p-002","task":"用户显式指定 solo 模式并指定目标阶段进行门校验。","expect":"跳过四位导演门，只做产物存在性检查，报告中不出现导演子代理结论。","category":"success","verifiable":true,"split":"train","min_score":0.7},
     {"id":"p-003","task":"门校验发现某 Required Artifact 缺失（例如缺性能预算文档）。","expect":"报 FAIL 并点名应补齐的产物或应运行的技能，绝不自动创建缺失文件以凑出 PASS。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
-    {"id":"p-004","task":"某 Quality Check 无法自动验证（如核心循环可玩性）。","expect":"标为 MANUAL CHECK NEEDED 并用 AskUserQuestion 询问用户，绝不默认 PASS。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+    {"id":"p-004","task":"某 Quality Check 无法自动验证（如核心循环可玩性）。","expect":"标为 MANUAL CHECK NEEDED 并请求用户提供证据；达到 catalog max_retries 后升级给 owner 与用户，绝不默认 PASS 或无限重试。","category":"boundary","verifiable":true,"split":"train","min_score":0.6},
+    {"id":"p-005","task":"对 schema v2 production 门执行检查，但某 reviewer 不可用。","expect":"按 catalog owner/reviewers 委派；不可用 reviewer 标 BLOCKED，不伪造意见，不修改 stage.txt，并输出 on_reject/max_retries。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7}
   ]
 }

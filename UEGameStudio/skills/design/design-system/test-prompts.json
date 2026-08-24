@@ -6,6 +6,7 @@
     {"id": "p-001", "task": "为 systems-index 中一个系统撰写完整 GDD（覆盖 8 个必节）", "expect": "先读 game-concept.md、systems-index.md、目标系统条目、entities.yaml、consistency-failures.md 与依赖 GDD，逐节按 Context→Questions→Options→Decision→Draft→Approval→Write 循环推进，每节委派对应专家 agent（如 B→creative-director、D→systems-designer、H→qa-lead），草稿与批准 widget 在同一响应出现", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
     {"id": "p-002", "task": "撰写 Formulas（D 节）中的数值公式", "expect": "每个公式必须含变量表与输出范围，禁止使用 [Formula TBD] 或散文描述代替可实现的公式定义", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
     {"id": "p-003", "task": "某节用 [To be designed] 占位并声称该节已完成", "expect": "技能应拒绝把占位符当完成内容，要求补齐真内容；且未经批准的节不得写入文件", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
-    {"id": "p-004", "task": "对存量 GDD 执行 retrofit，补全缺失/占位章节", "expect": "只补缺失/占位章节，绝不覆盖或改写已有内容；现有章节内容保持原样", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+    {"id": "p-004", "task": "对存量 GDD 执行 retrofit，补全缺失/占位章节", "expect": "只补缺失/占位章节，绝不覆盖或改写已有内容；现有章节内容保持原样", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6},
+    {"id": "p-005", "task": "调用 legacy alias map-systems。", "expect": "映射到 design-system map，输出 canonical design/systems-index.md 并走相同验证门；不搜索独立技能。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7}
   ]
 }

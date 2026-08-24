@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "skill": "release-checklist",
-  "description": "验证发布/上线双模式：版本级按平台差异化生成并产出 Go/No-Go 签字；上线级跨 7 部门、扫描调试/占位/硬编码值；均仅显式调用。",
+  "description": "验证 release readiness 与 launch execution 严格分离，证据绑定不可变构建并覆盖平台/安全/合规。",
   "prompts": [
-    {"id": "p-001", "task": "用户显式调用 /release-checklist（默认版本级），目标平台为 console，准备发布某个版本。", "expect": "生成含 console 专属块（TRC/TCR/Lotcheck、平台手柄提示、挂起/恢复、用户切换、断网、存储满、家长控制、奖杯/成就、一方认证提交）的清单，并产出 Go/No-Go 结论与签字项（QA 负责人/技术总监/制作人/创意总监）。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
-    {"id": "p-002", "task": "用户显式调用 /release-checklist --level launch，临近正式上线日期，需要一次覆盖所有部门的上线就绪校验。", "expect": "按 7 大块（代码/内容/质量保证/商店与分发/基础设施/社区与营销/运营）生成清单，并产出 Go/No-Go 决定（READY / NOT READY / CONDITIONAL）及签字人（创意总监/技术总监/QA 负责人/制作人/发布经理）。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
-    {"id": "p-003", "task": "用户以 --level launch --dry-run 模式调用 /release-checklist，只需生成上线清单。", "expect": "只生成清单不写文件、不产生签字条目，且明确处于 dry-run 模式。", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
-    {"id": "p-004", "task": "用户在普通会话中提及要发布版本（未显式调用），agent 却自动生成发布清单。", "expect": "技能应拒绝/不自动触发，仅在用户显式调用 /release-checklist 时才运行，非发布节点不得反复生成清单。", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
-    {"id": "p-005", "task": "上线级扫描代码库时发现 HACK 注释（有书面理由），而 TODO/FIXME 均已清零。", "expect": "HACK 需有书面理由而非硬阻塞；TODO/FIXME 上线前应为零；扫描项含遗留调试输出、占位资产、硬编码测试/开发值。", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+    {"id":"p-001","task":"console 候选构建准备进入发布门。","expect":"读取 release 阶段契约，核验同一构建 ID 的回归/性能/安全/合规与 TRC/TCR/Lotcheck，输出 readiness READY/CONDITIONAL/NOT READY 和真实 reviewer 签字，不执行部署。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-002","task":"用户要求用上一构建的性能报告给当前构建签字。","expect":"拒绝：证据必须绑定同一不可变构建 ID；当前构建缺证据时 NOT READY。","category":"failure","verifiable":true,"split":"train","min_score":0.7},
+    {"id":"p-003","task":"readiness 为 READY，用户让技能顺手上线。","expect":"不部署；交接 gate-check release 与 launch-checklist，明确本技能只做发布资格判断。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-004","task":"以 dry-run 检查 mobile 多地区版本且 reviewer 不可用。","expect":"只展示不写文件、不伪造签字；逐项列权限/隐私标签/内购/地区合规并把不可用 reviewer 标 BLOCKED。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-005","task":"运行 release-checklist 前后比较工作树。","expect":"除经用户批准的 production/releases/[version]-readiness.md 外，源代码、构建、商店与部署状态均不变化；未批准时文件系统不变。","category":"boundary","verifiable":true,"split":"train","min_score":0.7}
   ]
 }

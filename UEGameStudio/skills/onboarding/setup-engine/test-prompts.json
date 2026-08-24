@@ -6,7 +6,7 @@
     {
       "id": "p-001",
       "task": "用户说「用 Unreal 5.5 做游戏」。",
-      "expect": "识别 5.5 超出训练数据基线（Unreal ~5.3/early 5.4），判 HIGH RISK，联网抓取迁移指南/破坏性变更/废弃 API 建完整参考目录，写 CLAUDE.md/参考文档前展示并征得同意。",
+      "expect": "识别 5.5 为版本敏感，判 HIGH RISK，以匹配版本 Epic 官方资料/源码核实迁移和废弃 API；写项目配置/参考文档前展示并征得同意。",
       "category": "success",
       "verifiable": true,
       "split": "heldout",
@@ -23,7 +23,7 @@
     },
     {
       "id": "p-003",
-      "task": "agent 直接猜一个「最新稳定版」未经联网核实或用户确认就写入 CLAUDE.md。",
+      "task": "agent 直接猜一个「最新稳定版」，未经官方来源核实或用户确认就写入项目配置。",
       "expect": "技能应拒绝：绝不猜引擎版本，必须联网核实或用户确认后才能写入。",
       "category": "failure",
       "verifiable": true,

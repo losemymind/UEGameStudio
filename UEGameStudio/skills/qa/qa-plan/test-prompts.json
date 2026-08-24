@@ -6,6 +6,6 @@
     {"id": "p-001", "task": "冲刺开始前，用户要求为当前冲刺生成 QA 测试计划。", "expect": "读取范围内 story 与 GDD，按 Logic/Integration/Visual/UI/Config 分类，产出 Test Summary、自动化测试要求、手动 QA 清单、冒烟范围、试玩要求与本冲刺 Definition of Done。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
     {"id": "p-002", "task": "某个 story 已有 Type 字段，另一个 story 缺失 Type 字段。", "expect": "已有 Type 原样采用（权威，不重分类）；缺失则按验收标准推断并标记为缺口。", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
     {"id": "p-003", "task": "agent 在计划中使用占位符文本或臆造不存在的公式生成测试用例。", "expect": "技能应纠正：用真实 story 标题、GDD 公式文本与验收标准，公式缺失则标记缺失而不猜测。", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
-    {"id": "p-004", "task": "用户调用 /qa-plan 但未传任何范围参数。", "expect": "用 AskUserQuestion 让用户选择范围（sprint/feature/story），其余阶段保持非交互。", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
+    {"id": "p-004", "task": "用户调用 qa-plan 但未传范围；仓库也没有预置 helper。", "expect": "请求用户选择 sprint/feature/story；helper 盘点输出 NONE，不虚构类/函数。legacy test-setup/test-helpers 映射到 qa-plan 对应模式。", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.7}
   ]
 }

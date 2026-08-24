@@ -26,7 +26,7 @@
     python SEA/scripts/sync-workspace.py --workspace <工作区路径> --dry-run --push
 
 退出码: 0 正常（含冲突报告）; 1 参数错误或路径非法。
-零第三方依赖（仅标准库 + PyYAML）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse

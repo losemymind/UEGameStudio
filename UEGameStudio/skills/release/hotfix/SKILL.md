@@ -24,7 +24,7 @@ description: 紧急修复流程：绕过正常 sprint 流程，但保留完整�
 1. 只做解决该问题的最小改动，不重构、不加功能；跑受影响系统的定向测试并更新记录。
 
 ### 收集审批
-1. 并行请求 lead-programmer / qa-tester / producer 三方 sign-off，全部 APPROVE 才继续。
+1. 并行请求 lead-programmer / qa-tester / game-producer 三方 sign-off，全部 APPROVE 才继续。
 
 ### QA 重新准入门
 1. 由 qa-lead 判定只需冒烟检查还是需要定向/全量 QA；门禁不可跳过。

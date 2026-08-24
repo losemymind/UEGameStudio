@@ -8,6 +8,7 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 这是"实现完成"与"可移交 QA"之间的门禁。它运行自动化测试套件、检查覆盖缺口、与开发者批量验证关键路径，并产出 PASS/FAIL 报告。规则很简单：**冒烟检查失败的构建不得进入 QA**。
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 冲刺 story 实现完成后、手动 QA 开始前（QA 移交门禁）
@@ -17,7 +18,7 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 
 ## 流程
 ### 检测测试环境
-1. 检查 `tests/` 目录是否存在（不存在则停止并提示运行 `/test-setup`）。
+1. 检查 UE 测试模块/目录是否存在；不存在则停止并提示运行 `qa-plan setup`（legacy alias `test-setup`）。
 2. 检查 `.github/workflows/` 是否配置了 CI 测试工作流。
 3. 从 `docs/technical-preferences.md` 提取引擎，用于选择测试命令。
 4. 检查 `production/qa/smoke-tests.md` 或 `tests/smoke/` 是否存在；检查最近的 QA 计划。
@@ -32,11 +33,11 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 
 ### 检查测试覆盖
 1. 从 QA 计划或冲刺计划取 story 列表；`quick` 模式跳过此阶段。
-2. 逐 story 判定 COVERED / MANUAL / MISSING / EXPECTED / UNKNOWN；MISSING 为建议性缺口，不导致 FAIL 但需在 `/story-done` 前解决。
+2. 逐 story 判定 COVERED / MANUAL / MISSING / EXPECTED / UNKNOWN；MISSING 为建议性缺口，不导致 FAIL 但需在 `dev-story done` 前解决。
 
 ### 运行手动冒烟检查
 1. 从 QA 计划 Smoke Test Scope / smoke-tests.md / tests/smoke/ / 标准回退清单取检查项。
-2. 用 `AskUserQuestion` 分批核验（最多 3 次）：Batch 1 核心稳定性、Batch 2 冲刺变更与回归、Batch 3 数据完整性与性能（`quick` 跳过）；有 `--platform` 时追加平台批次（PC/主机/移动）。
+2. 分批请求用户核验（最多 3 次）：Batch 1 核心稳定性、Batch 2 冲刺变更与回归、Batch 3 数据完整性与性能（`quick` 跳过）；有 `--platform` 时追加平台批次。
 
 ### 生成报告
 1. 汇总自动化测试、覆盖、手动冒烟、缺失证据、平台结果、结论（PASS / PASS WITH WARNINGS / FAIL）。
@@ -89,8 +90,8 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 ## 约束
 - 永不把 NOT RUN 自动判为 FAIL——记录为 NOT RUN，由开发者手动确认，未确认的 NOT RUN 计入 PASS WITH WARNINGS。
 - 永不自动修复失败——只报告并说明需解决什么，不编辑源码/测试文件。
-- PASS WITH WARNINGS 不阻塞 QA 移交，只记录建议性缺口供 `/story-done` 跟进。
-- 所有手动核验用 `AskUserQuestion`；写报告前必须获得批准。
+- PASS WITH WARNINGS 不阻塞 QA 移交，只记录建议性缺口供 `dev-story done` 跟进。
+- 所有手动核验须请求用户输入；写报告前必须获得批准。
 - 浸泡测试不得替代冒烟检查，必须先冒烟通过再浸泡。
 - 浸泡时长不可低于 4 小时，stat memory 必须记录 Physical 和 Virtual 两个指标。
 
@@ -117,7 +118,7 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 ## Red Flags（违规信号）
 - 把 NOT RUN 自动判为 FAIL。
 - 编辑源码/测试文件来修复失败。
-- 手动核验未用 AskUserQuestion。
+- 手动核验没有用户请求与答复记录。
 - 未经批准写入 smoke-[date].md。
 - 跳过冒烟直接跑浸泡测试。
 - 浸泡测试时长不足 4 小时。
@@ -125,8 +126,8 @@ description: 冒烟门：执行自动化测试、核对测试覆盖缺口、批�
 
 ## Verification（证据化验证门）
 - [ ] 自动化测试结果含总数/通过/失败/失败测试名；NOT RUN 未被判 FAIL。
-- [ ] 覆盖逐 story 有 COVERED/MANUAL/MISSING/EXPECTED/UNKNOWN 判定，MISSING 已记录供 /story-done 跟进。
-- [ ] 手动核验用 AskUserQuestion 分批（≤3 次），结果有记录。
+- [ ] 覆盖逐 story 有 COVERED/MANUAL/MISSING/EXPECTED/UNKNOWN 判定，MISSING 已记录供 dev-story done 跟进。
+- [ ] 手动核验分批请求用户（≤3 次），结果有记录。
 - [ ] 结论（PASS/PASS WITH WARNINGS/FAIL）符合判定规则，报告经批准后写入。
 - [ ] 浸泡测试（如执行）已运行 ≥4 小时，memreport 快照已对比，stat memory 含 Physical 和 Virtual。
 - [ ] 浸泡报告含内存趋势、FPS 趋势、Actor 数量趋势、泄漏分析、SOAK PASS/FAIL 结论。

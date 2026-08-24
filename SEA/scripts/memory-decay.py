@@ -17,7 +17,7 @@
     python SEA/scripts/memory-decay.py [--threshold 0.30] [--half-life 180] [--mark]
 
 退出码: 0 无遗忘候选 或 --mark 后全部处理; 1 存在遗忘候选（dry-run 时）。
-零第三方依赖（仅标准库 + PyYAML）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse

@@ -12,7 +12,7 @@
     python SEA/scripts/report-metrics.py [--skills-dir <技能库根目录>]
 
 退出码: 0 正常（无论健康与否均输出报告）。
-零第三方依赖（仅标准库 + PyYAML）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse

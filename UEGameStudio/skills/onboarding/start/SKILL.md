@@ -1,6 +1,6 @@
 ---
 name: start
-description: 首次进入项目的引导入口：先问清用户当前所处阶段，再引向正确的工作流，不做任何假设。Use when 新用户/新会话刚进入项目、需要被导向正确起点。
+description: UE 项目的统一引导入口：读取 7 阶段目录，核实项目证据并请求用户确认起点，再引向正确工作流。Use when 新用户、新会话或已有项目需要建立受控入口。
 ---
 
 # 引导上手
@@ -12,17 +12,18 @@ description: 首次进入项目的引导入口：先问清用户当前所处阶�
 
 ## 流程
 ### 检测项目现状
-1. 静默收集上下文：引擎是否已配置、是否已有游戏概念、是否有源码/原型/设计文档/生产工件。不主动展示，只用于定制建议。
+1. 首先读取 `docs/workflow-catalog.yaml`；它是阶段 ID、entry/exit evidence、owner/reviewers 与失败恢复策略的唯一事实源。目录缺失或 schema 不受支持时停止并报告，禁止凭记忆复制阶段条件。
+2. 静默收集上下文：引擎是否已配置、是否已有游戏概念、是否有源码/原型/设计文档/生产工件。不主动展示，只用于定制建议。
 
 ### 询问用户所处位置
-1. 用结构化选项询问用户现状：A) 毫无想法 / B) 模糊想法 / C) 清晰概念 / D) 已有工作。
+1. 请求用户从结构化选项确认现状：A) 毫无想法 / B) 模糊想法 / C) 清晰概念 / D) 已有工作。
 
 ### 按答案路由
-1. A/B/C（从零或概念阶段）→ 引向 brainstorm → setup-engine → prototype 等概念阶段路径。
+1. A/B/C（从零或概念阶段）→ 按 catalog 的 concept 技能顺序引向 requirements-discovery → brainstorm → setup-engine → prototype。
 2. D（已有工作）→ 根据先进程度分两种情况：早期阶段先 setup-engine，再做 project-stage-detect；若已有 GDD/ADR/story，则先 project-stage-detect 再做 adopt（格式合规审计）。
 
 ### 写入初始阶段与审查模式
-1. 根据路径写 `production/stage.txt`（Concept / Systems Design / Technical Setup），单行文件，无需额外询问。
+1. 根据目录使用 canonical 阶段 ID 写 `production/stage.txt`（`concept` / `systems-design` / `technical-setup`），单行文件；写入前请求用户批准。
 2. 若 `review-mode.txt` 不存在，询问审查模式（full/lean/solo）并写入。
 
 ### 确认与交接
@@ -31,11 +32,12 @@ description: 首次进入项目的引导入口：先问清用户当前所处阶�
 
 ## 输入/输出
 - 输入：用户自我描述的项目状态、对现状的选择。
-- 输出：`production/stage.txt`、`production/review-mode.txt`、下一步技能建议。
+- 输出：`production/stage.txt`、`production/review-mode.txt`、catalog 对应阶段的下一步技能建议。
 
 ## 约束
 - 先问后引导，绝不假设用户的阶段或意图。
 - 只推荐下一个技能，不自动执行。
+- 不得复制或臆造阶段契约；所有阶段路由必须可追溯到 `docs/workflow-catalog.yaml`。
 - 用户情况不符合任何选项时，倾听并灵活适配。
 
 ## 反例（不要这样）
@@ -57,6 +59,6 @@ description: 首次进入项目的引导入口：先问清用户当前所处阶�
 
 ## Verification（证据化验证门）
 - [ ] 会话中出现结构化选项询问（A 毫无想法 / B 模糊想法 / C 清晰概念 / D 已有工作），且未假设用户阶段。
-- [ ] production/stage.txt 为单行，内容在 Concept / Systems Design / Technical Setup 之一，且与实际路由一致。
+- [ ] 已读取 workflow catalog；production/stage.txt 为单行 canonical 阶段 ID，且与证据和用户确认一致。
 - [ ] production/review-mode.txt 仅在缺失时询问并写入，值为 full/lean/solo 之一。
 - [ ] 输出仅含下一步技能建议与「输入 [技能命令] 开始」，未自动执行任何技能。

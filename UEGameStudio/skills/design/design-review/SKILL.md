@@ -14,7 +14,7 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 ### 1. 加载文档与上下文
 1. 解析 --depth full/lean/solo（默认 full）
 2. 全文读目标 GDD、AGENTS.md、相关设计文档
-3. 依赖图校验：对 Dependencies 节列出的每个系统，Glob 验证其 GDD 文件是否存在，标记断裂引用
+3. 依赖图校验：查找 Dependencies 节列出的每个系统 GDD，标记断裂引用
 4. 读 game-concept.md / narrative/（若存在）检查世界观与设计支柱冲突
 5. 若存在 design/gdd/reviews/[doc]-review-log.md，读最近一条作为复评审基线
 
@@ -28,15 +28,15 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 
 ### 4. 对抗式专家评审（仅 full，必做）
 1. 打印耗时提示（8–15 分钟，可用 --review lean 提速）
-2. 按 GDD 涉及的领域，用 Task **同时并行** spawn 对应专家子代理（game-designer 必跑、含公式必跑 systems-designer、经济跑 economy-designer 等）
+2. 按 GDD 领域并行委派专家子代理（game-designer 必跑、含公式必跑 systems-designer、经济跑 economy-designer 等）
 3. 提示词必须对抗式："你的任务不是验证设计，而是找问题；挑战设计选择、指出错误/欠规范/遗漏，欢迎与主评审意见相左"
-4. 专家意见汇总后 spawn creative-director 作为资深评审做综合判定（其结论即最终判定）
+4. 专家意见汇总后委派 creative-director 做综合判定（其结论即最终判定）
 5. 专家间或专家与主评审有分歧时，不得私下取舍，须在输出中并列呈现由用户裁决，每条结论标注来源
 
 ### 5. 输出评审报告
 1. 输出：Completeness、Dependency Graph、Required Before Implementation（阻塞项，标注来源）、Recommended Revisions、Specialist Disagreements、Scope Signal（S/M/L/XL）、判定 APPROVED / NEEDS REVISION / MAJOR REVISION NEEDED
 2. 本技能只读，评审阶段不写文件
-3. 用 AskUserQuestion 处理全部收尾交互：是否立即修订、是否更新 systems-index / review-log、下一步动作
+3. 请求用户决定全部收尾交互：是否立即修订、是否更新 systems-index / review-log、下一步动作
 
 ## 输入/输出
 - 输入：GDD 文件路径、--depth 模式（可选）
@@ -44,14 +44,14 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 
 ## 约束
 - 8 个必备章节必须全部核对，缺一节即不完整
-- full 模式下专家评审是**强制**步骤，不得跳过；专家必须是真实 Task 子代理，不得脑内模拟
+- full 模式下专家评审是**强制**步骤，不得跳过；专家必须是真实子 agent，不得脑内模拟
 - 本技能只读，评审过程中不写任何文件；写 systems-index / review-log 须先获用户批准
 - 分歧必须显式呈现，不得静默选定一方
 - 每项发现标注来源 agent
 
 ## 反例（不要这样）
 - 只数了"有没有 8 个标题"就判完整，不核对每节是否有实质内容
-- full 模式下跳过专家 spawn，自己脑补各领域意见当专家评审
+- full 模式下跳过专家委派，自己脑补各领域意见当专家评审
 - 以"改动很小/时间紧"为由跳过对抗式评审
 - 静默采纳 creative-director 的意见而隐藏专家分歧
 - 评审后未经批准就改写 systems-index 或 review-log
@@ -65,11 +65,11 @@ description: 评审一份游戏设计文档（GDD）的完整性、内部一致�
 
 ## Red Flags（违规信号）
 - Completeness 判定为 X/8 齐全，但未见对每节实质内容的核对证据
-- full 模式下报告出现专家意见，但无 Task spawn 痕迹、意见未标注来源 agent
-- 评审过程中出现对 systems-index / review-log 的写操作，或未经 AskUserQuestion 批准的落盘
+- full 模式下报告出现专家意见，但无委派痕迹、意见未标注来源 agent
+- 评审过程中出现对 systems-index / review-log 的写操作，或未经用户批准的落盘
 
 ## Verification（证据化验证门）
 - [ ] 8 必节是否逐节核对了实质内容并记录缺失章节（Completeness: X/8）
-- [ ] full 模式是否真实 Task 并行 spawn 了对应领域专家子代理，且每条结论标注来源
+- [ ] full 模式是否真实并行委派了对应领域专家子代理，且每条结论标注来源
 - [ ] 分歧是否在输出中并列呈现，而非静默采纳一方
-- [ ] 收尾交互（是否修订 / 是否更新 systems-index / review-log）是否经 AskUserQuestion
+- [ ] 收尾交互（是否修订 / 是否更新 systems-index / review-log）是否经用户确认

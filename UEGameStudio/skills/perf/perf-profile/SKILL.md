@@ -1,67 +1,39 @@
 ---
 name: perf-profile
-description: 结构化性能剖析工作流：识别瓶颈、对照性能预算、生成带优先级排序的优化建议。Use when：发布前性能检查、怀疑某系统存在热点。
+description: UE 性能候选热点分诊：读取预算并检查 Tick、同步加载、GC、复制、渲染和资产风险，形成待实测假设；不得代替目标平台性能验证。Use when 尚未具备运行时 trace、需要为 ue-performance-validation 缩小采集范围。
 ---
 
-# 性能剖析
-
-## 何时使用
-- 发布前做性能检查
-- 怀疑某系统存在 CPU/内存/渲染热点
-- 需要对照预算量化性能余量
+# UE 性能剖析分诊
 
 ## 流程
-### 1. 确定范围
-- 系统名 → 聚焦该系统；`full` → 全系统综合剖析
-
-### 2. 加载性能预算
-- 从设计文档/AGENTS.md 找目标：帧率（60fps=16.67ms 帧预算）、内存预算、加载时间、draw call、网络带宽
-
-### 3. 分析代码库
-- CPU：`_process/Update/Tick`、大集合嵌套循环、热路径字符串操作、逐帧分配、未优化搜索/排序、逐帧物理查询
-- 内存：大结构增长、纹理/资产内存、对象池 vs 实例化/销毁、泄漏引用、缓存策略
-- 渲染：draw call 估算、透明重叠过绘、着色器复杂度、粒子系统、缺失 LOD/遮挡剔除
-- I/O：存档性能、资源加载（同步 vs 异步）、网络消息频率与大小
-
-### 4. 生成剖析报告
-- 性能预算表（预算 vs 当前估算 vs 状态 OK/WARNING/OVER）
-- 热点表（位置/问题/预估影响/修复工作量）
-- 按优先级排序的优化建议（位置、预期收益、风险、方案）
-- 快速见效项（<1 小时）与待运行时验证项
-
-### 5. 范围与工期决策
-- 仅当有热点修复工作量达 M/L 时启用：对每项让用户选择 实施优化 / 缩减范围 / 接受并延后 / 升级架构决策
-
-## 输入/输出
-- 输入：代码库 + 性能预算
-- 输出：性能剖析报告 + 优化建议优先级
+1. 从项目 GDD/ADR/technical preferences 读取目标平台预算；包内版本参考须先解析当前 UEGameStudio/OpenCode 配置根再读取，找不到则 fail-closed，禁止把项目 `docs/` 与包内 reference 混淆。
+2. 搜索并按系统归类候选：Actor/Component Tick 与 tick prerequisites、逐帧分配/容器复制/反射；同步 LoadObject/BlockingLoad；GC/UObject 生命周期；TaskGraph/锁；Replication 频率/属性/RPC/NetDormancy/RepGraph；Slate/UMG invalidation；材质/透明/LOD/Nanite/Lumen/VSM；World Partition/streaming；音频 voice；包体/加载。
+3. 每个候选写 location、触发路径、为何可能热点、需采集的 Insights channel/stat/场景、潜在影响和误报条件；不把文本匹配当瓶颈。
+4. 按玩家影响×出现频率×预算风险排序，交给 performance-analyst；复制场景加 ue-replication-specialist，UE 底层引擎加 ue-engine-programmer。
+5. 输出只读分诊报告和 `ue-performance-validation` 实测计划。没有目标平台原始 trace 时状态只能 CANDIDATE/UNMEASURED，不能 OK/PASS。
 
 ## 约束
-- 只读报告，不写文件
-- 不测量就不要优化（直觉不可靠）
-- 建议必须含预估影响，不说空泛的"让它更快"
-- 静态分析只识别候选，运行时剖析才确认
+- 本技能只读，不写报告文件、不修改代码；用户要求实测时切换到 ue-performance-validation。
+- 不用通用 `_process/Update` 词表冒充 UE 审计；不在未测量时宣称收益。
 
-## 反例（不要这样）
-- 不读预算就谈"快/慢"
-- 只给热点不给预估影响与优先级
-- 直接动手优化而非先出报告
-- 把静态分析结论当成实测结论
+## 反例
+- 以 Tick 字符串命中数推算 FPS。
+- 只看 Game Thread，忽略 GPU、RHI、内存、加载和网络。
+- 输出预算 PASS 但无 build/设备/trace。
 
-## 反合理化表（借口 → 反驳）
-| 借口（会怎么说） | 反驳（为什么不对） |
+## 反合理化表
+| 借口 | 反驳 |
 |---|---|
-| 「凭经验就能判断哪里慢，不用读预算」 | 不读预算就无法量化余量，"快/慢"无标尺 |
-| 「热点找到了，直接开改更快」 | 必须先出报告让用户决策，直接优化违反只读报告约束 |
-| 「静态分析已经很明确，可以当实测结论」 | 静态分析只识别候选，运行时剖析才确认 |
+| “代码看起来很慢” | 静态证据只能形成可证伪假设。 |
+| “Editor stat fps 够了” | 正式门需要固定协议的目标平台原始证据。 |
 
-## Red Flags（违规信号）
-- 建议只说"让它更快"，无预估影响与优先级
-- 未加载性能预算就输出 OK/WARNING/OVER 判定
-- 报告缺预算表或热点表
+## Red Flags
+- 使用估算值填“当前实测”。
+- 建议无 location/采集方法/误报条件。
+- 修改源码或生成 perf-report。
 
-## Verification（证据化验证门）
-- [ ] 已从设计文档/AGENTS.md 加载性能预算（帧预算/内存/加载时间/draw call）
-- [ ] 预算表含"预算 vs 当前估算 vs 状态 OK/WARNING/OVER"
-- [ ] 每条优化建议含位置/预期收益/风险/方案且按优先级排序
-- [ ] 区分快速见效项（<1 小时）与待运行时验证项，未把静态分析当实测
+## Verification
+- [ ] 候选覆盖 UE CPU/GPU/内存/加载/复制/UI/streaming 域。
+- [ ] 每项含位置、触发、采集方法、影响与误报条件。
+- [ ] 所有未实测结论明确 CANDIDATE/UNMEASURED。
+- [ ] 全程工作树不变并交接 ue-performance-validation。

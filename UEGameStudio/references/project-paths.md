@@ -33,11 +33,11 @@
 | `tests/helpers/` | `Source/**/Tests/`（辅助宏/工厂）；文档模板可保留 `tests/helpers/` |
 | `prototypes/` | `Prototypes/`（独立于 `Source/` 与 `Content/`） |
 | `docs/`（通用文档） | 项目根 `docs/` 保留 |
-| `CLAUDE.md`（旧引用，已废弃） | `AGENTS.md`（opencode 项目级指令） |
+| 旧 Claude Code 项目指令文件（已废弃） | `AGENTS.md`（OpenCode 项目级指令） |
 
 ## 三、平台说明
 
-- 本项目目标平台为 **opencode / OpenWork**：项目级指令文件是 `AGENTS.md`，不是 Claude Code 的 `CLAUDE.md`；技术偏好文件统一为 `docs/technical-preferences.md`（无 `.claude/` 前缀）。
+- 本包目标为 **OpenCode stable V1 schema**：项目级指令文件是 `AGENTS.md`；技术偏好文件统一为项目根 `docs/technical-preferences.md`。V2 与 OpenWork 的兼容边界见 config-root-relative 的 `docs/platform-compatibility.md`。
 - 引擎专属 agent（`agents/engine/unreal/*`）版本纪律先读 `docs/engine-reference/unreal/VERSION.md`。
 
 ## 维护

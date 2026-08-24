@@ -3,18 +3,38 @@
 # 按 templates/verify-facts/schema.md 的 schema 编写。脚本 `SEA/scripts/verify-versions.py` 依据此文件做 re-verify 校验。
 
 facts:
+  - id: f-20260824-001
+    claim: OpenCode 稳定版 Markdown agent frontmatter 使用 permission，工具权限键包含 bash、task、webfetch、websearch 与 external_directory
+    applies_to: OpenCode stable documentation snapshot 2026-08-24
+    verified: true
+    verified_on: 2026-08-24
+    source: https://opencode.ai/docs/agents/ ; https://opencode.ai/docs/permissions/
+    status: active
+
+  - id: f-20260824-002
+    claim: OpenCode V2 agent 权限格式改用 permissions 数组，动作名使用 shell 与 subagent，不能直接复用稳定版 permission/bash/task frontmatter
+    applies_to: OpenCode V2 documentation snapshot 2026-08-24
+    verified: true
+    verified_on: 2026-08-24
+    source: https://opencode.ai/v2/docs/agents ; https://opencode.ai/v2/docs/permissions
+    status: active
+
   - id: f-20260813-001
     claim: UE 5.8 中 Iris 启用需 .uproject Iris 插件 + SetupIrisSupport(Target) + -UseIrisReplication=1，仅链接模块不会启用
     applies_to: UE 5.8
-    verified: true
+    verified: false
     verified_on: 2026-08-13
-    source: 官方 5.8 Iris 文档
-    status: active
+    source: 原记录仅写“官方 5.8 Iris 文档”，缺少可复核 URL
+    status: deprecated
+    deprecated_on: 2026-08-24
+    deprecated_reason: 来源不可复核；不得作为断言依据，需按目标项目版本重新查 Epic 官方文档
 
   - id: f-20260813-002
     claim: UE 5.8 中 Enhanced Input 与 Common UI 统一为一条输入数据通路
     applies_to: UE 5.8
-    verified: true
+    verified: false
     verified_on: 2026-08-13
-    source: UE 5.8 What's New 页
-    status: active
+    source: 原记录仅写“UE 5.8 What's New 页”，缺少可复核 URL 与精确定义
+    status: deprecated
+    deprecated_on: 2026-08-24
+    deprecated_reason: 断言含混且来源不可复核；需拆成可验证的插件/API事实后重新登记

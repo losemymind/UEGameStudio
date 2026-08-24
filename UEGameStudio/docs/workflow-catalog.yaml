@@ -1,56 +1,133 @@
 # workflow-catalog.yaml — UE 游戏开发 7 阶段管线（单一事实源）
-#
-# 被 /start、/project-stage-detect、gate-check 等技能引用。
-# 阶段门为 ADVISORY（建议性），不硬阻断；用户始终有最终决定权（CCGS 约定移植）。
+# start、project-stage-detect、gate-check 必须读取本文件，不得在技能正文复制另一套阶段条件。
 
-schema_version: 1
-description: UE 游戏开发 7 阶段管线定义。每阶段列出关键技能、必需产物（artifact）与进入下一阶段的门条件。
-source: CCGS 7-phase workflow-catalog 蒸馏适配（opencode/SEA 平台）
+schema_version: 2
+engine: unreal-engine
+description: 可执行的 UE 游戏开发阶段契约；每阶段声明负责人、评审人、进入条件、退出证据、拒绝处理与最大重试次数。
+source: CCGS 7-phase workflow catalog + UEGameStudio 本地适配
+
+policy:
+  advisory: true
+  user_override_requires: [decision, rationale, accepted_risks, owner, review_date]
+  artifact_validation: "路径命中、非空、非模板占位符，并包含该阶段指定的 evidence_fields"
+  default_max_retries: 2
+  stage_state_file: production/stage.txt
+  review_mode_file: production/review-mode.txt
 
 phases:
-  - id: 1-concept
+  - id: concept
+    order: 1
     name: 概念与愿景
-    artifact_glob: "design/gdd/game-concept.md"
-    skills: [start, setup-engine, brainstorm, project-stage-detect]
-    exit_gate: "game-concept.md 存在且含核心循环定义"
+    owner: creative-director
+    reviewers: [game-producer, game-designer, technical-director]
+    skills: [requirements-discovery, brainstorm, setup-engine, prototype]
+    entry:
+      artifacts: []
+      evidence: ["目标玩家与利益相关方已识别", "问题/机会陈述已记录"]
+    exit:
+      artifacts: [design/gdd/game-concept.md]
+      evidence_fields: ["核心幻想", "目标玩家", "核心循环", "范围边界", "成功指标"]
+      checks: ["核心循环可验证", "引擎版本锚点已初始化"]
+    on_reject: "运行 requirements-discovery 或 brainstorm 补齐愿景与范围，然后重新 gate-check concept。"
+    max_retries: 2
 
-  - id: 2-systems-design
+  - id: systems-design
+    order: 2
     name: 系统设计
-    artifact_glob: "design/gdd/systems-index.md"
+    owner: game-designer
+    reviewers: [creative-director, systems-designer, technical-director]
     skills: [design-system, design-review, consistency-check, balance-check]
-    exit_gate: "systems-index.md 存在，各系统 GDD 无缺失必节"
+    entry:
+      artifacts: [design/gdd/game-concept.md]
+      evidence: ["concept 阶段 PASS/获批风险接受记录"]
+    exit:
+      artifacts: [design/systems-index.md, "design/gdd/*.md"]
+      evidence_fields: ["系统所有者", "依赖", "接口", "验收标准", "追踪 ID"]
+      checks: ["索引与 GDD 双向一致", "无未裁决的关键设计冲突"]
+    on_reject: "运行 design-system 或 consistency-check 修复系统索引、依赖和追踪断点。"
+    max_retries: 2
 
-  - id: 3-technical-setup
+  - id: technical-setup
+    order: 3
     name: 技术架构
-    artifact_glob: "docs/architecture/*.adr.md"
-    skills: [create-architecture, architecture-decision, architecture-review]
-    exit_gate: "≥1 个 ADR 已记录，技术选型有版本锚定"
+    owner: technical-director
+    reviewers: [lead-programmer, security-engineer, devops-engineer]
+    skills: [create-architecture, architecture-decision, architecture-review, ue-source-verification]
+    entry:
+      artifacts: [design/systems-index.md]
+      evidence: ["关键系统边界与非功能需求已识别"]
+    exit:
+      artifacts: ["docs/architecture/adr-*.md", docs/engine-reference/unreal/VERSION.md]
+      evidence_fields: ["Context", "Decision", "Consequences", "版本/来源证据", "回滚策略"]
+      checks: ["至少一个 Accepted ADR", "版本敏感断言均有官方来源"]
+    on_reject: "运行 architecture-decision、ue-source-verification 或 architecture-review 关闭阻塞项。"
+    max_retries: 2
 
-  - id: 4-pre-production
+  - id: pre-production
+    order: 4
     name: 预生产
-    artifact_glob: "prototypes/*/README.md"
-    skills: [prototype, vertical-slice, ux-design, create-stories]
-    exit_gate: "原型/垂直切片已验证核心循环，UX 规格完成"
+    owner: game-producer
+    reviewers: [creative-director, technical-director, art-director, qa-lead]
+    skills: [prototype, vertical-slice, ux-design, create-stories, ue-test-driven-development]
+    entry:
+      artifacts: ["docs/architecture/adr-*.md", design/systems-index.md]
+      evidence: ["技术风险已有原型假设", "垂直切片范围已批准"]
+    exit:
+      artifacts: ["prototypes/*/REPORT.md", production/vertical-slice/REPORT.md, "production/stories/*.md"]
+      evidence_fields: ["假设与结果", "核心循环证据", "性能基线", "测试策略", "量产估算"]
+      checks: ["垂直切片可玩", "高风险假设有实测结论", "量产 backlog 可追踪"]
+    on_reject: "缩小切片或重新运行 prototype/vertical-slice，关闭失败假设后复审。"
+    max_retries: 3
 
-  - id: 5-production
+  - id: production
+    order: 5
     name: 量产
-    artifact_glob: "production/sprints/current.md"
-    skills: [create-epics, create-stories, dev-story, code-review, sprint-plan]
-    exit_gate: "冲刺产物通过 story-done + gate-check"
+    owner: game-producer
+    reviewers: [lead-programmer, qa-lead, game-designer, art-director]
+    skills: [create-epics, create-stories, sprint-plan, dev-story, ue-incremental-development, code-review]
+    entry:
+      artifacts: [production/vertical-slice/REPORT.md, "production/stories/*.md"]
+      evidence: ["切片门 PASS", "DoR/DoD 与测试证据路径已定义"]
+    exit:
+      artifacts: ["production/sprints/sprint-*.md", "production/qa/evidence/*", "production/milestones/*.md"]
+      evidence_fields: ["验收标准结果", "自动/手工测试证据", "代码评审", "已知风险"]
+      checks: ["当前里程碑范围完成", "无未接受的 S1 阻塞", "回归套件通过"]
+    on_reject: "运行 bug-triage、dev-story/code-review 或 sprint-plan 调整范围并补证据。"
+    max_retries: 3
 
-  - id: 6-polish
+  - id: polish
+    order: 6
     name: 打磨
-    artifact_glob: "production/polish/perf-report.md"
-    skills: [perf-profile, regression-suite, smoke-check, balance-check]
-    exit_gate: "性能基准达标，零 S1/S2 或已批准例外"
+    owner: qa-lead
+    reviewers: [performance-analyst, technical-director, accessibility-specialist, localization-specialist]
+    skills: [ue-performance-validation, perf-profile, regression-suite, smoke-check, localize]
+    entry:
+      artifacts: ["production/milestones/*.md", "production/qa/evidence/*"]
+      evidence: ["内容锁定范围已声明", "目标平台与性能预算已批准"]
+    exit:
+      artifacts: [production/polish/perf-report.md, production/qa/regression-report.md, production/localization/report.md]
+      evidence_fields: ["目标硬件 trace", "修复前后对比", "回归结果", "本地化/LQA 状态", "例外审批"]
+      checks: ["性能预算达标或有到期例外", "零未接受 S1/S2", "无障碍与本地化阻塞关闭"]
+    on_reject: "按热点、回归、LQA 或无障碍阻塞分派修复；复测必须生成新证据。"
+    max_retries: 3
 
-  - id: 7-release
+  - id: release
+    order: 7
     name: 发布
-    artifact_glob: "production/releases/*.md"
-    skills: [release-checklist, launch-checklist, changelog, hotfix]
-    exit_gate: "release-checklist 通过，Go/No-Go 签字齐全"
+    owner: release-manager
+    reviewers: [game-producer, qa-lead, security-engineer, devops-engineer, game-compliance-specialist]
+    skills: [ue-release-compliance, release-checklist, launch-checklist, changelog, hotfix]
+    entry:
+      artifacts: [production/polish/perf-report.md, production/qa/regression-report.md]
+      evidence: ["候选构建不可变标识", "发布平台/地区/渠道矩阵"]
+    exit:
+      artifacts: ["production/releases/*-readiness.md", "production/releases/*-launch-log.md"]
+      evidence_fields: ["构建与签名", "合规矩阵", "Go/No-Go 签字", "监控与回滚", "上线结果"]
+      checks: ["release-checklist 只做 readiness", "launch-checklist 只在 Go 后执行上线与观察"]
+    on_reject: "回到 release-checklist 的阻塞 owner；不得以 launch-checklist 绕过 readiness。"
+    max_retries: 2
 
 review_modes:
-  full: 全部门评审（Tier1+2+3）
-  lean: 仅阶段门（默认）
-  solo: 无门禁（单人原型）
+  full: "owner + 全部 reviewers；适用于正式里程碑"
+  lean: "owner + technical-director + game-producer；默认"
+  solo: "只校验 artifact/evidence；必须记录未执行的 reviewer 风险"

@@ -6,6 +6,7 @@ description: 校验项目是否准备好推进到下一开发阶段，产出 PAS
 # 阶段门校验
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 用户询问"准备好进入某个阶段了吗"或"能否推进"
@@ -14,41 +15,44 @@ description: 校验项目是否准备好推进到下一开发阶段，产出 PAS
 
 ## 流程
 ### 1. 解析参数
-1. 确定目标阶段：无参数时先自动探测当前阶段，再用 AskUserQuestion 与用户确认要跑的道门，不可跳过确认
+1. 读取并校验 `docs/workflow-catalog.yaml`；只接受 catalog 中的阶段 ID，目录是 owner、reviewers、entry、exit evidence、on_reject、max_retries 的唯一来源
+2. 确定目标阶段：无参数时先自动探测当前阶段，再请求用户确认要跑的道门，不可跳过确认
 2. 解析评审模式 full/lean/solo（优先级：命令行 > production/review-mode.txt > 默认 lean）
    - solo：跳过四位导演，只做产物存在性检查
    - lean/full：四道导演门全部运行
 
 ### 2. 按门核对产物与质量
-1. 读目标门定义的 Required Artifacts，逐项 Glob/Read 验证（验证真实内容，不是空模板头）
-2. 执行 Quality Checks：测试用 Bash 跑、设计评审读 8 必节、性能读 technical-preferences、本地化 Grep 硬编码
+1. 逐项查找并读取目标阶段 `entry.artifacts` 与 `exit.artifacts`，验证路径命中、内容非空、无占位符并覆盖 `evidence_fields`
+2. 执行 checks：使用项目可用的测试命令、文档检查、性能证据与本地化扫描；记录命令、版本、退出码和证据路径
 3. 跑 Cross-Reference Checks：design/gdd 与 src/ 对照、架构文档与代码对照、sprint 计划引用真实工作项
-4. 无法自动验证的项标记 MANUAL CHECK NEEDED，用 AskUserQuestion 询问用户，绝不默认 PASS
+4. 无法自动验证的项标记 MANUAL CHECK NEEDED，请求用户输入证据，绝不默认 PASS
 5. 先读 docs/consistency-failures.md（若存在），抽取与目标阶段 Domain 匹配的条目作为审查重点
 
 ### 3. 导演组并行评审（lean/full）
-1. 用 Task 同时并行 spawn 四个导演子代理：creative-director（CD-PHASE-GATE）、technical-director（TD-PHASE-GATE）、producer（PR-PHASE-GATE）、art-director（AD-PHASE-GATE）
-2. 每个传入：目标阶段名、已发现产物清单、该门定义要求的上下文字段
-3. 汇总四位导演结论（READY / CONCERNS / NOT READY）
+1. 按评审模式并行委派 catalog 的 `owner` 与 `reviewers`；game-producer 使用 canonical ID，禁止硬编码不存在的 `producer`
+2. 每个 brief 只传目标阶段、catalog 路径、证据路径和定向阅读要求
+3. 汇总评审结论（READY / CONCERNS / NOT READY）
    - 任一 NOT READY → 判定至少 FAIL
    - 任一 CONCERNS → 判定至少 CONCERNS
    - 全部 READY → 具备 PASS 资格（仍受产物/质量检查约束）
 
 ### 4. 产出判定并自检
-1. 输出结构化报告（Required Artifacts X/Y、Quality Checks、Blockers、Recommendations）
+1. 输出结构化报告（Required Artifacts X/Y、Quality Checks、Blockers、Recommendations），并原样带出 catalog 的 `on_reject` 与 `max_retries`
 2. 输出判定：PASS（产物齐全 + 质量全过）/ CONCERNS（有小缺口可在下阶段补）/ FAIL（关键阻塞须先解决）
-3. 执行链式自检：针对判定草稿提 5 个质疑问题，其中至少 2 个必须用 Read/Grep 实际复查文件而非仅凭反思，视结果修订判定
+3. 执行链式自检：针对判定草稿提 5 个质疑问题，其中至少 2 个必须重新读取或搜索实际文件，视结果修订判定
 4. PASS 且用户确认推进后，写 production/stage.txt（单行，先征得同意）
+5. owner 或任一必需 reviewer 不可用时标 `BLOCKED`，不得伪造意见或修改 `production/stage.txt`；报告仍须输出 `on_reject` 与 `max_retries`
 
 ## 输入/输出
 - 输入：目标阶段名（可选）、评审模式（可选）
-- 输出：门校验报告 + PASS/CONCERNS/FAIL 判定 + 阻塞项与缺失产物清单 + 推荐下一步
+- 输出：门校验报告 + PASS/CONCERNS/FAIL 判定 + 阻塞项与缺失产物清单 + `on_reject`/`max_retries` + 推荐下一步
 
 ## 约束
 - 判定是**建议性（advisory）**的，不硬阻断用户推进；记录风险后由用户决定是否在有关切时继续
 - 绝不自动补建缺失文件以制造 PASS（违背门的本意）；缺失即报 FAIL 并点名应运行的技能
 - 未经验证的项不得默认 PASS，标为 MANUAL CHECK NEEDED
-- 导演面板四个子代理必须真实 Task spawn，不得脑内模拟
+- catalog 要求的评审必须真实委派给子 agent，不得脑内模拟；不可用时标记 BLOCKED，不得伪造意见
+- 达到 `max_retries` 后升级给 owner 与用户，禁止无限自动重试
 
 ## 反例（不要这样）
 - 只查文件存在不验证内容，把空模板当通过
@@ -65,12 +69,12 @@ description: 校验项目是否准备好推进到下一开发阶段，产出 PAS
 | 「缺的文件我顺手建一个，好让流程走通」 | 自动补建缺失产物等于伪造 PASS，缺失即报 FAIL 并点名补救技能 |
 
 ## Red Flags（违规信号）
-- 报告中所有产物项都标 PASS，但没有任何 Glob/Read 的实质内容摘录，只有文件名
-- 导演门结论在 lean/full 模式下无任何 Task spawn 痕迹，四位导演意见凭空出现
-- 无法自动验证的项直接写成 PASS，未出现 MANUAL CHECK NEEDED 标记或 AskUserQuestion 记录
+- 报告中所有产物项都标 PASS，但没有文件内容证据，只有文件名
+- lean/full 模式没有真实委派记录，评审意见凭空出现
+- 无法自动验证的项直接写成 PASS，未出现 MANUAL CHECK NEEDED 与用户证据记录
 
 ## Verification（证据化验证门）
-- [ ] 每个 Required Artifact 是否附上 Glob/Read 命中路径与内容摘要，而非仅文件名
-- [ ] 四个导演子代理结论是否来自真实 Task spawn 的返回结果（lean/full 模式）
-- [ ] 所有 MANUAL CHECK NEEDED 项是否有对应的 AskUserQuestion 提问与用户答复记录
-- [ ] 判定草稿是否经过至少 5 个链式自检质疑，且其中 ≥2 个留下 Read/Grep 复查证据
+- [ ] 每个 catalog artifact/evidence 是否附上命中路径与内容摘要，而非仅文件名
+- [ ] owner/reviewer 结论是否来自真实并行委派（lean/full 模式）
+- [ ] 所有 MANUAL CHECK NEEDED 项是否有对应的用户请求与答复记录
+- [ ] 判定草稿是否经过至少 5 个链式自检质疑，且其中 ≥2 个留下文件复查证据

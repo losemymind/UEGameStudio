@@ -12,12 +12,12 @@ description: 逐节引导撰写屏幕/流程/HUD 的 UX 规格——读取游戏
 
 ## 流程
 ### 1. 解析参数与模式
-1. 按参数确定模式；无参数则 AskUserQuestion 询问设计对象
+1. 按参数确定模式；无参数则请求用户选择设计对象
 2. 屏幕名归一化为 kebab-case
 
 ### 2. 收集上下文（先读再问）
 1. 读 `game-concept.md`（缺失则警告）、`player-journey.md`（缺失则记到 Open Questions）
-2. Glob GDD 的 UI Requirements 节，作为本规格的需求输入（HUD 需读全部系统的）
+2. 查找 GDD 的 UI Requirements 节，作为本规格的需求输入（HUD 需读全部系统的）
 3. 读既有 `design/ux/*.md` 的导航/流程节、交互模式库目录、art-bible 视觉方向、无障碍需求、`docs/technical-preferences.md` 的输入与平台
 4. 呈现上下文摘要，问是否还有要读的
 
@@ -34,14 +34,14 @@ description: 逐节引导撰写屏幕/流程/HUD 的 UX 规格——读取游戏
 1. GDD 需求覆盖、模式库对齐、导航一致性、无障碍覆盖、空状态，逐项呈现
 
 ### 6. 交接
-更新会话状态；提示必须先 `/ux-review`；建议下一步
+更新会话状态；提示必须先运行 `ux-design review`；建议下一步
 
 ## UX 评审（合并自 ux-review）
 
 设计完成后，必须跑 UX 评审验证。评审为只读操作，不修改任何文件，产出 APPROVED / NEEDS REVISION / MAJOR REVISION 判定。
 
 ### 评审时机
-- `/ux-design` 完成后、交接给 `unreal-ui-developer` / `art-director` 之前
+- `ux-design draft` 完成后、交接给 `ui-developer` / `art-director` 之前
 - Pre-Production→Production 门检查前（关键屏幕需有已评审规格）
 - UX 规格大修订后
 
@@ -137,4 +137,4 @@ description: 逐节引导撰写屏幕/流程/HUD 的 UX 规格——读取游戏
 - [ ] 评审全程未修改任何被评审文件
 
 ## 合并覆盖
-- **ux-review**：UX 评审工作流（评审时机/范围、校验清单含 UX Spec/HUD/Pattern Library 三类、无障碍审计、设计系统一致性检查、数据架构检查、只读约束、APPROVED/NEEDS REVISION/MAJOR REVISION 判定），反例/反合理化表/Red Flags/Verification 条目同步合并
+- **legacy alias `ux-review` → `ux-design review`**：使用相同输入、只读约束、APPROVED/NEEDS REVISION/MAJOR REVISION 判定；不得搜索独立技能文件

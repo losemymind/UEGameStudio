@@ -36,7 +36,7 @@ description: 校验架构的完整性与一致性：构建 GDD 技术需求到 A
 ### 5. 引擎兼容性交叉核对 + 专家咨询
 1. 版本一致性：所有 ADR 是否同意同一引擎版本，标记过期版本引用
 2. Post-Cutoff API 一致性、Deprecated API 引用（对照 deprecated-apis.md）、缺 Engine Compatibility 章节的盲区
-3. spawn 主引擎专家子代理复核审计发现、找引擎特有反模式，其意见与审计同等权重
+3. 委派 ue-engine-programmer 及适用 UE 专项 reviewer 复核审计发现与引擎反模式，其意见与审计同等权重
 4. 对 HIGH RISK 引擎发现反向检查 GDD 假设是否与已验证引擎现实冲突，产出 GDD Revision Flags 表
 
 ### 6. 架构文档覆盖
@@ -45,7 +45,7 @@ description: 校验架构的完整性与一致性：构建 GDD 技术需求到 A
 ### 7. 输出报告与落盘
 1. 输出 Architecture Review Report：Traceability Summary、Coverage Gaps（含建议 ADR 与引擎风险等级）、Cross-ADR Conflicts、ADR Dependency Order、GDD Revision Flags、Engine Compatibility Issues、判定 PASS/CONCERNS/FAIL
 2. FAIL 时列阻塞项与必建 ADR 优先级
-3. 写文件（报告 / 追踪索引 / tr-registry）前用 AskUserQuestion 批准并先展示草稿；更新 systems-index 状态值必须恰为 "Needs Revision" 不加后缀
+3. 写文件（报告 / 追踪索引 / tr-registry）前先展示草稿并请求用户批准；更新 systems-index 状态值必须恰为 "Needs Revision" 不加后缀
 4. 只把 🔴 CONFLICT 追加到 consistency-failures.md（若已存在），GAP 不记录
 
 ## 输入/输出
@@ -55,7 +55,7 @@ description: 校验架构的完整性与一致性：构建 GDD 技术需求到 A
 ## 约束
 - 判定是建议性的：CONCERNS 甚至 FAIL 下用户仍可决定继续
 - 需求含糊时问用户"是技术需求还是设计偏好"，不要猜
-- 写任何文件前先内联展示草稿，用 AskUserQuestion 结构化批准；多文件变更须一次性列出全部文件
+- 写任何文件前先内联展示草稿并请求结构化批准；多文件变更须一次性列出全部文件
 - TR-ID 稳定：绝不重排或删除既有条目；deprecated 须经用户确认
 - 缺 ADR（GAP）是架构完成前的正常现象，不记入 consistency-failures.md
 - rtm 模式仅在有 story 与 test 时使用
@@ -80,10 +80,10 @@ description: 校验架构的完整性与一致性：构建 GDD 技术需求到 A
 - 可追踪矩阵只有 Covered/Gap 总数，无逐条需求的覆盖位置引用
 - 已有 TR-ID 被重新编号，或 deprecated 未获用户确认
 - 未经批准直接写报告 / tr-registry / systems-index，或状态值带括号后缀
-- 引擎专家意见无 Task spawn 痕迹，凭空出现
+- 引擎专家意见无真实委派痕迹，凭空出现
 
 ## Verification（证据化验证门）
 - [ ] 每条技术需求是否有明确的 TR-ID 与 Covered/Partial/Gap 标记及 ADR 覆盖位置
 - [ ] 跨 ADR 冲突检测是否覆盖数据归属/集成契约/性能预算/依赖环，并给出依赖排序
 - [ ] 引擎版本一致性是否核对所有 ADR 的版本引用与 deprecated-apis
-- [ ] 写文件前是否内联展示草稿并经 AskUserQuestion 批准（多文件一次性列出）
+- [ ] 写文件前是否内联展示草稿并经用户批准（多文件一次性列出）

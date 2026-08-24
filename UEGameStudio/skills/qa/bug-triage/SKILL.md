@@ -17,7 +17,7 @@ description: 缺陷分诊：读取全部开放 bug，重评优先级与严重度
 1. 模式：`sprint`（针对当前冲刺）/ `full`（全量）/ `trend`（仅趋势，只读）/ 无参数（有当前冲刺则 sprint，否则 full）。
 
 ### 加载 bug 积压
-1. 按优先级 Glob：`production/qa/bugs/*.md` → `production/qa/bugs.md` → QA 计划 Bugs Found 表；无 bug 则停止。
+1. 按优先级查找：`production/qa/bugs/*.md` → `production/qa/bugs.md` → QA 计划 Bugs Found 表；无 bug 则停止。
 2. 读最近冲刺文件了解当前冲刺与容量；读 `coding-standards.md` 的严重度定义（缺则用标准定义）。
 
 ### 分类每个 bug

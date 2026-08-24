@@ -11,7 +11,7 @@
     python SEA/scripts/validate-skill.py [--skills-dir <技能库根目录>]
 
 技能库根目录：显式传入，或自动探测 .opencode/skills → 仓库根 skills/（默认）。
-退出码: 0 全部通过; 1 存在错误。零第三方依赖（仅标准库 + PyYAML）。
+退出码: 0 全部通过; 1 存在错误。依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse
@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 FM_RE = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
 
 VALID_KIND = {"FIX", "DERIVED", "CAPTURED"}
-VALID_STATUS = {"pending", "solidified", "rejected", "reverted"}
+VALID_STATUS = {"pending", "solidified", "captured", "rejected", "reverted"}
 REQUIRED_EVO = ["id", "skill", "kind", "signal", "proposal", "status", "created"]
 PROMPT_CATEGORIES = {"success", "failure", "boundary"}
 
@@ -86,11 +86,26 @@ def check_test_prompts(subdir, errors):
                 errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: 缺少 {f}")
         if p.get("category") not in PROMPT_CATEGORIES:
             errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: category 非法（应为 {sorted(PROMPT_CATEGORIES)}）")
-        # 新字段校验：verifiable(布尔) / split(train|heldout)
+        # 基础字段：verifiable(布尔) / split(train|heldout)
         if "verifiable" in p and not isinstance(p.get("verifiable"), bool):
             errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: verifiable 应为布尔")
         if "split" in p and p.get("split") not in ("train", "heldout"):
             errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: split 非法（应为 train|heldout）")
+        # schema v2 可执行断言：显式列出逐项断言、fixture 与不可变路径。
+        schema_version = data.get("schema_version", 1)
+        if not isinstance(schema_version, int) or schema_version < 1:
+            errors.append(f"{subdir.name}/test-prompts.json: schema_version 应为正整数")
+            schema_version = 1
+        if schema_version >= 2:
+            assertions = p.get("assertions")
+            if not isinstance(assertions, list) or not assertions or not all(
+                    isinstance(a, str) and a.strip() for a in assertions):
+                errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: schema v2 需要非空 assertions 字符串数组")
+            if "fixture" in p and not isinstance(p.get("fixture"), dict):
+                errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: fixture 应为对象")
+            if "immutable_paths" in p and (not isinstance(p.get("immutable_paths"), list)
+                    or not all(isinstance(x, str) for x in p.get("immutable_paths", []))):
+                errors.append(f"{subdir.name}/test-prompts.json 用例#{i}: immutable_paths 应为字符串数组")
 
 
 def check_skills(skills_dir, errors):
@@ -153,6 +168,23 @@ def check_evolutions(skills_dir, errors):
             seen.add(eid)
         if evo.get("parent_id") is not None and not isinstance(evo.get("parent_id"), str):
             errors.append(f"evolutions.json 条目#{i}: parent_id 应为字符串")
+        status = evo.get("status")
+        before = evo.get("score_before")
+        after = evo.get("score_after")
+        if status == "pending" and not isinstance(before, (int, float)):
+            errors.append(f"evolutions.json 条目#{i}: pending 候选必须有数字 score_before")
+        if status == "captured":
+            if evo.get("kind") != "CAPTURED":
+                errors.append(f"evolutions.json 条目#{i}: captured 仅用于历史 CAPTURED 基线")
+            if not isinstance(after, (int, float)):
+                errors.append(f"evolutions.json 条目#{i}: captured 必须保留数字 score_after 作为历史观测值")
+        if status == "solidified":
+            if not isinstance(before, (int, float)) or not isinstance(after, (int, float)):
+                errors.append(f"evolutions.json 条目#{i}: solidified 必须同时有 score_before/score_after")
+            elif after <= before:
+                errors.append(f"evolutions.json 条目#{i}: 棘轮违约 score_after={after} 未高于 score_before={before}")
+            if isinstance(after, (int, float)) and after < 0.7:
+                errors.append(f"evolutions.json 条目#{i}: solidified score_after={after} 低于通过线 0.7")
     # 第二遍：parent_id 引用完整性（允许指向自身=根节点标记）
     for i, evo in enumerate(evos, 1):
         pid = evo.get("parent_id")

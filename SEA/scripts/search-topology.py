@@ -46,13 +46,47 @@ def discover_agents(agents_dir: Path, templates_dir: Path):
     """收集可用 agent 名：优先 .opencode/agents/，其次 templates/ 下非模板名。"""
     names = set()
     if agents_dir.exists():
-        for f in agents_dir.glob("*.md"):
+        for f in agents_dir.rglob("*.md"):
+            if f.name == "_template.md":
+                continue
             names.add(f.stem)
     if templates_dir.exists():
         for f in templates_dir.glob("*.md"):
             if not f.name.startswith(("agent-definition", "skill-template")):
                 names.add(f.stem)
     return sorted(names)
+
+
+def evaluate_layered_topology(topo, agents_dir):
+    """评 manifest schema v2 的分层/单向依赖契约。"""
+    manifest_path = Path.cwd() / topo.get("registry_source", "")
+    manifest = load_json(manifest_path) or {}
+    entries = manifest.get("agents", []) if isinstance(manifest, dict) else []
+    orchestrator = topo.get("orchestrator")
+    ids = {item.get("id") for item in entries if isinstance(item, dict)}
+    assertions = {
+        "schema_v2": manifest.get("schema_version") == 2,
+        "registry_source": topo.get("registry_source") == "UEGameStudio/manifest.json",
+        "edge_policy": topo.get("edge_policy") == "orchestrator-to-all-leaves",
+        "orchestrator_registered": orchestrator in ids,
+        "metadata_complete": bool(entries) and all(all(key in item for key in (
+            "scope", "engine_dependency", "evaluation_profile", "integration_owner"))
+            for item in entries),
+        "single_integration": sum(item.get("evaluation_profile") == "integration"
+                                  for item in entries) == 1,
+        "leaf_ownership": bool(entries) and all(item.get("integration_owner") == orchestrator
+                                                for item in entries if item.get("id") != orchestrator),
+        "core_independent": any(item.get("scope") in {"general", "game"} for item in entries)
+        and all(item.get("engine_dependency") == "none"
+                for item in entries if item.get("scope") in {"general", "game"}),
+        "unreal_required": any(item.get("scope") == "unreal" for item in entries)
+        and all(item.get("engine_dependency") == "required"
+                for item in entries if item.get("scope") == "unreal"),
+        "definitions_present": bool(entries) and all(list(agents_dir.rglob(f"{item.get('id')}.md"))
+                                                      for item in entries),
+    }
+    score = round(sum(assertions.values()) / len(assertions), 3)
+    return score, assertions
 
 
 def evaluate_topo(topo, agents_dir, templates_dir):
@@ -138,9 +172,29 @@ def main():
         print(f"[ERROR] {topo_path.name} 解析失败", file=sys.stderr)
         return 1
 
-    agents_dir = Path(args.agents_dir) if args.agents_dir \
-        else Path.cwd() / ".opencode" / "agents"
+    if args.agents_dir:
+        agents_dir = Path(args.agents_dir)
+    else:
+        candidates = [Path.cwd() / ".opencode" / "agents",
+                      Path.cwd() / "UEGameStudio" / "agents"]
+        agents_dir = next((path for path in candidates if path.exists()), candidates[0])
     templates_dir = ROOT / "templates"
+
+    if data.get("schema_version") == 2:
+        best = None
+        for topo in data.get("topologies", []):
+            score, assertions = evaluate_layered_topology(topo, agents_dir)
+            print(f"  {topo.get('id')} {topo.get('name')}: {score:.3f} "
+                  f"({sum(assertions.values())}/{len(assertions)} layered assertions) "
+                  f"[{topo.get('status')}]")
+            if best is None or score > best[0]:
+                best = (score, topo.get("id"))
+        if not args.dry_run:
+            print("manifest-driven schema v2 固定 integration→leaves 方向；随机边变异已禁用，"
+                  "请通过 manifest profile 候选和 heldout workflow 评估演进。")
+        print(f"当前最优: {best}")
+        return 0 if best and best[0] == 1.0 else 1
+
     agent_pool = discover_agents(agents_dir, templates_dir)
     if not agent_pool:
         print(f"[ERROR] 没有可用 agent 定义（{agents_dir} 为空）", file=sys.stderr)

@@ -15,17 +15,17 @@ description: 编排打磨团队优化、打磨并加固一个功能或区域达�
 
 ### 团队组成（哪些 agent 参与）
 - **performance-analyst** — 剖析、优化、内存分析、帧预算
-- **unreal-engine-programmer** — 引擎层瓶颈（渲染/内存/资源加载，按需调用）
+- **ue-engine-programmer** — UE 引擎层瓶颈（渲染/内存/资源加载，按需调用）
 - **technical-artist** — VFX 打磨、着色器优化、视觉质量
 - **sound-designer** — 音频打磨、混音、环境层、反馈音
-- **unreal-tools-programmer** — 内容管线/编辑器工具验证（按需调用）
+- **ue-content-pipeline-specialist** — UE 内容管线/编辑器工具验证（按需调用）
 - **qa-tester** — 边界、回归、浸泡测试
 
 ### 阶段 1：评估（performance-analyst）
 - 用 perf-profile 剖析、定位瓶颈与帧预算违规、测内存与泄漏、对标目标硬件，输出优先优化清单
 
-### 阶段 2：优化（performance-analyst + 按需 unreal-engine-programmer）
-- 修热点、减少 draw call/过度绘制、修泄漏、验证不改变玩法；引擎层根因交 unreal-engine-programmer 并行修
+### 阶段 2：优化（performance-analyst + 按需 ue-engine-programmer）
+- 修热点、减少 draw call/过度绘制、修泄漏、验证不改变玩法；发现玩法行为变化立即回退该优化，并在同一基线上重新执行回归验证；UE 引擎层根因交 ue-engine-programmer 并行修
 
 ### 阶段 3：视觉打磨（与阶段 2 并行）
 - technical-artist 审 VFX 一致性、优化粒子/着色器、加屏幕震动/镜头效果、低画质优雅降级

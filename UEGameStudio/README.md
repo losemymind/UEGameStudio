@@ -1,93 +1,97 @@
-# UE Game Studio — Agents & Skills 成品包
+# UE Game Studio — Agents & Skills
 
-> 面向游戏开发智能化的**直接可安装** Agents 与 Skills 成品包。
-> 目标平台：opencode / OpenWork（subagent + skill 机制）。支持安装到**单个游戏项目**或**全局**。
->
-> 当前版本：`0.5.0`（见 `VERSION`；安装说明见 `INSTALL.md`）
+面向 Unreal Engine 游戏全生命周期的 OpenCode 可安装资产包。当前成品版本为 `0.6.0`（以 `VERSION` 为准）；`manifest.json` 是可安装 agents、skills 及其共享依赖的单一清单。
 
-## 这是什么
+平台目标严格限定为 OpenCode **stable V1 Markdown agent schema**（`permission/bash/task`）。OpenCode V2 的 `permissions/shell/subagent` schema 尚未转换和验证，必须 fail-closed；不声明任意 OpenWork 实现兼容。核实依据见 `docs/platform-compatibility.md`。
 
-把游戏开发工作室的完整智能化工序蒸馏为**可复用、可验证、可进化**的资产。分类方式对齐业界成熟的工作室职能层级（Tier 1 导演 → Tier 2 主管 → Tier 3 专项 → 学术支持组）：
+## 当前资产
 
-- **agents/** — 按职能层级分类（directors / leads / designers / programmers / artists / qa / operations / academic）
-- **skills/** — 按生命周期分类（gate / review / readiness / pipeline / authoring / analysis / team / sprint / utility）
+| 类型 | 数量 | 说明 |
+|---|---:|---|
+| Agents | 53 | manifest schema v2 明示 general/game/unreal/integration 四层及 engine dependency；Academic 属通用层 |
+| Skills | 52 | onboarding、design、architecture、planning、dev、operations、review、qa、release、production、team、perf |
+| Docs | 8 | 工作流目录、平台兼容性锚点与 UE 版本化参考集 |
+| References | 5 | 路径规范与 GDD/ADR/关卡模板 |
+| Rules | 11 | README 加 10 条 UE 路径作用域规则 |
 
-内容来自业界成熟 agent 技能库与游戏工作室工作流的方法论蒸馏与本地化适配，命名规范参考 [jnMetaCode/agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh)。随版本持续迭代。
+准确文件、规范 ID、安装排除项和计数见 `manifest.json`。不要在 README 中维护第二份逐文件清单。
 
-## 资产清单
+## 安装
 
-### Agents（41 个，9 类）
-
-| 分类 | 数量 | 内容 |
-|---|---|---|
-| `directors/` | 3 | creative-director · technical-director · game-producer（Tier 1 导演层） |
-| `leads/` | 7 | game-designer · lead-programmer · art-director · audio-director · narrative-director · qa-lead · release-manager（Tier 2 主管层） |
-| `designers/` | 8 | economy-designer · level-designer · systems-designer · world-builder · narrative-designer · live-ops-designer · writer · ux-designer（Tier 3 设计组） |
-| `programmers/` | 5 | engine-programmer · gameplay-programmer · blueprint-developer · ui-developer · prototyper（Tier 3 编程组） |
-| `artists/` | 2 | technical-artist · sound-designer（Tier 3 美术/音频组） |
-| `qa/` | 6 | qa-tester · crash-analyst · performance-analyst · quality-diagnostics-expert · accessibility-specialist · reality-checker（Tier 3 QA 组） |
-| `operations/` | 6 | devops-engineer · security-engineer · analytics-engineer · studio-operations · localization-specialist · community-manager（Tier 3 运维/本地化/社区） |
-| `academic/` | 4 | historian · anthropologist · geographer · psychologist（学术支持组，按需咨询） |
-| `utility/` | 1 | image-captioner（图片→结构化文字，服务资产/关卡/UX 规格） |
-
-### Skills（42 个，11 类）
-
-| 分类 | 数量 | 技能 |
-|---|---|---|
-| `onboarding/` | 3 | start · setup-engine · project-stage-detect |
-| `design/` | 6 | brainstorm · design-system · design-review · balance-check · consistency-check · ux-design |
-| `architecture/` | 4 | create-architecture · architecture-decision · architecture-review · art-bible |
-| `planning/` | 5 | create-epics · create-stories · dev-story · sprint-plan · estimate |
-| `dev/` | 4 | prototype · vertical-slice · reverse-document · localize |
-| `review/` | 3 | code-review · gate-check · scope-check |
-| `qa/` | 5 | qa-plan · smoke-check · regression-suite · bug-report · bug-triage |
-| `release/` | 4 | release-checklist · launch-checklist · changelog · hotfix |
-| `production/` | 2 | milestone-review · retrospective |
-| `team/` | 5 | team-combat · team-level · team-ui · team-qa · team-polish |
-| `perf/` | 1 | perf-profile |
-
-> **目录说明**：`agents/`、`skills/` 内采用分类子文件夹。安装脚本会**展平复制**到目标目录（见 `INSTALL.md`），opencode 加载器递归扫描、自进化运行时校验均兼容。
-
-## 快速安装
+项目级安装：
 
 ```powershell
-# 方式一：安装到全局（所有项目可用）
-# 用 INSTALL.md 的展平脚本（递归收集 agent/*.md 与 SKILL.md 目录）
-
-# 方式二：安装到某个游戏项目
-# 用 INSTALL.md 的展平脚本复制到 <项目>\.opencode\agents\ 与 <项目>\.opencode\skills\
+& .\scripts\install.ps1 -Scope Project -ProjectRoot 'E:\Projects\MyGame'
 ```
 
-详见 `INSTALL.md`（含展平安装脚本）。
+全局安装：
 
-## 配套要求
-
-- **可选**：自进化运行时（SEA 等）——提供记忆蒸馏/评估/棘轮进化机制。本成品包纯资产，不强制依赖；装了此类运行时后技能可纳入进化闭环。
-- 平台：opencode / OpenWork（其他 agent 平台需自行适配格式）。
-
-## 目录
-
+```powershell
+& .\scripts\install.ps1 -Scope Global
 ```
-UEGameStudio/
-├── README.md         # 本文件
-├── INSTALL.md        # 安装指南（全局 / 项目，含展平安装脚本）
-├── VERSION           # 成品版本号
-├── agents/           # 41 个 agent（按职能层级分类）
-│   ├── directors/    #   Tier 1 导演层（3）
-│   ├── leads/        #   Tier 2 主管层（7）
-│   ├── designers/    #   Tier 3 设计组（8）
-│   ├── programmers/  #   Tier 3 编程组（5）
-│   ├── artists/      #   Tier 3 美术/音频组（2）
-│   ├── qa/           #   Tier 3 QA 组（6）
-│   ├── operations/   #   Tier 3 运维/本地化/社区（6）
-│   ├── academic/     #   学术支持组（4，按需咨询）
-│   └── utility/      #   工具类（1：image-captioner）
-├── skills/           # 42 个技能（11 类，去重合并后）
-│   ├── onboarding/ on combat/ on design/ 
-│   ├── architecture/ planning/ dev/ review/
-│   ├── qa/ release/ production/ team/ perf/
-│   └── _evolutions/
-├── rules/            # 10 条路径作用域编码规则（ue-*）
-├── docs/             # engine-reference/unreal/VERSION.md 版本锚定
-└── references/       # 共享清单
+
+安装器由 manifest 驱动，将 agent/skill 展平到规范 ID，并保留 `docs/`、`references/`、`rules/` 相对 **opencode 配置根**的结构。`agents/_template.md` 永不安装；技能演进注册表默认不安装。完整参数、升级与卸载说明见 `INSTALL.md`。
+
+## 发布前验证
+
+```powershell
+& .\scripts\validate-package.ps1
 ```
+
+验证器检查：
+
+- manifest 计数、路径和磁盘资产是否一一对应；
+- agent/skill frontmatter 与规范 ID；
+- 悬空 skill 命令和可识别的 agent 引用；
+- `CLAUDE.md`、`AskUserQuestion`、Claude `Task` 等旧平台残留；
+- package-relative 文件引用（尽力检查；可用 `-StrictReferences` 提升为阻断）；
+- 安装排除项，尤其是 `agents/_template.md`。
+
+## 自包含边界
+
+运行所需共享知识随包安装：
+
+```text
+<opencode-root>/
+├── agents/                 # 53 个规范 ID 文件
+├── skills/                 # 52 个规范 ID 目录
+├── docs/                   # 工作流与 UE 版本锚点
+├── references/             # 跨 agent/skill 的共享参考
+├── rules/                  # UE 路径作用域规则
+└── .ue-game-studio/        # VERSION、manifest、provenance
+```
+
+SEA 自进化运行时是可选开发基础设施，不是本资产包的运行依赖。
+
+### 两类路径不可混用
+
+- **包共享资产**：相对 opencode 配置根解析。项目安装时配置根是 `<project>/.opencode`；全局安装时默认是 `~/.config/opencode`。例如包版本锚点是 `<config-root>/docs/engine-reference/unreal/VERSION.md`，不是 `<project>/docs/...`。
+- **游戏项目产物**：相对游戏项目根解析。例如工作流生成的 `<project>/docs/architecture/`、`<project>/design/`、`<project>/production/` 不属于安装包，也不登记到 manifest。
+
+Agent/skill 在读取共享资产前必须先解析当前 opencode 配置根；写入工作流产物前必须解析游戏项目根。不得把两个根目录下同名的 `docs/` 合并、互相覆盖或依赖当前工作目录猜测。
+
+`agents/academic/` 是明确的通用层：定义只包含学科方法、证据纪律和专业边界。UE Studio 可把当前游戏任务作为调用上下文传入，但不得让这些 Agent 依赖 Unreal 版本锚点、UE 专用术语或特定编排器。
+
+### Agent 四层契约
+
+| evaluation_profile | scope | engine_dependency | 约束 |
+|---|---|---|---|
+| `general-core` | `general` | `none` | 通用学术、组织、工程和质量能力；禁止 UE 与集成层反向依赖 |
+| `game-core` | `game` | `none` | 引擎无关的游戏制作能力；UE 只可作为调用上下文，不进入定义 |
+| `unreal-specialist` | `unreal` | `required` | 只承载 UE API、编辑器、构建、内容管线与版本敏感实现 |
+| `integration` | `integration` | `required` | 仅 `ue-studio-orchestrator`；单向组合全部叶子 Agent |
+
+分类以 `manifest.json` 为唯一事实源，不能通过目录名或 `ue-` 前缀猜测。Core 先定义意图、约束与验收标准；只有实现节点确实需要 Unreal 时，编排器才追加最小 UE specialist。
+
+## 来源与可追溯性
+
+`provenance.json` 记录四个来源仓库、已蒸馏能力和本地审查证据。未在本地记录的源 commit 明确为 `null`，不得根据日期或远端默认分支虚构 pin：
+
+- addyosmani/agent-skills
+- msitarzewski/agency-agents
+- Donchitos/Claude-Code-Game-Studios
+- jnMetaCode/agency-agents-zh
+
+## 维护规则
+
+新增、删除或移动 agent、skill、doc、reference、rule 时必须同步修改 `manifest.json`，随后运行 validator 和一次临时目录安装 smoke test。版本敏感 UE 事实以 `docs/engine-reference/unreal/VERSION.md` 的核实状态为准。

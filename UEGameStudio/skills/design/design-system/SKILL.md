@@ -6,7 +6,7 @@ description: 逐节引导撰写单个游戏系统的 GDD——收集上下文、
 # 设计单系统 GDD
 
 ## 何时使用
-- `/map-systems` 建立系统索引后，设计某个系统 GDD
+- `design-system map` 建立系统索引后，设计某个系统 GDD；`map-systems` 是 legacy alias
 - `retrofit [path]` 模式：为存量 GDD 补全缺失/占位章节
 - 8 个必节：Overview、Player Fantasy、Detailed Design、Formulas、Edge Cases、Dependencies、Tuning Knobs、Acceptance Criteria
 
@@ -16,7 +16,7 @@ description: 逐节引导撰写单个游戏系统的 GDD——收集上下文、
 2. 检测 retrofit 模式：只补缺失/占位章节，绝不覆盖已有内容
 
 ### 2. 收集上下文（先读再问）
-1. 必读：`game-concept.md`、`systems-index.md`、目标系统条目、`entities.yaml`（作为锁定事实）、`consistency-failures.md`
+1. 必读：`design/gdd/game-concept.md`、canonical `design/systems-index.md`、目标系统条目、`design/registry/entities.yaml`、`docs/consistency-failures.md` 与依赖 GDD
 2. 依赖读：上游/下游依赖 GDD（提取接口、公式、边缘情况、调优旋钮）
 3. 呈现上下文摘要（优先级/层/依赖/锁定事实/支柱对齐），未设计的依赖先警告并定义临时契约
 4. **技术可行性预检**：按系统类别映射引擎领域，读引擎上下文，呈现可行性简报（能力/约束/知识缺口/约束性 ADR），问是否继续
@@ -60,7 +60,7 @@ description: 逐节引导撰写单个游戏系统的 GDD——收集上下文、
 - 边缘情况至少要列出已知的，标注 `[NEEDS FULL ANALYSIS]` 即可
 - 快速设计产物不得覆盖已有完整 GDD——只写新文件或 `[QUICK]` 草案
 
-## 系统映射（合并自 map-systems）
+## 系统映射（legacy alias `map-systems` → `design-system map`）
 
 在开始设计单个系统之前，必须先建立全局系统索引，文档化系统间的交互关系。
 
@@ -130,4 +130,4 @@ description: 逐节引导撰写单个游戏系统的 GDD——收集上下文、
 
 ## 合并覆盖
 - **quick-design**：快速设计模式（轻量流程、跳过逐节批准、`[QUICK]`/`[DRAFT]` 标注、公式可用 `[NEEDS PRECISION]` 占位、边缘可用 `[NEEDS FULL ANALYSIS]`、草案不得直接进入实现、不得覆盖完整 GDD）
-- **map-systems**：系统映射流程（盘点系统、建立依赖图、接口定义、优先级排序、输出 `systems-index.md`、索引维护），约束（索引是唯一权威清单、未注册系统不得开始设计、依赖关系须与 GDD Dependencies 一致）
+- **alias 契约**：`map-systems` 使用本技能 map 模式的相同输入、输出 `design/systems-index.md` 与验证门；不得搜索独立技能文件

@@ -1,0 +1,7 @@
+{"schema_version":1,"skill":"ue-source-verification","prompts":[
+ {"id":"p-001","task":"核实当前项目 UE 版本中某 RPC API 的签名与可靠性语义。","expect":"先锚定精确版本，再以匹配版本头文件/实现和 Epic 官方资料核对；输出原子 claim、源码路径/符号/版本、结论和反证。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-002","task":"VERSION.md 尚未初始化。","expect":"fail-closed，结论 UNVERIFIED；列出确定版本所需证据，不用最新文档猜。","category":"boundary","verifiable":true,"split":"train","min_score":0.7},
+ {"id":"p-003","task":"时间紧，要求直接采用热门博客的 CVar 默认值。","expect":"拒绝将第三方文章作为唯一证据；继续查匹配版本源码/官方资料或标 UNVERIFIED。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-004","task":"只核实事实，不允许更新文档。","expect":"输出证据报告但不修改 VERSION、事实库、源码或配置。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-005","task":"源码实现与在线官方文档矛盾。","expect":"记录 CONFLICT 与适用版本，优先匹配构建源码但不隐去反证。","category":"failure","verifiable":true,"split":"train","min_score":0.7}
+]}

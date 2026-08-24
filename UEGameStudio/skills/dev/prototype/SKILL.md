@@ -6,6 +6,7 @@ description: 概念原型：在写 GDD 之前验证核心想法是否值得设�
 # 概念原型
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 头脑风暴/配置引擎后、写 GDD 前，验证核心机制是否好玩
@@ -34,19 +35,19 @@ description: 概念原型：在写 GDD 之前验证核心想法是否值得设�
 1. 让用户按"新玩家"心态玩，逐条收集：假设是否成立（CONFIRMED/PARTIALLY/REFUTED）、最佳时刻、最糟时刻、意外、判定。
 
 ### 生成原型报告
-1. 按模板填真实观察（不写空话），询问后写入 `REPORT.md`，并更新 `prototypes/index.md`。
+1. 按模板填真实观察，询问后写入 `prototypes/[slug]/REPORT.md`，并更新 `prototypes/index.md`。
 
 ### 创意总监审查
-1. 按 review 模式决定是否 spawn 创意总监做 CD-PLAYTEST 门禁，其结论为最终判定。
+1. 按 review 模式决定是否委派 creative-director 做 CD-PLAYTEST 门禁，其结论为最终判定。
 
 ### 总结与下一步
-1. PROCEED → 进入 design-review → map-systems 等设计流程。
+1. PROCEED → 进入 design-review → design-system map 等设计流程。
 2. PIVOT → 写 PIVOT-NOTE.md（保留什么、改什么、新假设），下次 prototype 以其为起点。
 3. KILL → 核对杀项清单后记入 GRAVEYARD.md，转 brainstorm 探索新概念。
 
 ## 输入/输出
 - 输入：概念描述、可选 `--path`/`--spike`/`--review`、game-concept 与引擎偏好。
-- 输出：一次性原型（HTML 单文件 / 引擎工程 / 规则+试玩日志）、REPORT.md、PROCEED/PIVOT/KILL 判定、必要时 PIVOT-NOTE.md 或 GRAVEYARD.md 条目。
+- 输出：一次性原型、`prototypes/[slug]/REPORT.md`、PROCEED/PIVOT/KILL 判定及必要的 PIVOT-NOTE/GRAVEYARD 条目。
 
 ## 约束
 - 原型代码绝不 import 生产源文件，生产代码绝不 import 原型目录。

@@ -8,7 +8,7 @@ description: 把单个 epic 拆成可实施的 story 文件，每个 story 内�
 ## 何时使用
 - 每个 epic 创建完成后（`/create-epics` 之后）
 - 按依赖顺序：Foundation epic 先拆，再 Core，以此类推
-- 下一环节是 `/story-readiness` 再 `/dev-story`
+- 下一环节是 `dev-story readiness` 再 `dev-story implement`
 
 ## 流程
 ### 1. 解析参数
@@ -28,7 +28,7 @@ description: 把单个 epic 拆成可实施的 story 文件，每个 story 内�
 | UI | 菜单、HUD、按钮、屏幕、对话框、提示 |
 | Config/Data | 仅改数值/数据文件，无新代码逻辑 |
 
-混合 story 取实现风险最高的类型；类型决定 `/story-done` 关闭前需要什么测试证据。
+混合 story 取实现风险最高的类型；类型决定 `dev-story done` 关闭前需要什么测试证据。
 
 ### 4. 拆解 GDD 为 story
 1. 按"相同核心实现"分组验收标准，一组 = 一个 story
@@ -41,7 +41,7 @@ description: 把单个 epic 拆成可实施的 story 文件，每个 story 内�
 2. 优先复用已存在的 `qa-plan-*.md` 中的测试规格；Logic/Integration story 生成 Given-When-Then 测试用例，Visual/Feel/UI story 生成手工验证步骤
 
 ### 6. 呈现并写文件
-1. 写文件前展示完整 story 清单，AskUserQuestion 一次性征得同意
+1. 写文件前展示完整 story 清单，请求用户一次性批准
 2. 写 `story-NNN-[slug].md`（含 Context、Acceptance Criteria、Implementation Notes、Out of Scope、QA Test Cases、Test Evidence、Dependencies）
 3. 同步更新 `EPIC.md` 的 Stories 表与 `index.md`
 

@@ -205,3 +205,56 @@ entries:
     hits: 1
     last_used: 2026-08-24
     source: self-reflect
+    deprecated: true
+
+  - id: m-20260824-021
+    type: strategy
+    category: engineering
+    claim: "可安装 agent 包必须把宿主配置 schema 当作版本事实：记录官方来源与核实日期、权限采用顶层 default-deny 再显式开放，并对不兼容的新 schema fail-closed"
+    evidence:
+      - "session 2026-08-24: OpenCode stable 官方文档使用 permission/bash/task 且多数未声明权限默认 allow；V2 官方文档改为 permissions/shell/subagent"
+      - "UEGameStudio/docs/platform-compatibility.md 固化兼容边界；validate-package.ps1 验证 48 个 agent 全部含顶层 wildcard deny"
+    contrast: "失败侧——只逐项写 read/edit/task 而不设 wildcard deny，会让新增工具或未列权限继承宿主 allow；把 V1 frontmatter 直接装入 V2 会静默失效"
+    confidence: 0.98
+    hits: 1
+    last_used: 2026-08-24
+    source: tool-feedback
+
+  - id: m-20260824-022
+    type: strategy
+    category: engineering
+    claim: "LLM 判官的 emit/apply 必须锁定完整正文、用例和请求哈希，并要求逐断言布尔结果与证据；只回收总分或截断正文不能支撑棘轮"
+    evidence:
+      - "session 2026-08-24: evaluate-skill v1 截断 skill_text 到 3000 字且 answers 仅为 scores 数组；v2 改为完整正文、skill/cases/request SHA-256 与逐断言 decisions"
+      - "SEA/tests 验证 emit 后正文变化会被拒绝，ratchet collect 仅产生 PASS-AWAITING-HITL 且不修改 registry"
+    contrast: "失败侧——正文后半段的否定约束未进入请求，或 emit 后技能变化，旧分数仍可被错误套用到新候选"
+    confidence: 0.99
+    hits: 1
+    last_used: 2026-08-24
+    source: self-reflect
+
+  - id: m-20260824-023
+    type: strategy
+    category: engineering
+    claim: "Agent 评估断言必须按职责 profile 加载：UE/引擎角色检查版本锚定与配置根，通用 academic 角色检查行业无关性、学术证据和专业边界；把 UE VERSION.md 设为全体 Agent 的统一满分条件会反向奖励错误耦合"
+    evidence:
+      - "session 2026-08-24 用户纠正 academic 理应是通用 agents；审计发现四个定义虽然自称引擎无关，却被统一模板注入 UEGameStudio/Unreal VERSION.md/ue-studio-orchestrator"
+      - "evaluate-agent.py 改为 profile-aware 后，Git HEAD 四个 academic 得分 0.4/0.5/0.4/0.5，通用化工作树均为 1.0；新增回归测试确认 UE 绑定使 domain_independent 断言失败"
+    contrast: "失败侧——对所有角色套同一版本纪律，既污染通用领域 Agent，又让评估器把这种污染计为质量增益"
+    confidence: 0.99
+    hits: 1
+    last_used: 2026-08-24
+    source: user-correct
+
+  - id: m-20260824-024
+    type: strategy
+    category: engineering
+    claim: "Agent 的通用性不能由目录名或统一模板推断，必须在 manifest 中显式声明 scope、engine_dependency、evaluation_profile 与唯一 integration_owner；依赖方向保持 Integration→Unreal Adapter→Core，Core 不得反向知道具体引擎或编排器"
+    evidence:
+      - "session 2026-08-24: 用户追问 academic 之外是否存在同类错误；全量审计发现 Core 角色普遍被统一 UE 版本纪律和编排器路由污染，模板与评估器同时放大该问题"
+      - "manifest schema v2 将 53 个 Agent 分为 general-core 18、game-core 23、unreal-specialist 11、integration 1；严格 package validator、profile-aware evaluate-agent 与 manifest-driven topology 分别验证依赖边界、职责断言和单向路由，工作树得分 1.0"
+    contrast: "失败侧——按 agents/academic、programmers、specialists 等物理目录猜职责，或给所有定义注入 Unreal VERSION.md，会让通用角色产生反向引擎依赖，且旧统一评估器还会把错误耦合奖励为满分"
+    confidence: 0.99
+    hits: 1
+    last_used: 2026-08-24
+    source: user-correct

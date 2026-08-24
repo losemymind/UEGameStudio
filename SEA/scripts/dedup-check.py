@@ -7,7 +7,7 @@
 按 claim 的字符二元组 Jaccard 相似度检测近重复，给出合并建议。
 阈值越低越宽松。输出仅提示，合并需人工确认。
 退出码: 0 无疑似重复; 1 存在疑似重复。
-零第三方依赖（仅标准库）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import sys

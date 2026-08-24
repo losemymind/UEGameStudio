@@ -8,6 +8,7 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 本地化不只是翻译，而是让游戏在每个语言与地区都显得"原生"的完整流程。差的本地化破坏沉浸感、困扰玩家、还会卡平台认证。本技能覆盖从字符串提取到文化审查、VO 配音、RTL 布局测试与本地化 QA 签字的完整管线。
 
 > **路径约定**：本技能中的 `src/`、`assets/`、`tests/`、`prototypes/` 等为项目级约定路径，落到 UE 项目时对应 `Source/<GameModule>/`、`Content/`、`Source/**/Tests/`、`Prototypes/`；完整映射见 `references/project-paths.md`。
+> 读取该 reference 前必须解析当前 UEGameStudio/OpenCode 配置根；它不是项目 cwd。找不到包根时 fail-closed，项目 `docs/` 仍按项目根解析。
 
 ## 何时使用
 - 发现硬编码字符串，需要扫描并抽取为字符串表
@@ -21,18 +22,18 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 
 ## 流程
 ### 扫描（scan）
-1. 在 `src/` 中查找未被本地化函数（`tr()`、`Tr()`、`NSLocalizedString`、`GetText` 等）包裹的硬编码字符串。
+1. 扫描 UE C++/Blueprint/UMG/DataTable/String Table：C++ 玩家文本必须使用 `LOCTEXT`/`NSLOCTEXT`/`FText` 或 String Table，不得用通用 `tr()`/`NSLocalizedString` 规则冒充 UE 检查；区分 FText（显示文本）、FName（标识）、FString（内部字符串）。
 2. 检查反模式：位置占位符（`%s`/`%d`）而非命名占位符（`{playerName}`）；日期/数字未用 locale 感知格式；文本嵌在图片里；假设从左到右阅读的拼接；性别/复数硬编码进逻辑；硬编码标点。
 3. 报告文件路径与行号，只读不写。
 
 ### 提取（extract）
-1. 扫描所有源文件，与 `assets/data/strings/` 现有字符串表对比。
+1. 读取项目 Localization Dashboard/`Config/Localization/*.ini`、GatherText target、String Tables 与 `Content/Localization/`；核对 include/exclude、manifest/archive/PO 路径和 culture fallback。
 2. 为新字符串生成键名，遵循 `[分类].[子分类].[描述]`（如 `ui.hud.health_label`）。
 3. 每个新条目必须带 `context` 字段（译者注释）：出现位置、最大字符长度、占位符含义、性别/复数上下文。
 4. 输出新增字符串的 diff；经用户确认后只写入 diff（不整体替换）。若字符串冻结处于 ACTIVE，新增键记入 Post-Freeze Changes 并告警。
 
 ### 校验（validate）
-1. 读取所有 locale 的字符串表，逐项检查：完整性（缺译）、占位符错配、超长、复数形式数量不足、孤立键、陈旧翻译（源已改）、编码/字体支持。
+1. 读取 manifest/archive/PO/String Table，逐项检查：namespace/key 稳定性、缺译、命名参数与 ICU MessageFormat、复数/性别、陈旧/孤立键、文化回退、字体 glyph/复合字体、伪本地化、Cook 后资源是否存在。
 2. 按 locale 与严重度分组报告，只读不写。
 
 ### 状态（status）
@@ -44,7 +45,7 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 2. 生成 `production/localization/translator-brief-[locale]-[date].md`：游戏概览、语气与称呼、脏话政策、幽默处理、角色/世界观词汇表、不翻译清单、占位符参考、字符长度限制、联系方式。
 
 ### 文化审查（cultural-review）
-1. 派发 localization-lead 审查目标 locale 的符号/手势、颜色、数字（4/13/666）、幽默与习语、暴力与分级（DE/AU/CN/AE）、名称与刻板印象。
+1. 委派 localization-specialist 审查目标 locale 的符号/手势、颜色、数字、幽默与习语、暴力与分级、名称与刻板印象；法规结论交 game-compliance-specialist，不由本技能臆断。
 2. 输出表格：发现 / 受影响 locale / 严重度（BLOCKING / ADVISORY / NOTE）/ 建议动作。
 
 ### VO 配音管线（vo-pipeline）
@@ -54,7 +55,7 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 4. `integrate`：核对代码中 VO 引用路径是否存在。
 
 ### RTL 检查（rtl-check）
-1. 确定引擎，检查布局镜像、文本渲染（阿拉伯语连字、东阿拉伯数字）、字符串拼接方向、方向性图标/图片资产。
+1. 在 Slate/UMG 与目标字体上检查 BiDi、阿拉伯语 shaping、数字、字符串拼接方向、Flow Direction、方向性图标/资产；用目标平台 cooked build 截图证据，Editor 预览不能单独签字。
 2. 报告 BLOCKING（不修不可读）与 ADVISORY（美观改进）问题。
 
 ### 冻结（freeze）
@@ -63,12 +64,13 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 3. `freeze check`：extract 时若发现冻结后新增/修改字符串，自动记录违规并告警翻译供应商。
 
 ### 本地化 QA（qa）
-1. 派发 localization-lead，覆盖：功能字符串检查、UI 溢出检查、上下文准确性抽检（10%）、文化审查 BLOCKING 项确认、VO 同步、平台认证要求。
+1. 委派 localization-specialist，覆盖：Gather/Cook 后功能字符串、伪本地化、UI 溢出、上下文准确性、文化审查、字幕/VO 同步、字体与平台认证。
 2. 输出每 locale 的 PASS / PASS WITH CONDITIONS / FAIL 结论；发布门要求每个发布的 locale 达到 PASS 或 PASS WITH CONDITIONS。
+3. 经批准将阶段门汇总写入 canonical `production/localization/report.md`，引用每个 locale、目标平台 cooked build 和原始 LQA 证据。
 
 ## 输入/输出
-- 输入：源代码（`src/`）、字符串表（`assets/data/strings/`）、GDD/叙事文档、引擎技术偏好
-- 输出：字符串提取 diff、覆盖率矩阵、译者简报、文化审查报告、VO 脚本/清单、RTL 报告、冻结状态、本地化 QA 报告
+- 输入：`Source/`、Blueprint/UMG、String Tables、`Config/Localization/`、`Content/Localization/`、GDD/叙事文档
+- 输出：字符串提取 diff、覆盖率矩阵、译者简报、文化/VO/RTL/冻结证据与 `production/localization/report.md`
 
 ## 约束
 - 英语（en）始终是源 locale；永不直接改翻译文件，只生成 diff 供审阅。
@@ -76,6 +78,7 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 - 字符串冻结必须在发送给译者前调用——永远不要翻译一个"移动靶"。
 - RTL 支持必须从一开始设计；文化审查是任何商业发行 locale 的必做项。
 - VO 脚本必须含导演注释，否则录出来是"念稿"效果。
+- 不直接编辑生成的 manifest/archive；翻译交换使用可审计 PO/diff，并在 Gather→Import→Compile/Cook 后验证。
 
 ## 反例（不要这样）
 - 直接改翻译文件而不是生成 diff——丢失可审阅性，且破坏源与译文的对应关系。
@@ -102,3 +105,5 @@ description: 本地化全流程：扫描硬编码字符串、提取/管理字符
 - [ ] 每个新条目含 context 字段，键名遵循 `[分类].[子分类].[描述]`。
 - [ ] 校验覆盖缺译、占位符错配、超长、复数、孤立键、陈旧翻译、编码/字体。
 - [ ] QA 结论为 PASS / PASS WITH CONDITIONS / FAIL，且每个发布 locale 达 PASS 或 PASS WITH CONDITIONS。
+- [ ] UE GatherText/Localization Dashboard 配置、namespace/key、ICU 参数、culture fallback、字体与 cooked build 均有证据。
+- [ ] polish/release 门的 canonical report 覆盖全部发布 locale 并引用同一 cooked build 的 LQA 证据。

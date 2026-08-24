@@ -29,14 +29,14 @@ description: 基于当前里程碑、已完成工作与可用产能，生成或�
 - 生成机器可读状态文件内容但先不写，等阶段 4 后与 markdown 一起写
 
 ### 阶段 4：Producer 可行性门
-- 按评审模式 spawn producer（PR-SPRINT 门）；UNREALISTIC 则砍范围重呈，CONCERNS 则让用户选接受/调整/延期
+- 按评审模式委派 game-producer（PR-SPRINT 门）；UNREALISTIC 则砍范围重呈，CONCERNS 则让用户选接受/调整/延期
 - 请求写 `production/sprints/sprint-[N].md` 与 `production/sprint-status.yaml`
 
 ### 阶段 5：QA 计划门
 - 检查是否存在 QA 计划；无则显式上报并让用户选现在跑 /qa-plan 或跳过（跳过需在计划里加警告块）
 
 ### 阶段 6：下一步
-- 列出 qa-plan、story-readiness、dev-story、sprint-status、scope-check 后续动作
+- 列出 qa-plan、dev-story readiness/implement/done、sprint-status、scope-check 后续动作
 
 ## 输入/输出
 - 输入：里程碑、上一 sprint、设计文档、风险登记、评审模式

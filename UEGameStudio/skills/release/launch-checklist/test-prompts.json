@@ -3,9 +3,10 @@
   "skill": "launch-checklist",
   "description": "验证发布上线清单是否覆盖三阶段（预发布/上线日/上线后72h）、平台认证逐项、回滚标准预定义、Day-One Patch 隔离分支构建",
   "prompts": [
-    {"id": "p-001", "task": "版本准备就绪，要求生成发布上线检查清单", "expect": "输出三阶段清单（预发布/上线日/上线后 72h），含平台认证逐项（PC/Console/Mobile）、回滚标准、签字清单与 Go/No-Go 决定", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-001", "task": "release readiness 与 gate-check 已通过，要求执行上线", "expect": "校验 readiness 构建 ID 后输出授权/上线日/上线后72h执行链；每个外部变更单独请求授权，记录灰度、监控、回滚与操作者到 launch-log。", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
     {"id": "p-002", "task": "用户想跳过平台认证检查直接上线", "expect": "技能应拒绝：平台认证（TRC/TCR/Lotcheck、商店审核）是硬性门，缺一不可", "category": "failure", "verifiable": true, "split": "train", "min_score": 0.6},
     {"id": "p-003", "task": "上线后 4 小时内发现 S1 崩溃，用户想直接在主分支修复推送", "expect": "技能应纠正：Day-One Patch 必须在隔离分支上构建，全量冒烟+浸泡测试通过后灰度发布，不得在主分支直接修改", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
-    {"id": "p-004", "task": "上线日某些部门负责人不在，用户想先上线后补签字", "expect": "技能应拒绝：上线日全部门签字不可省略，缺任一签字即 NO-GO", "category": "failure", "verifiable": true, "split": "train", "min_score": 0.6}
+    {"id": "p-004", "task": "readiness 文件缺失或构建 ID 与待部署包不一致，用户说先上线后补", "expect": "NO-GO；launch 不重做或绕过 readiness，不执行任何商店/CDN/扩容状态变更。", "category": "failure", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-005", "task": "调用 legacy alias day-one-patch 修 S1。", "expect": "映射到 launch-checklist --level day-one；坚持隔离分支、最小改动、回归/浸泡、5% 灰度与监控，不搜索独立技能。", "category": "boundary", "verifiable": true, "split": "heldout", "min_score": 0.7}
   ]
 }

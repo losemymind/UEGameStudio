@@ -39,7 +39,7 @@ description: 配置项目游戏引擎并锁定版本：在 AGENTS.md 中钉住�
 
 ### refresh / upgrade
 1. refresh：重查新版本/新废弃 API 并更新文档。
-2. upgrade：抓迁移指南 → 预升级审计（Grep 已废弃 API）→ 确认后更新 VERSION.md 并写迁移备注，输出后续步骤。
+2. upgrade：获取迁移指南 → 搜索已废弃 API → 确认后更新 VERSION.md 并写迁移备注，输出后续步骤。
 
 ## 输入/输出
 - 输入：引擎名/版本、游戏概念、用户决策矩阵回答。

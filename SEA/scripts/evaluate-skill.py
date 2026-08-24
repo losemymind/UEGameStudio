@@ -34,6 +34,7 @@
 """
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -169,7 +170,8 @@ def evaluate_topology(topo: dict, agents_dir: Path, templates_dir: Path):
                 agent_names.add(a)
                 cov_total += 1
                 fname = f"{a}.md"
-                if (agents_dir / fname).exists() or (templates_dir / fname).exists():
+                if ((agents_dir.exists() and any(agents_dir.rglob(fname)))
+                        or (templates_dir / fname).exists()):
                     cov_hit += 1
             else:
                 cov_total += 1  # 非字符串 agent 视为格式错误，不算命中
@@ -211,7 +213,8 @@ def run_topology_mode(args, templates_dir):
         print(f"[ERROR] topology.json 解析失败: {e}", file=sys.stderr)
         return 1
     topologies = data.get("topologies", []) or []
-    agents_dir = Path.cwd() / ".opencode" / "agents"
+    candidates = [Path.cwd() / ".opencode" / "agents", ROOT.parent / "UEGameStudio" / "agents"]
+    agents_dir = next((p for p in candidates if p.exists()), candidates[0])
 
     results = []
     for t in topologies:
@@ -248,13 +251,25 @@ def resolve_judge_model(args):
 
 
 def judge_prompt_text(skill_text, index, p):
+    assertions = p.get("assertions") or [p.get("expect")]
+    fixture = p.get("fixture") or {}
+    immutable = p.get("immutable_paths") or []
     return (
-        "你是技能评估判官。判断技能是否满足用例的预期。\n"
-        f"== 技能 SKILL.md ==\n{skill_text[:3000]}\n\n"
+        "你是独立技能评估判官。必须逐项核对 expect 的全部正向与否定断言；"
+        "正文与任一断言矛盾时该项判 FAIL。不得因正文出现相关关键词就判通过。\n"
+        f"== 技能 SKILL.md（完整正文） ==\n{skill_text}\n\n"
         f"== 用例 #{index}（{p.get('category')}） ==\n"
-        f"任务: {p.get('task')}\n预期: {p.get('expect')}\n\n"
-        "请仅输出 0.0~1.0 的一个分数（数字），表示满足程度。"
+        f"任务: {p.get('task')}\n预期: {p.get('expect')}\n"
+        f"逐项断言: {json.dumps(assertions, ensure_ascii=False)}\n"
+        f"Fixture: {json.dumps(fixture, ensure_ascii=False)}\n"
+        f"不可变路径: {json.dumps(immutable, ensure_ascii=False)}\n\n"
+        "请逐项返回每条断言是否满足，并给出简短证据；任何否定性断言也必须单独核对。"
     )
+
+
+def sha256_text(text):
+    """返回 UTF-8 文本的稳定 SHA-256，用于锁定评测快照。"""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def apply_budget(cases, budget):
@@ -269,9 +284,9 @@ def run_judge_mode(args, skills_dir):
 
     两种判官来源：
       1. 内联判官（推荐，免配置）—— --emit/--apply 协议：
-         --emit <file>  生成判定请求文件（skill 正文 + verifiable 用例），agent 用
-                         当前会话模型逐条判定，写回 <file>.answers.json（scores 数组）
-         --apply <file> 读取判定结果，计算总分输出（eval_source=l1）
+         --emit <file>  生成判定请求文件（完整 skill 正文、verifiable 用例与快照哈希），
+                         agent 用当前会话模型逐断言判定，写回 v2 decisions 回执
+         --apply <file> 校验正文/用例/请求哈希与判官模型，按逐断言结果计算总分
          模型来源：--model（会话模型）> SEA_EVAL_MODEL（便宜模型）> 默认
       2. HTTP 判官（传统）—— 配置 SEA_JUDGE_URL/API_KEY 时直接调用
          未配置 → 回退确定性打分（eval_source=l0）并提示。
@@ -313,23 +328,40 @@ def run_judge_mode(args, skills_dir):
 
     # ---- 内联判官协议：emit（生成判定请求） ----
     if args.emit:
+        cases = [
+            {"index": i, "id": p.get("id"), "category": p.get("category"),
+             "task": p.get("task"), "expect": p.get("expect"),
+             "assertions": p.get("assertions") or [p.get("expect")],
+             "fixture": p.get("fixture", {}),
+             "immutable_paths": p.get("immutable_paths", [])}
+            for i, p in enumerate(verifiable, 1)
+        ]
         req = {
             "protocol": "sea-inline-judge",
-            "version": 1,
+            "version": 2,
             "skill": skill,
             "judge_model": model,
-            "skill_text": skill_text[:3000],
-            "cases": [
-                {"index": i, "id": p.get("id"), "category": p.get("category"),
-                 "task": p.get("task"), "expect": p.get("expect")}
-                for i, p in enumerate(verifiable, 1)
-            ],
+            "skill_text": skill_text,
+            "skill_sha256": sha256_text(skill_text),
+            "cases": cases,
+            "cases_sha256": sha256_text(json.dumps(cases, ensure_ascii=False, sort_keys=True)),
+            "answer_schema": {
+                "protocol": "sea-inline-judge-answer",
+                "version": 2,
+                "request_sha256": "SHA-256 of the exact request file bytes",
+                "judge_model": model,
+                "decisions": [{
+                    "index": "matching case index",
+                    "assertion_results": "boolean array matching case.assertions",
+                    "evidence": "non-empty concise evidence for the decisions",
+                }],
+            },
         }
         emit_path = Path(args.emit)
         emit_path.write_text(json.dumps(req, ensure_ascii=False, indent=2),
                              encoding="utf-8")
         print(f"[EMIT] 判定请求已写入 {emit_path}")
-        print(f"请用当前会话模型（{model}）逐条判定，将 scores 数组写回 "
+        print(f"请用当前会话模型（{model}）逐条判定，将 v2 decisions 回执写回 "
               f"{emit_path}.answers.json，然后运行 --apply {emit_path}")
         return 0
 
@@ -345,23 +377,59 @@ def run_judge_mode(args, skills_dir):
                   file=sys.stderr)
             return 1
         try:
+            req = json.loads(apply_path.read_text(encoding="utf-8"))
             ans = json.loads(answers_path.read_text(encoding="utf-8"))
         except ValueError as e:
             print(f"[ERROR] 判定结果解析失败: {e}", file=sys.stderr)
             return 1
-        scores = ans.get("scores") if isinstance(ans, dict) else ans
-        if not isinstance(scores, list) or len(scores) != len(verifiable):
-            print(f"[ERROR] scores 应为长度 {len(verifiable)} 的数组（实际 {len(scores) if isinstance(scores, list) else '?'}）",
-                  file=sys.stderr)
+        if (not isinstance(req, dict) or req.get("protocol") != "sea-inline-judge"
+                or req.get("version") != 2 or req.get("skill") != skill):
+            print("[ERROR] 判定请求不是当前技能的 sea-inline-judge v2 请求", file=sys.stderr)
             return 1
-        results = [max(0.0, min(1.0, float(s))) for s in scores]
-        results = [round(s, 3) for s in results]
+        expected_cases = [
+            {"index": i, "id": p.get("id"), "category": p.get("category"),
+             "task": p.get("task"), "expect": p.get("expect"),
+             "assertions": p.get("assertions") or [p.get("expect")],
+             "fixture": p.get("fixture", {}),
+             "immutable_paths": p.get("immutable_paths", [])}
+            for i, p in enumerate(verifiable, 1)
+        ]
+        if req.get("skill_sha256") != sha256_text(skill_text) or req.get("skill_text") != skill_text:
+            print("[ERROR] 技能正文已在 emit 后变化；必须重新生成判定请求", file=sys.stderr)
+            return 1
+        expected_cases_hash = sha256_text(json.dumps(expected_cases, ensure_ascii=False, sort_keys=True))
+        if req.get("cases") != expected_cases or req.get("cases_sha256") != expected_cases_hash:
+            print("[ERROR] 测试用例已在 emit 后变化或请求快照被篡改；必须重新生成", file=sys.stderr)
+            return 1
+        request_hash = hashlib.sha256(apply_path.read_bytes()).hexdigest()
+        if (not isinstance(ans, dict) or ans.get("protocol") != "sea-inline-judge-answer"
+                or ans.get("version") != 2 or ans.get("request_sha256") != request_hash
+                or ans.get("judge_model") != req.get("judge_model")):
+            print("[ERROR] 判定回执协议、请求哈希或判官模型不匹配", file=sys.stderr)
+            return 1
+        decisions = ans.get("decisions")
+        if not isinstance(decisions, list) or len(decisions) != len(expected_cases):
+            print(f"[ERROR] decisions 应为长度 {len(expected_cases)} 的数组", file=sys.stderr)
+            return 1
+        results = []
+        for case, decision in zip(expected_cases, decisions):
+            assertion_results = decision.get("assertion_results") if isinstance(decision, dict) else None
+            evidence = decision.get("evidence") if isinstance(decision, dict) else None
+            if (decision.get("index") != case["index"] or not isinstance(assertion_results, list)
+                    or len(assertion_results) != len(case["assertions"])
+                    or not all(isinstance(v, bool) for v in assertion_results)
+                    or not isinstance(evidence, str) or not evidence.strip()):
+                print(f"[ERROR] 用例#{case['index']} 回执必须含匹配 index、逐断言布尔结果和非空证据",
+                      file=sys.stderr)
+                return 1
+            results.append(round(sum(assertion_results) / len(assertion_results), 3))
         total = round(sum(results) / len(results), 3) if results else 0.0
         if args.json:
-            print(json.dumps({"schema_version": 1, "mode": "judge",
+            print(json.dumps({"schema_version": 2, "mode": "judge",
                               "skill": skill, "judge_model": model,
                               "eval_source": "l1", "split": args.split,
                               "judge_protocol": "inline",
+                              "request_sha256": request_hash,
                               "verifiable_cases": len(verifiable),
                               "score": total, "per_prompt": results},
                              ensure_ascii=False, indent=2))

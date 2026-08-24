@@ -18,7 +18,7 @@ agent 在需要经验时用它检索，而非靠读文件碰运气。
     python SEA/scripts/search-memory.py --all           # 列出全部 active 条目
 
 退出码: 0 完成（有或无结果）；1 参数错误。
-零第三方依赖（仅标准库 + PyYAML）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse

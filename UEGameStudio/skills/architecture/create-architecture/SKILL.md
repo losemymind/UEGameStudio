@@ -12,10 +12,10 @@ description: 逐节引导撰写主架构文档——读取所有 GDD、系统索
 
 ## 流程
 ### 阶段 0：加载全部上下文
-1. **引擎上下文（关键）**：读引擎 `VERSION.md`/`breaking-changes.md`/`deprecated-apis.md`/`current-best-practices.md`/`modules/*`；未配置引擎则停止提示 `/setup-engine`
+1. **引擎上下文（关键）**：先解析 UEGameStudio/OpenCode 配置根，再读包内 engine-reference 的 VERSION/breaking-changes/deprecated-apis/current-best-practices/modules；包根/版本未配置则 fail-closed 并提示 setup-engine，项目架构文档仍按项目根写入
 2. **设计上下文 + 技术需求提取**：读 game-concept、systems-index、tech-prefs、每个 GDD，提取技术需求基线（`TR-[gdd-slug]-[NNN]` 平铺列表）
 3. **既有 ADR**：读 `docs/architecture/` 下全部，列出 ADR 与领域
-4. **知识缺口清单**：生成 HIGH/MEDIUM/LOW 风险领域清单，AskUserQuestion 确认如何继续
+4. **知识缺口清单**：生成 HIGH/MEDIUM/LOW 风险领域清单，请求用户确认如何继续
 
 ### 阶段 1：系统分层映射
 1. 把每个系统映射到层：Platform / Foundation / Core / Feature / Presentation
@@ -56,7 +56,7 @@ TD-ARCHITECTURE 自审 + `full` 模式跑 LP-FEASIBILITY 门，记录 TD 签收�
 - **引擎版本感知**：HIGH/MEDIUM 风险领域必须交叉引用引擎文档，不能依赖训练数据
 - 每个架构决策前呈现选项，绝不未经输入做绑定决策
 - 增量写：每批准一节立即写，不攒到最后
-- 写批准用 AskUserQuestion（写 / 先看全文 / 暂不），多文件变更列出每个文件一次性问
+- 写入前请求批准（写 / 先看全文 / 暂不），多文件变更列出每个文件一次性问
 
 ## 反例（不要这样）
 - 未配置引擎就写架构
@@ -84,4 +84,8 @@ TD-ARCHITECTURE 自审 + `full` 模式跑 LP-FEASIBILITY 门，记录 TD 签收�
 - [ ] 引擎上下文已加载，HIGH/MEDIUM 风险领域有内联引擎参考摘录
 - [ ] 技术需求基线覆盖全部 GDD，每条映射到 ADR 或列入"必需新 ADR"
 - [ ] post-cutoff API 已标注 ⚠️ 与版本、风险等级
-- [ ] 每节经批准后立即写入，无一次性攒稿；写批准走 AskUserQuestion
+- [ ] 每节经批准后立即写入，无一次性攒稿；有用户批准记录
+
+## 合并别名契约
+- `create-control-manifest` 是 `create-architecture manifest` 的 legacy alias，不存在独立技能文件。
+- alias 必须生成同一 control manifest，并接受相同的架构审查与写入批准门。

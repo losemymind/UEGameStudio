@@ -6,21 +6,22 @@
 
 | 项 | 值 | 说明 |
 |---|---|---|
-| Engine Version | **UE 5.7** | 参考业界 UE 项目常用版本锚定实践（2025-11 发布）。**安装后必须按项目实际引擎版本更新本行** |
-| LLM 知识截止 | 2025-05 | 训练数据覆盖上限 |
-| 知识缺口区间 | UE 5.4 – 5.7 | 该区间新增/变更的 API 超出训练数据，必须联网核实或标注未核实 |
+| Engine Version | **UNINITIALIZED** | 安装时必须从目标项目 `.uproject`、Engine Association 或用户确认取得；禁止用模板默认值代替 |
+| Verified On | — | 初始化时填写 YYYY-MM-DD |
+| Official Documentation | — | 初始化时填写与实际版本匹配的 Epic Developer Community URL |
 
 ## 核实状态
 
-- [ ] 已按项目实际安装的引擎版本更新「Engine Version」
-- [ ] 已确认知识缺口区间与实际引擎版本匹配
+- [ ] 已从项目文件/安装环境取得实际 Engine Version
+- [ ] 已记录匹配版本的 Epic 官方文档 URL 与核实日期
+- [ ] 项目使用的插件（GAS/CommonUI/PCG/Iris 等）已逐项记录启用状态与版本
 
-> 未完成核实的条目视为 `verified: false`，不得作为断言依据（先核实再断言）。
+> 任一项未完成时，所有 UE 版本敏感结论均视为 `verified: false`。Agent 必须先请求版本或查项目文件并 fail-closed，不得继续给出精确 API/CVar/上限断言。
 
 ## 使用规则（对所有 engine/unreal/* agent 强制）
 
-1. 断言 UE API / 上限 / 能力前，先读本文件确认版本。
-2. 涉及 5.4–5.7 新 API 时，标注 `may have changed in [version] — verify`，或联网核实后写明来源。
+1. 断言 UE API / 上限 / 能力前，先读本文件确认版本；`UNINITIALIZED` 时立即停止事实型裁决。
+2. 版本敏感内容必须链接到与项目版本匹配的 Epic 官方文档或项目源码位置；仅写 `may have changed` 不能替代核实。
 3. 核实到的事实写入项目版本锚定事实记录（`verified: true` + 来源 + 版本）；失效事实标记 `deprecated` 并触发修订。
 4. 每 90 天或引擎版本变更后做版本事实健康检查，发现逾期或未核实条目即修订。
 
@@ -28,10 +29,10 @@
 
 | 文件 | 内容 | 状态 |
 |---|---|---|
-| `current-best-practices.md` | Nanite/Lumen/Substrate 选型、C++20、TObjectPtr GC 安全 | 待按锚定版本核实后填充 |
-| `breaking-changes.md` | 锚定版本内的破坏性变更 | 待核实后填充 |
-| `deprecated-apis.md` | 废弃 API 清单 | 待核实后填充 |
-| `modules/` | 分模块（animation/audio/input/navigation/networking/physics/rendering/ui）版本验证要点 | 待按需创建 |
-| `plugins/` | GAS / CommonUI / Gameplay Camera / PCG 等插件专页 | 待按需创建 |
+| `current-best-practices.md` | 已核实实践的索引；仅收录带版本、日期、官方 URL 的条目 | 已初始化，随项目填充 |
+| `breaking-changes.md` | 当前项目版本升级的破坏性变更记录 | 已初始化，默认无事实断言 |
+| `deprecated-apis.md` | 当前项目实际命中的废弃 API 清单 | 已初始化，默认无事实断言 |
+| `modules/performance.md` | Unreal Insights/Stat/平台实测的证据契约 | 已初始化 |
+| `plugins/README.md` | GAS/CommonUI/PCG/Iris 等插件核实模板 | 已初始化 |
 
 > 支撑文件未核实前不可断言其内容；先核实再断言（框架硬规则 7）。

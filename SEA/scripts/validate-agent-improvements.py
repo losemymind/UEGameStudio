@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DIR = ROOT / "agents" / "_improvements"
 
 VALID_KIND = {"FIX", "DERIVED", "REWRITE"}
-VALID_STATUS = {"pending", "approved", "rejected", "reverted"}
+VALID_STATUS = {"pending", "approved", "captured", "rejected", "reverted"}
 REQUIRED_IMPROVEMENT = ["id", "target", "kind", "signal", "patch", "status", "created"]
 
 
@@ -78,12 +78,20 @@ def check_baselines(errors):
             errors.append(f"baselines.json: {target} 缺少数字 best_score")
         if not info.get("updated"):
             errors.append(f"baselines.json: {target} 缺少 updated")
+        # 仓库内目标必须真实存在，防止重构后旧路径继续伪装成有效基线。
+        target_path = ROOT.parent / target
+        if target.startswith("UEGameStudio/") and not target_path.exists():
+            errors.append(f"baselines.json: 悬空目标 {target}")
     return bl
 
 
 def check_ratchet(improvements, baselines, errors):
     """已 approved 的改进不得使某 target 的最优分低于基线。"""
     for it in improvements:
+        if it.get("status") == "pending" and not isinstance(it.get("score_before"), (int, float)):
+            errors.append(f"pending 改进 {it.get('id')} 必须有数字 score_before")
+        if it.get("status") == "captured" and not isinstance(it.get("score_after"), (int, float)):
+            errors.append(f"captured 改进 {it.get('id')} 必须保留数字 score_after 作为历史观测值")
         if it.get("status") != "approved":
             continue
         tgt = it.get("target")
@@ -91,7 +99,13 @@ def check_ratchet(improvements, baselines, errors):
         if after is None:
             continue
         base = baselines.get(tgt, {}).get("best_score")
-        if base is not None and isinstance(after, (int, float)) and after < base:
+        before = it.get("score_before")
+        if not isinstance(before, (int, float)) or not isinstance(after, (int, float)):
+            errors.append(f"approved 改进 {it.get('id')} 必须有 score_before/score_after")
+            continue
+        if after <= before:
+            errors.append(f"棘轮违约: {tgt} approved 改进 {it.get('id')} score_after={after} <= score_before={before}")
+        if base is not None and after < base:
             errors.append(
                 f"棘轮违约: {tgt} approved 改进 {it.get('id')} score_after={after} < 基线 {base}"
             )

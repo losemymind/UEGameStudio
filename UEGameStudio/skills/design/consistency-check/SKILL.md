@@ -18,11 +18,11 @@ description: 扫描所有 GDD 对照实体注册表，检测跨文档矛盾（�
 - 注册表为空则提示"先跑设计系统写 GDD，注册表会自动填充"，并停止
 
 ### 2. 定位范围内的 GDD
-- `Glob design/gdd/*.md`，排除 `game-concept.md`、`systems-index.md`、`game-pillars.md`
+- 查找 `design/gdd/*.md`，排除 `game-concept.md`、`game-pillars.md`；系统索引只从 canonical `design/systems-index.md` 读取
 - `since-last-review` 模式用 `git log --name-only` 找出最近被改动的 GDD
 
-### 3. Grep-first 矛盾扫描
-- 对每个注册项，用 Grep 在范围内 GDD 里搜索其名称，只取匹配行及上下文（-C 3），不做全量读取
+### 3. 搜索优先的矛盾扫描
+- 对每个注册项，在范围内 GDD 里搜索其名称，只取匹配行及上下文，不做无目标的全量读取
 - 实体扫描：对比 GDD 中出现的数值/类别/派生值 与注册表
 - 物品扫描：对比售价/重量/堆叠规则/类别
 - 公式扫描：对比变量名、输出范围

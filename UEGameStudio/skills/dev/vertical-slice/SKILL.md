@@ -73,12 +73,12 @@ description: 垂直切片构建——从开始到结束的一个完整可玩游�
 ### 7. 输出与决策
 1. 撰写垂直切片报告：范围达成度、性能数据、视觉对比、试玩反馈摘要
 2. 产出 GO/NO-GO 决策：全面生产、先修复后重评、调整方向
-3. 保存到 `production/vertical-slice/report-[date].md`
+3. 保存 canonical 阶段产物到 `production/vertical-slice/REPORT.md`；历史测量附件可按日期放 `production/vertical-slice/evidence/`
 4. GO 后该垂直切片即为"质量标杆"，后续所有内容的品质不得低于此基准
 
 ## 输入/输出
 - 输入：游戏概念文档、核心循环定义、对标参考游戏、目标平台与性能预算
-- 输出：垂直切片范围文档、可玩演示构建、性能报告、试玩反馈、GO/NO-GO 决策
+- 输出：`production/vertical-slice/REPORT.md`、可玩演示构建、性能/试玩证据、GO/NO-GO 决策
 
 ## 约束
 - 垂直切片代码**不可**直接重构进生产——生产实现应从零重写，但可以复用架构设计
@@ -113,6 +113,7 @@ description: 垂直切片构建——从开始到结束的一个完整可玩游�
 
 ## Verification（证据化验证门）
 - [ ] 垂直切片范围文档已输出（含包含清单、排除清单、预期体验时长 10–30 分钟）
+- [ ] workflow catalog 的 canonical 产物 `production/vertical-slice/REPORT.md` 存在并引用真实 evidence
 - [ ] 完整游戏循环覆盖：启动→主菜单→核心玩法→结算→返回菜单，全部 UI 流程完整
 - [ ] 性能测试在 Shipping 构建上进行，帧率/内存/加载时间数据已记录
 - [ ] 零崩溃、零阻塞性 Bug（有四轮以上试玩记录）

@@ -2,6 +2,24 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-24 — UEGameStudio 0.6.0 全流程修复 + SEA 0.4.0 可信评估门
+
+来源：用户要求结合四个源数据仓库审计成品后“全部完整修复”。
+
+- **成品契约**：新增 manifest/provenance、参数化安装器与严格静态 validator；53 agents、52 skills、8 docs、5 references、11 rules 一一登记，项目/全局安装均排除模板与演进注册表。
+- **四层 Agent 系统 [BREAKING]**：manifest schema v2 显式声明 18 个 General Core、23 个 Game Core、11 个 Unreal Specialist 与 1 个 Integration Orchestrator；Core 全部 `engine_dependency=none`，Unreal Adapter 全部 fail-closed 读取实际配置根，Integration 是唯一可知道产品包并路由全部 52 个叶子 Agent 的 owner。新增 Blueprint/Engine/Gameplay Framework/UI/Build/Diagnostics/Content Pipeline 七个 UE 适配器，合规与 LiveOps 恢复为引擎无关 Game Core。
+- **系统性通用层纠偏**：依据用户连续纠正，先将四个 Academic 重构为行业与技术栈无关的学科 Agent，再扩展审计到全部 Core；移除技术总监、程序员、QA、运营、设计、美术等通用角色中的 UEGameStudio、Unreal 版本锚点和专用编排器反向依赖。依赖保持单向：Integration→Unreal Adapter→Core，Core 不知道 UE 与编排器的存在。
+- **工作流/技能**：workflow catalog 升级 schema v2 并固化 7 阶段 owner/reviewer/entry/exit/reject/retry 契约；新增需求、增量、TDD、调试、来源核实、CI/CD、可观测性、安全、性能验证、发布合规 10 技能；修复悬空路由、5/7 产物契约和 readiness/launch 边界。
+- **版本事实**：UE 参考锚点改为 `UNINITIALIZED`，无项目版本、官方 URL、核实日期和插件状态时阻断版本敏感断言；原两条无 URL 的 UE 5.8 事实 deprecated。OpenCode stable V1 与 V2 schema 分开锚定，V2 未转换前不声称兼容。
+- **评估器 [BREAKING]**：SEA 0.4.0 内联 judge v2 使用完整正文、逐断言/fixture/不可变路径、skill/cases/request SHA-256 与证据回执；Agent 评估、拓扑和包校验统一读取 manifest profile，不再按物理目录或全局模板猜职责。ratchet 改为 emit/collect 两阶段，只输出 `PASS-AWAITING-HITL`；历史无前测条目改为 `captured`，不得伪造 0 分。
+- **可复现前测**：`evaluate-agent.py` 用同一组 profile 断言比较 Git HEAD 与工作树：全 Agent 集合 0.538→1.000；拓扑由旧无 profile 基线 0.000→1.000（10/10 分层断言）。Academic 四个定义以及其余 37 个 Core 均通过引擎无关硬断言，11 个 UE 适配器通过版本/配置根 fail-closed 与无 Integration 反向依赖断言。
+- **框架自包含**：补回根 `INSTALL.md` 与 `sustainable-agent-research.md`；新增 `SEA/requirements.txt`、workflow validator 与 3 个回归测试。
+- **已通过验证**：framework version、memory/dedup/version facts、26 个 agent definition improvements、53 节点 topology、workflow、52 技能 schema、52 技能供应链审计、secret/PII 扫描、严格 package validator、3 个 agent evaluator unittest、临时安装 smoke test。
+- **L1 棘轮结果**：21 个技能 heldout v2 首轮严格判定暴露 9 个边界措辞缺口；最小修复后仅重评失败快照，最终全部 `score_after=1.0`、严格高于各自 `score_before=0.0~0.855`，状态均为 `PASS-AWAITING-HITL`。
+- **分层路由技能复评**：对本轮直接改动的 architecture-review、team-polish、dev-story、release/launch、perf、code-review、localize 及三项 UE 门技能重新生成当前快照并用 `gpt-5.6-sol` 严格核对 heldout；11/11 均为 1.000。team-polish 首轮检查发现缺少“玩法变化即回退并重验”，最小修复后通过。
+- **HITL 固化**：用户于 2026-08-24 明确要求“提交和推送”；26 个 definition improvements 与 1 个 topology 已 approved，23 个技能候选已 solidified，相关定义基线更新为已批准的 `score_after`。
+- 记忆条目：m-20260824-021、m-20260824-022、m-20260824-023、m-20260824-024；m-20260824-020 因固定 UE 5.7 策略被本次 fail-closed 方案取代，标记 deprecated。
+
 ## 2026-08-24 — agents 全量补入 UE 版本纪律（41 文件）+ 版本声称 verify 标记
 
 对 `UEGameStudio/agents/` 42 个 agent 文件做 UE 版本纪律扫荡（模板 `_template.md` 已合规，其余 41 个逐文件插入）：

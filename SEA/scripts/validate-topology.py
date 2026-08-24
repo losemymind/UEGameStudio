@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""validate-topology.py — 校验 SEA/agents/topology.json（§10.1 拓扑注册表）。
+"""validate-topology.py — 校验 manifest 驱动的 SEA/agents/topology.json。
 
 检查项:
   1. 顶层结构：topologies 数组存在
   2. 每个候选：id 唯一、必填字段完整（id/name/description/agents/status）
   3. status 枚举合法：pending / approved / reverted
-  4. agents 为字符串数组，且每个 agent 有对应定义文件（.opencode/agents/ 或 templates/）
-  5. edges 中的 from/to 都指向拓扑内 agent（无悬空引用）
-  6. edges 格式完整（from/to 必填）
+  4. registry_source 指向 package manifest schema v2
+  5. integration orchestrator 唯一，manifest 所有叶子均单向归属它
+  6. scope/engine_dependency/evaluation_profile 契约一致
 
 用法:
     python SEA/scripts/validate-topology.py [--agents-dir <agent 定义目录>]
@@ -23,8 +23,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 TOPO_PATH = ROOT / "agents" / "topology.json"
+REPO = ROOT.parent
 VALID_STATUS = {"pending", "approved", "reverted"}
-REQUIRED_FIELDS = ["id", "name", "description", "agents", "status"]
+REQUIRED_FIELDS = ["id", "name", "description", "registry_source",
+                   "orchestrator", "edge_policy", "status"]
+VALID_SCOPES = {"general", "game", "unreal", "integration"}
+VALID_PROFILES = {"general-core", "game-core", "unreal-specialist", "integration"}
 
 
 def main():
@@ -42,8 +46,11 @@ def main():
         print(f"[ERROR] topology.json 解析失败: {e}", file=sys.stderr)
         return 1
 
-    agents_dir = Path(args.agents_dir) if args.agents_dir \
-        else Path.cwd() / ".opencode" / "agents"
+    if args.agents_dir:
+        agents_dir = Path(args.agents_dir)
+    else:
+        candidates = [Path.cwd() / ".opencode" / "agents", ROOT.parent / "UEGameStudio" / "agents"]
+        agents_dir = next((p for p in candidates if p.exists()), candidates[0])
     templates_dir = ROOT / "templates"
 
     topos = data.get("topologies", [])
@@ -69,31 +76,49 @@ def main():
         if t.get("status") not in VALID_STATUS:
             errors.append(f"{loc} ({eid}): status 非法 {t.get('status')}（应为 {sorted(VALID_STATUS)}）")
 
-        agents = t.get("agents", [])
-        if not isinstance(agents, list) or not agents:
-            errors.append(f"{loc} ({eid}): agents 应为非空字符串数组")
+        registry_source = t.get("registry_source")
+        if registry_source != "UEGameStudio/manifest.json":
+            errors.append(f"{loc} ({eid}): registry_source 必须是 UEGameStudio/manifest.json")
             continue
-        agent_names = set()
-        for a in agents:
-            if not isinstance(a, str):
-                errors.append(f"{loc} ({eid}): agent 应为字符串: {a}")
+        manifest_path = REPO / registry_source
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            errors.append(f"{loc} ({eid}): manifest 无法读取: {exc}")
+            continue
+        if manifest.get("schema_version") != 2:
+            errors.append(f"{loc} ({eid}): manifest 必须是 schema v2")
+        entries = manifest.get("agents", [])
+        agent_ids = {entry.get("id") for entry in entries if isinstance(entry, dict)}
+        orchestrator = t.get("orchestrator")
+        if orchestrator not in agent_ids:
+            errors.append(f"{loc} ({eid}): orchestrator 不在 manifest: {orchestrator}")
+        if t.get("edge_policy") != "orchestrator-to-all-leaves":
+            errors.append(f"{loc} ({eid}): edge_policy 必须是 orchestrator-to-all-leaves")
+        for entry in entries:
+            if not isinstance(entry, dict):
+                errors.append(f"{loc} ({eid}): manifest agent entry 非对象")
                 continue
-            agent_names.add(a)
-            fname = f"{a}.md"
-            if not (agents_dir / fname).exists() and not (templates_dir / fname).exists():
+            aid = entry.get("id")
+            scope = entry.get("scope")
+            profile = entry.get("evaluation_profile")
+            dependency = entry.get("engine_dependency")
+            if scope not in VALID_SCOPES or profile not in VALID_PROFILES:
+                errors.append(f"{loc} ({eid}): {aid} scope/profile 非法 {scope}/{profile}")
+            if aid == orchestrator:
+                if scope != "integration" or profile != "integration" or entry.get("integration_owner") is not None:
+                    errors.append(f"{loc} ({eid}): orchestrator integration 契约错误 {aid}")
+            else:
+                if entry.get("integration_owner") != orchestrator:
+                    errors.append(f"{loc} ({eid}): leaf integration_owner 错误 {aid}")
+                if scope in {"general", "game"} and dependency != "none":
+                    errors.append(f"{loc} ({eid}): core agent 不得依赖引擎 {aid}")
+                if scope == "unreal" and dependency != "required":
+                    errors.append(f"{loc} ({eid}): Unreal specialist 必须 required {aid}")
+            fname = f"{aid}.md"
+            matches = list(agents_dir.rglob(fname)) if agents_dir.exists() else []
+            if not matches and not (templates_dir / fname).exists():
                 errors.append(f"{loc} ({eid}): agent 定义文件缺失 {fname}")
-
-        for j, edge in enumerate(t.get("edges", []) or [], 1):
-            eloc = f"{loc} ({eid}) 边#{j}"
-            if not isinstance(edge, dict):
-                errors.append(f"{eloc}: 应为对象")
-                continue
-            frm, to = edge.get("from"), edge.get("to")
-            if not frm or not to:
-                errors.append(f"{eloc}: from/to 必填")
-                continue
-            if frm not in agent_names or to not in agent_names:
-                errors.append(f"{eloc}: 悬空引用 {frm}→{to}（不在拓扑内）")
 
     if errors:
         for e in errors:

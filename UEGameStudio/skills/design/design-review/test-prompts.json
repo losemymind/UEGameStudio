@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "skill": "design-review",
-  "description": "验证 GDD 评审是否核对 8 必节实质内容、full 模式真实 spawn 对抗式专家、只读不改文件，并并列呈现分歧而非静默取舍。",
+  "description": "验证 GDD 评审是否核对 8 必节、full 模式真实并行委派对抗专家、只读不改文件，并列呈现分歧。",
   "prompts": [
-    {"id":"p-001","task":"在 full 模式下评审一份含公式与经济系统的 GDD，交给程序员之前。","expect":"逐项核对 8 个必备章节并记录 Completeness X/8，Task 并行 spawn 对应领域专家做对抗式评审，产出 APPROVED/NEEDS REVISION/MAJOR REVISION NEEDED 判定与阻塞项清单。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-001","task":"在 full 模式下评审一份含公式与经济系统的 GDD。","expect":"逐项核对 8 必节并记录 Completeness X/8，并行委派 game-designer/systems-designer/economy-designer 做对抗评审，产出判定与阻塞项。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
     {"id":"p-002","task":"对一份已有 design/gdd/reviews/[doc]-review-log.md 的 GDD 做复评审。","expect":"读最近一条 review-log 作为复评审基线，检测上次阻塞项是否已解决。","category":"success","verifiable":true,"split":"train","min_score":0.7},
-    {"id":"p-003","task":"full 模式下评审时，为了省时间跳过专家 spawn，自己脑补各领域意见当专家评审。","expect":"被拒绝：full 模式对抗式专家评审是强制步骤，专家必须是真实 Task 子代理，不得脑内模拟。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
-    {"id":"p-004","task":"评审结束后未经批准就改写 systems-index 或 review-log。","expect":"被阻止：本技能只读，评审阶段不写文件，写 systems-index / review-log 须先经 AskUserQuestion 获用户批准。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
+    {"id":"p-003","task":"full 模式下为了省时间跳过专家委派，自己脑补意见。","expect":"被拒绝：专家必须是真实子 agent；不可用则 BLOCKED，不得脑内模拟。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+    {"id":"p-004","task":"评审结束后未经批准就改写 systems-index 或 review-log。","expect":"被阻止：本技能只读；写入须先展示草稿并获得用户批准。","category":"boundary","verifiable":true,"split":"train","min_score":0.7}
   ]
 }

@@ -6,14 +6,12 @@
 
 默认扫描 memory/ 下所有 .yaml（README.md / NOTES.md 除外）。
 退出码: 0 全部通过; 1 存在错误（必填字段/类型/唯一性）。
-零第三方依赖（仅标准库）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import re
 import sys
 from pathlib import Path
-
-import yaml  # PyYAML，若缺失则提示
 
 try:
     from yaml import safe_load

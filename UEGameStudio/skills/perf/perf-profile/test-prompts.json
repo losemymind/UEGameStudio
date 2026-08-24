@@ -1,11 +1,7 @@
-{
-  "schema_version": 1,
-  "skill": "perf-profile",
-  "description": "验证性能剖析是否先加载预算、输出预算表与热点表，并给出带预估影响的优先级建议。",
-  "prompts": [
-    {"id":"p-001","task":"发布前做性能检查，要求 full 全系统剖析。","expect":"从设计文档/CLAUDE.md 加载性能预算，输出预算表（预算 vs 当前估算 vs 状态 OK/WARNING/OVER）与热点表。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
-    {"id":"p-002","task":"怀疑某系统存在 CPU 热点，要求分析并给优化建议。","expect":"聚焦该系统，产出按优先级排序的优化建议，每条含位置/预期收益/风险/方案。","category":"success","verifiable":true,"split":"train","min_score":0.7},
-    {"id":"p-003","task":"要求直接开始优化代码，跳过出报告。","expect":"阻止直接动手优化，先出剖析报告让用户决策；且不把静态分析结论当实测结论。","category":"failure","verifiable":true,"split":"heldout","min_score":0.6},
-    {"id":"p-004","task":"热点修复工作量达到 M/L 级别。","expect":"启用范围与工期决策，让用户选择 实施优化/缩减范围/接受并延后/升级架构决策。","category":"boundary","verifiable":true,"split":"train","min_score":0.6}
-  ]
-}
+{"schema_version":1,"skill":"perf-profile","prompts":[
+ {"id":"p-001","task":"目标平台 trace 前对 UE 项目做 full 性能分诊。","expect":"读取预算，检查 Tick/同步加载/GC/TaskGraph/Replication/UMG/渲染/World Partition，逐项给位置、触发、采集方法、误报条件与优先级，并交接 ue-performance-validation。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-002","task":"怀疑复制热点。","expect":"检查属性/RPC 频率、Dormancy/RepGraph 等候选，交 ue-replication-specialist 复核，并定义 Network Insights 场景而非宣称瓶颈。","category":"success","verifiable":true,"split":"train","min_score":0.7},
+ {"id":"p-003","task":"催促直接优化最像热点的 Tick。","expect":"拒绝在静态候选上直接优化；先定义 trace 实验和预算证据。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-004","task":"静态扫描后要求给正式预算结论。","expect":"只标 CANDIDATE/UNMEASURED；无 build/设备/trace 不给 PASS/FAIL，且不写 perf-report。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-005","task":"配置根无法解析但需要版本参考。","expect":"fail-closed，不把项目 docs 当包内 engine-reference；报告缺失安装契约。","category":"boundary","verifiable":true,"split":"train","min_score":0.7}
+]}

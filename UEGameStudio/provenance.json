@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-08-24",
+  "policy": "Source repositories inform distilled behavior; they are not runtime dependencies. A null pinned_revision means no source commit was recorded locally and must not be inferred.",
+  "sources": [
+    {
+      "id": "agent-skills",
+      "repository": "https://github.com/addyosmani/agent-skills",
+      "pinned_revision": null,
+      "local_reviewed_at": "2026-08-24",
+      "local_review_evidence": ["../DISTILLED-REFERENCE.md", "../DISTILLED-CATALOG.md"],
+      "capability_mapping": [
+        "skill frontmatter and progressive-disclosure structure",
+        "anti-rationalization and red-flag sections",
+        "evidence-based verification gates",
+        "Metric-Honesty evaluation discipline"
+      ]
+    },
+    {
+      "id": "agency-agents",
+      "repository": "https://github.com/msitarzewski/agency-agents",
+      "pinned_revision": null,
+      "local_reviewed_at": "2026-08-24",
+      "local_review_evidence": ["../DISTILLED-REFERENCE.md", "../DISTILLED-CATALOG.md"],
+      "capability_mapping": [
+        "studio role taxonomy and agent personas",
+        "game design, QA, production, operations, and UE domain knowledge",
+        "development-to-QA collaboration loop"
+      ]
+    },
+    {
+      "id": "claude-code-game-studios",
+      "repository": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "pinned_revision": null,
+      "local_reviewed_at": "2026-08-24",
+      "local_review_evidence": ["../DISTILLED-REFERENCE.md", "../DISTILLED-CATALOG.md"],
+      "capability_mapping": [
+        "seven-phase game studio workflow",
+        "stage gates and cross-role orchestration patterns",
+        "game-production skill and rule taxonomy adapted to opencode"
+      ]
+    },
+    {
+      "id": "agency-agents-zh",
+      "repository": "https://github.com/jnMetaCode/agency-agents-zh",
+      "pinned_revision": null,
+      "local_reviewed_at": "2026-08-24",
+      "local_review_evidence": ["../DISTILLED-REFERENCE.md", "README.md"],
+      "capability_mapping": [
+        "Chinese terminology and naming conventions",
+        "Chinese-language role localization",
+        "China-market capability delta identified for further verified distillation"
+      ]
+    }
+  ]
+}

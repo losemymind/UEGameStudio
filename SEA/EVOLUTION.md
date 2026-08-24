@@ -2,7 +2,7 @@
 
 > 本文件是框架自进化机制的**权威总览**。任何机制/脚本/流程变更必须同步更新本文件，保持与代码一致。
 
-当前版本：`0.3.10`（见 `VERSION`）
+当前版本：`0.4.0`（见 `VERSION`）
 
 ## 总览流程图
 
@@ -52,6 +52,9 @@
 
 > **评估触发（选项 B 变更门）**：棘轮只在存在 pending 候选时触发 L1 真实评估
 > （`ratchet-gate.py` → `evaluate-skill --mode judge --split heldout`）；无候选不评估。
+> 判定采用两阶段 v2 协议：先 `--emit-dir` 固化完整正文、用例和 SHA-256 快照，
+> 会话模型逐断言写回带证据的 decisions，再由 `--collect-dir` 验证快照并计算分数；
+> 收集只产生 `PASS-AWAITING-HITL`，不会绕过人工审批自动 solidify。
 
 ## 各层演化路径细分
 
@@ -66,7 +69,7 @@
 
 ┌─ 技能层 ──────────────────────────────────────────────┐
 │  信号 → evolutions.json (pending)                     │
-│  → ratchet-gate (变更门触发 L1 真实评估，通过线 0.7)  │
+│  → ratchet-gate (emit→逐断言判定→collect，通过线 0.7) │
 │  → audit-skill (供应链) → HITL 审批 → solidify → 棘轮  │
 │  tool-craft / agent-craft / workflow-craft 皆此路径    │
 └───────────────────────────────────────────────────────┘
@@ -77,9 +80,9 @@
 │  → HITL → 棘轮 (L1 真实分≥0.7 保留/回滚)              │
 └───────────────────────────────────────────────────────┘
 
-┌─ 拓扑层 (§10.1) ─────────────────────────────────────┐
-│  agent 池 → search-topology (生成候选→评估→棘轮→变异) │
-│  → validate-topology (schema+边完整性)                │
+┌─ 拓扑层 (§10.1) ─────────────────────────────────────────────┐
+│  manifest schema v2 → scope/profile/engine dependency 候选   │
+│  → search-topology 分层评分 → validate-topology 单向依赖校验  │
 └───────────────────────────────────────────────────────┘
 
 ┌─ 工具层 (§10.3) ─────────────────────────────────────┐
@@ -96,10 +99,13 @@
 
 ## 治理横切原则
 
+- **历史基线诚实迁移**：技能或定义没有可复核 `score_before`/L1 证据的导入条目标为 `status=captured`；其 `score_after` 只是历史观测值，不代表通过当前棘轮。不得伪造基线或改分来标成 `solidified`/`approved`
 - **评估器 > 生成器**：一切持久化改动先过 `evaluate-*`/`validate-*`
 - **棘轮**：`score_after > best_score` 才保留，基线单调不降（improvements.json + baselines.json + evolutions.json + topology.json 各自持有）
 - **评估触发 = 变更门（选项 B）**：只有 evolutions/improvements 存在 pending 候选需要裁决时才触发 L1 真实评估（`ratchet-gate.py`）；无候选不评估，token 与价值对齐
-- **L1 真实评估**：对 `verifiable: true` 的 heldout 用例做真实判定（`evaluate-skill.py --mode judge --split heldout`），通过线 0.7；**内联判官协议**（`--emit`/`--apply`）让 agent 用当前会话模型判定，免 URL/Key 配置
+- **L1 真实评估**：对 `verifiable: true` 的 heldout 用例做真实判定（`evaluate-skill.py --mode judge --split heldout`），通过线 0.7；**内联判官协议 v2**（`--emit`/`--apply`，批量入口 `--emit-dir`/`--collect-dir`）传递完整技能正文，锁定正文/用例/请求哈希，并要求会话模型逐断言返回布尔结果与证据，免 URL/Key 配置
+- **测试 schema v2**：`test-prompts.json` 的每个用例必须提供非空 `assertions`；可带 `fixture` 和 `immutable_paths`，用于核对输入状态与否定性副作用断言
+- **两阶段棘轮**：emit 后若技能或测试变化则 apply 拒绝；collect 仅计算 `PASS-AWAITING-HITL`，HITL 批准后才能写入 `score_after` 并 solidify
 - **主动评估**：用户输入「SEA评估」关键词 → `ratchet-gate.py --active` 全量评估（token 不设上限）
 - **预算**：自动评估（变更门）默认每技能 ≤20 个 verifiable 用例；主动评估不设上限
 - **模型继承**：L1 判官默认当前会话模型（调用时显式传 `--model`）；`SEA_EVAL_MODEL` 环境变量可切换便宜模型
@@ -119,13 +125,15 @@
 | memory-decay.py | 记忆 | 衰减/遗忘候选 |
 | search-memory.py | 记忆 | 检索召回（关键词+结构索引，返回条目+置信度） |
 | validate-skill.py | 技能 | frontmatter + evolutions schema（递归扫描，兼容分类子文件夹与平铺结构） |
-| evaluate-skill.py | 横切 | L0 启发式 / L1 LLM 判官真实评估（内联协议 --emit/--apply，--split/--budget/--model；递归扫描兼容分类子文件夹） |
-| ratchet-gate.py | 横切 | 棘轮变更门（pending→L1 评估，通过线 0.7）+ 主动评估（--active 全技能无上限） |
+| evaluate-skill.py | 横切 | L0 启发式 / L1 LLM 判官真实评估（v2 完整快照、逐断言 decisions、--emit/--apply、--split/--budget/--model；递归扫描兼容分类子文件夹） |
+| ratchet-gate.py | 横切 | 两阶段棘轮门（--emit-dir→--collect-dir，pending→L1→等待 HITL）+ 主动评估（--active 全技能无上限） |
 | audit-skill.py | 横切 | 供应链审计 |
 | scan-secrets.py | 横切 | PII/secret 扫描 |
 | validate-agent-improvements.py | 定义 | 改进注册表 + 棘轮一致性 |
-| validate-topology.py | 拓扑 | 拓扑注册表校验 |
-| search-topology.py | 拓扑 | 拓扑自动搜索 |
+| evaluate-agent.py | 定义 | 从 package manifest schema v2 读取 general-core/game-core/unreal-specialist/integration profile；core 禁止 UE/集成反向依赖，UE 专家检查版本 fail-closed，integration 检查 deny-first canonical router |
+| validate-topology.py | 拓扑 | 解析 manifest 注册表，校验 scope/profile/engine dependency、唯一 integration owner、定义存在与 integration→leaves 单向契约 |
+| validate-workflow.py | 工作流 | 校验 schema v2、固定 7 阶段、owner/reviewer/skill canonical 引用及 start/stage/gate 消费契约 |
+| search-topology.py | 拓扑 | schema v2 对 manifest 分层契约评分；禁止对固定单向拓扑做无意义随机边变异，演进对象改为 profile/能力映射候选 |
 | collect-tool-signals.py | 工具 | 失败信号采集 |
 | tool-fix-candidates.py | 工具 | 修复候选聚合 |
 | workflow-craft.py | 工作流 | 多智能体工作流实例化 |
@@ -158,3 +166,4 @@
 | 0.3.8 | 2026-08-17 | 版本术语统一：顶层 VERSION → 仓库 VERSION |
 | 0.3.9 | 2026-08-17 | 硬规则新增第 8、9 条：先计划后实施 + 充分利用 subagent |
 | 0.3.10 | 2026-08-20 | validate-skill/evaluate-skill/audit-skill/ratchet-gate/report-metrics 递归扫描（兼容技能分类子文件夹）；audit-skill 修复 rm 正则误报 |
+| 0.4.0 | 2026-08-24 | [BREAKING] 内联判官协议 v2；UEGameStudio manifest schema v2 的 general/game/unreal/integration profile；manifest-driven 单向拓扑、职责分类评估与 Core/Adapter 防耦合门 |

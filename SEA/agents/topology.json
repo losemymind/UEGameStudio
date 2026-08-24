@@ -1,18 +1,32 @@
 {
-  "_doc": "Agent 拓扑注册表（§10.1 多智能体拓扑自动搜索）。一个拓扑 = 一组 agent 节点 + 它们之间的调用边（谁用 Task 调谁），对应 ADAS/AFlow 思路的 agent 程序空间。每个候选拓扑带评测状态与棘轮参考。字段：id(tp-YYYYMMDD-NNN), name, description, agents[]（引用 .opencode/agents/ 或 SEA/templates 中的 agent 定义）, edges[]（{from, to, when}）, status[pending|approved|reverted], score(可选), created, source",
+  "schema_version": 2,
+  "_doc": "Manifest-driven layered topology. UE integration may consume general/game cores and Unreal specialists; leaf definitions must not depend on the concrete orchestrator.",
   "topologies": [
     {
-      "id": "tp-20260814-001",
-      "name": "单核实员拓扑",
-      "description": "基线拓扑：单个 ue-api-verifier 子 Agent 独立完成 UE 事实核实（§10.1 演示候选）",
-      "agents": [
-        "ue-api-verifier"
+      "id": "tp-20260824-001",
+      "name": "UE Game Studio layered composition topology",
+      "description": "以 UEGameStudio/manifest.json 为唯一 Agent 注册表；ue-studio-orchestrator 单向路由全部叶子，core 不反向依赖 Unreal 或集成层。",
+      "registry_source": "UEGameStudio/manifest.json",
+      "orchestrator": "ue-studio-orchestrator",
+      "edge_policy": "orchestrator-to-all-leaves",
+      "constraints": {
+        "general_and_game_engine_dependency": "none",
+        "unreal_engine_dependency": "required",
+        "leaf_task_permission": "deny",
+        "reverse_integration_dependency": "forbidden"
+      },
+      "score_before": 0,
+      "score_after": 1,
+      "eval_source": "l0-structure",
+      "status": "approved",
+      "created": "2026-08-24",
+      "evidence": [
+        "同一组 10 项 schema v2 分层断言应用于 Git HEAD：旧拓扑没有 manifest v2 分层契约，0/10=0.0；工作树 10/10=1.0。",
+        "Agent inventory, scope and evaluation profile are resolved from manifest schema v2.",
+        "validate-topology.py checks profile coherence, integration ownership and definition presence.",
+        "HITL 批准 2026-08-24：用户明确要求提交和推送。"
       ],
-      "edges": [],
-      "status": "pending",
-      "score": null,
-      "created": "2026-08-14",
-      "source": "session 2026-08-14 agent-craft 演示"
+      "approved_at": "2026-08-24"
     }
   ]
 }

@@ -6,7 +6,7 @@
     {
       "id": "p-001",
       "task": "新用户首次进入项目，说「我刚来，不知道从哪里开始」。",
-      "expect": "先静默收集项目现状（引擎是否配置、有无游戏概念/源码/设计文档），再用结构化选项（A 毫无想法 / B 模糊想法 / C 清晰概念 / D 已有工作）询问用户所处位置，不做任何阶段假设，不直接跳入任何工作流。",
+      "expect": "先读取 docs/workflow-catalog.yaml，再静默收集项目现状并请求用户从 A/B/C/D 结构化选项确认位置；不复制另一套阶段条件，不做阶段假设，不直接跳入工作流。",
       "category": "success",
       "verifiable": true,
       "split": "heldout",
@@ -15,7 +15,7 @@
     {
       "id": "p-002",
       "task": "用户回答选项 C（已有清晰概念）。",
-      "expect": "路由到 brainstorm → setup-engine → prototype 概念阶段路径，写 production/stage.txt 为 Concept（单行文件），若 production/review-mode.txt 不存在则询问审查模式并写入。",
+      "expect": "按 catalog 路由到 requirements-discovery → brainstorm → setup-engine → prototype；经批准写 production/stage.txt 为 canonical ID concept（单行），review-mode 缺失时请求选择后写入。",
       "category": "success",
       "verifiable": true,
       "split": "train",
@@ -38,6 +38,15 @@
       "verifiable": true,
       "split": "train",
       "min_score": 0.6
+    },
+    {
+      "id": "p-005",
+      "task": "workflow-catalog.yaml 缺失或 schema_version 不是受支持的 v2。",
+      "expect": "fail-closed 并报告安装/版本问题；不凭技能正文维护的阶段记忆写 stage.txt 或自动路由。",
+      "category": "boundary",
+      "verifiable": true,
+      "split": "heldout",
+      "min_score": 0.7
     }
   ]
 }

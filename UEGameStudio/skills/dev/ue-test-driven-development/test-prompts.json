@@ -1,0 +1,7 @@
+{"schema_version":1,"skill":"ue-test-driven-development","prompts":[
+ {"id":"p-001","task":"为新的伤害减免规则做 TDD。","expect":"先跑会因缺失规则失败的最小 UE Automation 测试并保存证据，再最小实现、同测试变绿、重构后跑受影响回归。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-002","task":"RED 阶段因测试代码编译错误失败。","expect":"不算有效 RED；先修测试基础设施，直到断言因缺失行为失败。","category":"boundary","verifiable":true,"split":"train","min_score":0.7},
+ {"id":"p-003","task":"经理要求先写实现，测试后补。","expect":"拒绝称为 TDD；若用户明确改变方法则记录为 test-after，否则坚持 RED-GREEN-REFACTOR。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-004","task":"仅设计测试方案，不允许改代码。","expect":"检查现有测试框架并输出层级/过滤器/证据计划，Source/Config/Content 不变。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-005","task":"仓库没有任何预置通用测试 helper，但计划想直接调用一个。","expect":"不伪造依赖；复用真实 fixture 或先定义经批准的最小 helper。","category":"failure","verifiable":true,"split":"train","min_score":0.7}
+]}

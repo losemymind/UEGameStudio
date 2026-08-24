@@ -16,7 +16,7 @@ description: 创建架构决策记录（ADR），记录一项重大技术决策�
 2. `retrofit` 模式：读 ADR、扫描缺失章节（Status=BLOCKING、ADR Dependencies/Engine Compatibility=HIGH、GDD Requirements Addressed=MEDIUM），只追加缺失章节，绝不改已有内容
 
 ### 1. 加载引擎上下文（永远最先）
-1. 读 `docs/engine-reference/[engine]/VERSION.md` 得引擎名/版本/LLM cutoff/post-cutoff 风险等级
+1. 先解析 UEGameStudio/OpenCode 配置根，再读包内 `docs/engine-reference/[engine]/VERSION.md`；项目 ADR/registry 仍相对项目根。包根找不到则 fail-closed，不混淆两类 `docs/`
 2. 从标题确定领域，读对应 `modules/[domain].md`、`breaking-changes.md`、`deprecated-apis.md`
 3. MEDIUM/HIGH 风险领域显示知识缺口警告；未配置引擎则提示先跑 `/setup-engine`
 
@@ -26,7 +26,7 @@ description: 创建架构决策记录（ADR），记录一项重大技术决策�
 3. **架构注册表检查（BLOCKING 门）**：读 `docs/registry/architecture.yaml`，呈现与本次决策相关的既有立场（状态所有权/接口契约/禁止模式）作为锁定约束；若提案与之矛盾，立即抛出冲突让用户选择（对齐/取代/说明例外）
 
 ### 4. 协作式引导决策
-1. 先从已收集上下文推导假设（问题/备选/依赖/GDD 关联/状态=Proposed），用 confirm/adjust 的 AskUserQuestion 呈现，不用开放式提问
+1. 先从已收集上下文推导假设（问题/备选/依赖/GDD 关联/状态=Proposed），请求用户 confirm/adjust，不用开放式提问
 2. 涉及 schema 设计的问题另用单独 widget 逐一询问，不与假设混在一起
 3. 确认 ADR 依赖（Depends On / Enables / Blocks）
 
@@ -36,7 +36,7 @@ description: 创建架构决策记录（ADR），记录一项重大技术决策�
 3. **GDD 同步检查**：扫被引用 GDD 是否存在与 ADR Key Interfaces/Decision 命名不一致（重命名的信号/方法/类型），有则写前突出警告
 
 ### 6. 写批准与注册表更新
-1. AskUserQuestion 征得写批准；有 GDD 同步问题则提供"写 ADR + 同步改 GDD"选项
+1. 请求用户批准写入；有 GDD 同步问题则提供"写 ADR + 同步改 GDD"选项
 2. 扫 ADR 中新架构立场（状态所有权/接口契约/性能预算/禁止模式），经批准后追加到 `docs/registry/architecture.yaml`，不修改既有条目（变更则旧条目标 `superseded_by`）
 
 ## 输入/输出
@@ -70,7 +70,7 @@ description: 创建架构决策记录（ADR），记录一项重大技术决策�
 - 同一会话内直接运行 `/architecture-review`（污染评审独立性）
 
 ## Verification（证据化验证门）
-- [ ] 引擎版本已从 `docs/engine-reference/[engine]/VERSION.md` 读得，并在 ADR 中体现对应版本与风险等级
+- [ ] 已从配置根的包内 VERSION 取得参考版本，并与项目 `.uproject`/Build.version 交叉核对
 - [ ] 注册表立场冲突已在写入前抛出并由用户明确选择（对齐/取代/说明例外），有对话记录
 - [ ] 新 ADR 状态字段 = Proposed，未向用户询问状态
-- [ ] 注册表更新（若有）经 AskUserQuestion 批准，且只含新增条目，无既有条目被改动
+- [ ] 注册表更新（若有）经用户批准，且只含新增条目，无既有条目被改动

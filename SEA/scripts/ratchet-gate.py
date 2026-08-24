@@ -28,7 +28,7 @@
     python SEA/scripts/ratchet-gate.py --dry-run   # 只列出待裁决候选，不评估
 
 退出码: 0 无待裁决候选 或 全部通过; 1 存在待裁决候选（dry-run）或有失败候选。
-零第三方依赖（仅标准库 + PyYAML）。
+依赖见 SEA/requirements.txt（PyYAML）。
 """
 
 import argparse
@@ -110,16 +110,19 @@ def all_evaluable_skills(skills_dir):
     return out
 
 
-def inline_l1(skill, skills_dir, model, split):
+def inline_l1(skill, skills_dir, model, split, budget=0, request_dir=None):
     """内联判官协议：--emit 生成判定请求，提示 agent 判定。
 
     返回 (request_path, error)。判定由 agent 用会话模型完成。
     """
     import subprocess
-    tmp = Path(tempfile.mkdtemp(prefix="sea-judge-")) / f"{skill}.json"
+    base = Path(request_dir) if request_dir else Path(tempfile.mkdtemp(prefix="sea-judge-"))
+    base.mkdir(parents=True, exist_ok=True)
+    tmp = base / f"{skill}.json"
     cmd = [sys.executable, str(ROOT / "scripts" / "evaluate-skill.py"),
            "--mode", "judge", "--skill", skill, "--split", split,
-           "--skills-dir", str(skills_dir), "--emit", str(tmp)]
+           "--skills-dir", str(skills_dir), "--budget", str(budget),
+           "--emit", str(tmp)]
     if model:
         cmd += ["--model", model]
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -128,7 +131,7 @@ def inline_l1(skill, skills_dir, model, split):
     return tmp, None
 
 
-def collect_scores(request_path, skills_dir, model, split):
+def collect_scores(request_path, skills_dir, model, split, budget=0):
     """收集 agent 写回的判定结果（--apply）。模型优先用请求文件内记录的判官模型。"""
     import subprocess
     try:
@@ -138,7 +141,8 @@ def collect_scores(request_path, skills_dir, model, split):
         pass
     cmd = [sys.executable, str(ROOT / "scripts" / "evaluate-skill.py"),
            "--mode", "judge", "--skill", request_path.stem, "--split", split,
-           "--skills-dir", str(skills_dir), "--apply", str(request_path), "--json"]
+           "--skills-dir", str(skills_dir), "--budget", str(budget),
+           "--apply", str(request_path), "--json"]
     if model:
         cmd += ["--model", model]
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -166,6 +170,10 @@ def main():
                     help="主动评估收集：对指定技能读回判定结果并计算分数（<request>.answers.json 需已写回）")
     ap.add_argument("--request", type=str, default=None,
                     help="--collect 时指定判定请求文件路径（不填则用临时目录中该技能的请求）")
+    ap.add_argument("--emit-dir", type=str, default=None,
+                    help="将全部 pending 判定请求写入稳定目录；生成后等待会话模型写回 answers")
+    ap.add_argument("--collect-dir", type=str, default=None,
+                    help="收集目录内全部 pending 判定结果并按 threshold 与 score_before 裁决")
     ap.add_argument("--json", action="store_true", help="输出 JSON")
     ap.add_argument("--dry-run", action="store_true",
                     help="只列出待裁决候选，不评估")
@@ -174,6 +182,36 @@ def main():
     skills_dir = resolve_skills_dir(args.skills_dir)
     model = args.model
     split = "heldout"
+
+    # ---- 批量收集：HITL 前只计算 verdict，不自动 solidify ----
+    if args.collect_dir:
+        req_dir = Path(args.collect_dir)
+        collect_budget = args.budget if args.budget is not None else DEFAULT_BUDGET_AUTO
+        skill_cands = pending_skill_candidates(skills_dir)
+        by_skill = {c["skill"]: c for c in skill_cands}
+        results = []
+        failures = 0
+        for skill, cand in by_skill.items():
+            req = req_dir / f"{skill}.json"
+            out, err = collect_scores(req, skills_dir, model, split, collect_budget)
+            if out is None:
+                print(f"[ERROR] {skill} 判定收集失败: {err}", file=sys.stderr)
+                failures += 1
+                continue
+            score = float(out.get("score", 0.0))
+            before = float(cand["entry"].get("score_before", 0.0))
+            source = out.get("eval_source", "l0")
+            passed = source == "l1" and score >= args.threshold and score > before
+            verdict = "PASS-AWAITING-HITL" if passed else "FAIL"
+            failures += 0 if passed else 1
+            results.append({"skill": skill, "score_before": before,
+                            "score_after": score, "eval_source": source,
+                            "verdict": verdict})
+            print(f"  {skill}: before={before:.3f} after={score:.3f} ({source}) -> {verdict}")
+        if args.json:
+            print(json.dumps({"schema_version": 2, "mode": "collect-dir",
+                              "results": results}, ensure_ascii=False, indent=2))
+        return 1 if failures else 0
 
     # ---- 主动评估收集（--collect）----
     if args.collect:
@@ -192,7 +230,8 @@ def main():
             print(f"[ERROR] 找不到 {skill} 的判定请求（请先 --active 生成，或 --request 指定路径）",
                   file=sys.stderr)
             return 1
-        out, err = collect_scores(req, skills_dir, model, split)
+        collect_budget = args.budget if args.budget is not None else DEFAULT_BUDGET_ACTIVE
+        out, err = collect_scores(req, skills_dir, model, split, collect_budget)
         if out is None:
             print(f"[ERROR] 判定收集失败（请确认 {req}.answers.json 已写回）: {err}",
                   file=sys.stderr)
@@ -218,7 +257,7 @@ def main():
         print("流程：对每个技能生成判定请求 → 用会话模型判定 → 收集分数。")
         results = []
         for skill in skills:
-            req, err = inline_l1(skill, skills_dir, model, split)
+            req, err = inline_l1(skill, skills_dir, model, split, budget, args.emit_dir)
             if req is None:
                 print(f"  [ERROR] {skill}: {err}", file=sys.stderr)
                 continue
@@ -254,27 +293,14 @@ def main():
     failures = 0
     for c in skill_cands:
         skill = c["skill"]
-        req, err = inline_l1(skill, skills_dir, model, split)
+        req, err = inline_l1(skill, skills_dir, model, split, budget, args.emit_dir)
         if req is None:
             print(f"[ERROR] {skill} 评估启动失败: {err}", file=sys.stderr)
             failures += 1
             continue
-        print(f"  [裁决] {skill}: 用会话模型判定 {req}")
-        out, err = collect_scores(req, skills_dir, model, split)
-        if out is None:
-            print(f"[ERROR] {skill} 判定收集失败（请确认 {req}.answers.json 已写回）: {err}",
-                  file=sys.stderr)
-            failures += 1
-            continue
-        score = out.get("score", 0.0)
-        source = out.get("eval_source", "l0")
-        verdict = "PASS" if score >= args.threshold else "FAIL"
-        if verdict == "FAIL":
-            failures += 1
-        print(f"  [evolutions] {skill}: L1={score:.3f} ({source}) -> {verdict} "
-              f"(通过线 {args.threshold})")
-        results.append({"skill": skill, "score": score, "eval_source": source,
-                        "verdict": verdict, "threshold": args.threshold})
+        print(f"  [EMIT] {skill}: {req}（写回 {req}.answers.json 后用 --collect-dir 收集）")
+        results.append({"skill": skill, "request": str(req),
+                        "status": "pending-judge"})
 
     for c in defn_cands:
         print(f"  [improvements] {c['target']}: 定义改进暂无 verifiable 用例，"
@@ -285,11 +311,13 @@ def main():
                           "mode": "auto", "budget": budget,
                           "results": results}, ensure_ascii=False, indent=2))
 
+    if results:
+        print("\n判定请求已生成；未在 answers 写回前执行任何 solidify。")
     if failures:
         print(f"\n{failures} 个候选 L1 未达通过线或未完成判定，棘轮建议回滚/重判。",
               file=sys.stderr)
         return 1
-    return 0
+    return 2 if results else 0
 
 
 if __name__ == "__main__":

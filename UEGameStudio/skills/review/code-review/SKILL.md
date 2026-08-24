@@ -30,10 +30,14 @@ description: 对指定文件或目录做架构级与质量级代码评审：编�
 - SOLID：单一职责 / 开闭 / 里氏替换 / 接口隔离 / 依赖倒置
 
 ### 6. 游戏专项关注
-- 帧率无关（delta time）、热路径无分配、空/边界状态处理、线程安全、资源清理
+- UE 对象/生命周期：UCLASS/UFUNCTION/UPROPERTY specifier、GC 可达性、TWeakObjectPtr/TObjectPtr、delegate/timer 解绑、PIE/world teardown、CDO/构造器与 BeginPlay 边界
+- Gameplay/网络：authority/ownership、RPC 可靠性按语义选择、RepNotify/条件复制/late join、prediction/reconciliation；GAS cost/cooldown/GameplayEffect authority
+- 线程/异步：Game Thread 限制、TaskGraph/AsyncTask 回切、lambda 捕获 UObject 生命周期、StreamableHandle 持有与取消
+- 性能/资产：无理由 Tick、同步加载、热路径分配/反射、SoftObjectPtr、World Partition/streaming、UMG invalidation、Cook/EditorOnly 边界
+- Build/平台：module dependency、Build.cs/Target.cs、宏与 include hygiene、Dedicated Server/Shipping/平台条件、存档版本迁移
 
 ### 7. 专项评审（并行）
-- 引擎/语言/着色器/UI 专项用 Task 并行派发；逻辑与集成类 story 同时派发 qa-tester 做可测试性评审
+- 并行委派：UE 底层/模块给 ue-engine-programmer，通用玩法逻辑给 gameplay-programmer、UE Gameplay Framework 实现给 ue-gameplay-framework-specialist，通用 UI 给 ui-developer、UE UI 实现给 ue-ui-specialist；Replication/GAS/World Partition 分别给 ue-replication-specialist/ue-gas-specialist/ue-world-partition-specialist；逻辑与集成 story 给 qa-tester 或 ue-test-automation-engineer
 
 ### 8. 输出评审报告
 - 分区：引擎专项、可测试性、ADR 合规、规范合规（X/6）、架构、SOLID、游戏专项、正面观察、必须修改项、建议项
@@ -61,17 +65,18 @@ description: 对指定文件或目录做架构级与质量级代码评审：编�
 | 「顺手改掉这个小问题更快」 | 评审是只读诊断，改文件越权且会污染评审基线，问题应留给实现方修复 |
 | 「代码还行，不用写正面观察」 | 只挑毛病会破坏信任与采纳率，正面观察是约束的一部分，遗漏即不合格 |
 | 「这个 ADR 不合理，直接新建一个竞争性 ADR 绕过它」 | 违反既有 ADR 应修复实现；设计确实变了要走正式 ADR 修订流程，不是擅自新建 |
-| 「专项评审一个个来也行，何必并行」 | 顺序等待拖慢合并节奏，专项评审必须用 Task 并行派发 |
+| 「专项评审一个个来也行，何必并行」 | 独立专项应并行委派，并在统一证据基线上汇总。 |
 
 ## Red Flags（违规信号）
 - 报告缺少 verdict 关键词（APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED）
 - 报告缺少「正面观察」小节，或只报毛病不给正面反馈
 - ARCHITECTURAL VIOLATION 未出现在「必须修改项」中
 - 评审过程中写文件或修改代码（本技能只读）
-- 顺序等待各专项评审而非并行派发 Task
+- 独立专项顺序等待而非并行委派，或伪造不可用 reviewer 的意见
 
 ## Verification（证据化验证门）
 - [ ] 报告含 verdict 且含「正面观察」小节（附报告分区证据）
 - [ ] 每条 ADR 偏差都被归类为 ARCHITECTURAL VIOLATION / ADR DRIFT / MINOR DEVIATION，阻断级偏差落在「必须修改项」
 - [ ] 无 ADR 引用时明确写出「跳过 ADR 合规检查」，而非默默跳过
 - [ ] 评审全程未写任何文件（可核验无新增/修改文件）
+- [ ] UE 生命周期、复制/GAS、异步线程、同步加载/Tick、Build/Cook/平台边界按适用性逐项审查，并引用具体行号

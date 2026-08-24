@@ -31,12 +31,12 @@ description: QA 测试计划：读取 GDD 与 story，按 Logic/Integration/Visu
 ### 写输出
 1. 展示计划后询问写文件与是否回填 story 的 `## QA Test Cases` 节；写后给出后续步骤。
 
-## 测试环境搭建（合并自 test-setup）
+## 测试环境搭建（`test-setup` legacy alias → `qa-plan setup`）
 
 在生成测试计划的同时，必须确认测试环境已就绪。未就绪的测试环境会导致计划中的自动化测试无法执行。
 
 ### UE 自动化测试框架配置
-1. **检查测试模块**：确认 `Source/<GameModule>/Tests/` 目录存在，`.Build.cs` 中已添加 `"AutomationController"` 模块依赖
+1. **检查测试模块**：盘点现有 `Source/**/Tests/`、test module/Build.cs 与所选 Automation API 的真实模块依赖；不得统一臆造 `AutomationController` 依赖
 2. **Session Frontend**：确认 UE Editor 的 Session Frontend (Window > Test Automation) 可正常启动
 3. **自动化测试插件**：确认 `Gauntlet`、`FunctionalTestingEditor` 插件已启用
 4. **测试地图**：确认 `Content/TestMaps/` 中有专用的测试关卡，避免依赖完整游戏流程
@@ -54,21 +54,15 @@ description: QA 测试计划：读取 GDD 与 story，按 Logic/Integration/Visu
 2. 输出环境状态报告：测试目录存在 / CI 配置存在 / 测试框架可用 / 测试地图就绪（每项 YES/NO/MISSING）
 3. MISSING 项标记为 BLOCKING 行动项，在计划中明确由谁负责解决
 
-## 测试辅助工具（合并自 test-helpers）
+## 测试辅助工具（`test-helpers` legacy alias → `qa-plan helpers`）
 
 ### UE 测试辅助库
-1. **GameTestHelpers.h**：通用测试辅助函数库，提供：
-   - `FGameTestHelper::SpawnActor<T>()` — 在测试地图中生成 Actor
-   - `FGameTestHelper::ApplyGameplayEffect()` — 对目标施加 GE
-   - `FGameTestHelper::WaitForAttributeChange()` — 等待属性变化
-   - `FGameTestHelper::SimulateInput()` — 模拟输入
-   - `FGameTestHelper::WaitForCondition()` — 等待条件满足（带超时）
-2. **Latent Actions**：对于需要延迟的测试（如等待动画完成），使用 `FLatentTestHelper` 的 `WaitUntil()` 和 `WaitForTick()`
-3. **Test Fixtures**：为常用测试场景预置 Fixture 类（如 `FEquippedWeaponFixture`、`FInCombatFixture`）
-4. **Mock 工具**：对网络/存档/UI 等外部依赖，提供 `MockNetworkManager`、`MockSaveSystem` 等 Mock 类
+1. 先搜索仓库并列出实际存在的 helper/fixture/mock、声明路径、模块与用例；没有命中就明确 `NONE`，禁止引用虚构的通用 helper。
+2. 需要 Latent/Fixture/Mock 时，优先使用当前 UE 版本官方 Automation/Functional Test/Gauntlet 能力与项目已有封装；版本敏感 API 交 `ue-source-verification`。
+3. 若确需新增 helper，先写最小接口、消费者、生命周期/超时/线程约束与自身测试，经批准后由 `ue-test-driven-development` 实现。
 
 ### 测试辅助工具使用规范
-1. 测试计划中引用 GameTestHelpers 的宏/函数时，注明具体函数名和使用场景
+1. 测试计划引用 helper 时必须附实际声明路径、符号、模块和使用场景
 2. 对需要 Latent Action 的测试，在计划中标注 `[LATENT]`，预估测试时长
 3. 对需要 Fixture 的测试，标注所需 Fixture 类名
 4. 新增测试辅助函数时，同步更新 `tests/README.md` 中的辅助工具索引
@@ -81,7 +75,7 @@ description: QA 测试计划：读取 GDD 与 story，按 Logic/Integration/Visu
 - 写计划前必须获批准；分类保守（Logic 与 Integration 难分时归 Integration，需单测+集成测试）。
 - 不发明超出验收标准与 GDD 公式的测试用例；公式缺失就标记，不猜测。
 - 试玩要求是建议性的，由用户决定边界 Visual/Feel story 是否需要试玩。
-- 无参数时用 `AskUserQuestion` 选范围，其余阶段保持非交互。
+- 无参数时请求用户选择范围，其余阶段保持非交互。
 - 测试环境未就绪时，计划第一项必须是环境搭建，标记为 BLOCKING。
 - 测试辅助工具引用必须注明具体函数名，不写"使用辅助函数"类模糊引用。
 
@@ -117,8 +111,8 @@ description: QA 测试计划：读取 GDD 与 story，按 Logic/Integration/Visu
 - [ ] 计划含 Test Summary、自动化要求、手动清单、冒烟范围、试玩要求、DoD，用真实内容。
 - [ ] 经批准才写文件，并询问是否回填 story 的 QA Test Cases 节。
 - [ ] 环境状态报告已生成（测试目录/CI 配置/测试框架/测试地图），MISSING 项已标记为 BLOCKING 行动项。
-- [ ] 测试辅助工具引用已注明具体函数名（如 `FGameTestHelper::ApplyGameplayEffect`）和使用场景。
+- [ ] 测试辅助工具均能在仓库中定位到声明路径/符号/模块；无命中时未虚构依赖。
 
-## 合并覆盖
-- **test-setup**：UE 自动化测试框架配置（测试模块检查、Session Frontend、Gauntlet/FunctionalTestingEditor 插件、测试地图、DefaultEngine.ini 配置）、CI 集成（GitHub Actions 配置、UE 命令行测试参数、测试报告解析、Gauntlet 集成、失败通知）、环境就绪检查（YES/NO/MISSING 状态报告，MISSING 标记为 BLOCKING 行动项）
-- **test-helpers**：GameTestHelpers.h 测试辅助库（SpawnActor、ApplyGameplayEffect、WaitForAttributeChange、SimulateInput、WaitForCondition）、Latent Actions（FLatentTestHelper）、Test Fixtures 预置类、Mock 工具（MockNetworkManager、MockSaveSystem）、辅助工具使用规范（标注具体函数名、[LATENT] 标注、Fixture 标注、辅助工具索引维护）
+## 合并别名契约
+- `test-setup` 映射为 `qa-plan setup`；`test-helpers` 映射为 `qa-plan helpers`，均不存在独立技能文件。
+- alias 使用相同输入/输出与验证门，路由器不得搜索独立 `SKILL.md`。

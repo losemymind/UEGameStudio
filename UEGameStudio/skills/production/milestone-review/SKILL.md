@@ -26,7 +26,7 @@ description: 生成里程碑综合评审，涵盖功能完整性、质量指标�
 - 如有试玩测试数据，合并试玩测试报告（见下方试玩测试报告章节）
 
 ### 阶段 3b：Producer 风险评估
-- 按评审模式 spawn producer（PR-MILESTONE 门），其裁定（ON TRACK/AT RISK/OFF TRACK）指导 Go/No-Go
+- 按评审模式委派 game-producer（PR-MILESTONE 门），其裁定（ON TRACK/AT RISK/OFF TRACK）指导 Go/No-Go
 - OFF TRACK 默认 NO-GO，除非用户显式覆盖；AT RISK 用决策点定 CONDITIONAL GO/NO-GO/GO
 
 ### 阶段 4：保存评审

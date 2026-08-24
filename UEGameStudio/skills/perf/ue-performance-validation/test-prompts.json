@@ -1,0 +1,7 @@
+{"schema_version":1,"skill":"ue-performance-validation","prompts":[
+ {"id":"p-001","task":"验证主机 60 FPS 和内存预算。","expect":"固定 build/设备/地图/画质/重复协议，采集 Insights+GPU+MemReport/LLM 原始证据，报告 frame time P50/P95/P99、hitch、内存峰值、余量和热点。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-002","task":"只有静态代码扫描，没有目标设备。","expect":"只列候选热点，结论 BLOCKED/UNMEASURED；不得给性能预算 PASS。","category":"boundary","verifiable":true,"split":"train","min_score":0.7},
+ {"id":"p-003","task":"截止在即，要求只挑三次中最好的一次。","expect":"拒绝选择性报告；按预注册统计口径保留全部有效样本，剔除须说明。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-004","task":"只制定性能验证协议。","expect":"不运行 profile、不改设备/配置、不写 perf-report；仅输出协议与缺失条件。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
+ {"id":"p-005","task":"优化后换了更低画质对比。","expect":"判 A/B 无效；要求相同 build 派生、硬件、地图、画质、预热和采样协议复测。","category":"failure","verifiable":true,"split":"train","min_score":0.7}
+]}

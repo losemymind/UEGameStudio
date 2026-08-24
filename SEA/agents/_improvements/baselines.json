@@ -1,204 +1,328 @@
 {
-  "_doc": "棘轮基线：每个目标文件当前最优评测分。只有 score_after > 当前最优才允许保留改动；否则回滚。基线上调后更新此文件。",
+  "_doc": "Behavioral ratchet baselines for current, non-template agent definition paths. best_score=0.0 is an explicit unevaluated floor, not a claimed quality score; replace only after heldout behavior evaluation.",
   "baselines": {
     "AGENTS.md": {
       "best_score": 0.85,
-      "updated": "2026-08-14"
+      "updated": "2026-08-14",
+      "note": "Existing framework baseline retained; not evaluated in this agent-system repair."
     },
-    "UEGameStudio/agents/directors/art-director.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/academic/anthropologist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/academic/geographer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/academic/historian.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/academic/psychologist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/artists/sound-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/artists/technical-artist.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/economy-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/level-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/live-ops-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/narrative-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/systems-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/ux-designer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/world-builder.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/designers/writer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/directors/creative-director.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/directors/producer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/directors/game-producer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
     "UEGameStudio/agents/directors/technical-director.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/engine/unreal/ue-blueprint-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/engine/unreal/ue-gas-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/engine/unreal/ue-replication-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/engine/unreal/ue-umg-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/engine/unreal/unreal-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/leads/art-director.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/leads/audio-director.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/leads/game-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/leads/lead-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/leads/level-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/leads/narrative-director.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/leads/qa-lead.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/leads/systems-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/leads/release-manager.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
     "UEGameStudio/agents/operations/analytics-engineer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/operations/community-manager.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/operations/devops-engineer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/operations/economy-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/operations/localization-specialist.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/operations/live-ops-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/operations/security-engineer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/operations/localization-lead.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/operations/studio-operations.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/operations/release-manager.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/orchestration/ue-studio-orchestrator.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/programmers/ue-blueprint-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/programmers/ue-engine-programmer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/programmers/gameplay-programmer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
+    },
+    "UEGameStudio/agents/programmers/prototyper.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/programmers/ui-developer.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/qa/accessibility-specialist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/qa/crash-analyst.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
+    },
+    "UEGameStudio/agents/qa/performance-analyst.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
     "UEGameStudio/agents/qa/qa-tester.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/qa/security-engineer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/qa/quality-diagnostics-expert.md": {
+      "best_score": 0,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "Current path registered; no behavioral score fabricated. Establish heldout behavior baseline before ratchet approval."
     },
-    "UEGameStudio/agents/specialists/ai-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/qa/reality-checker.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/engine-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/game-compliance-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/gameplay-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/ue-gas-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/network-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/liveops-sre.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/performance-analyst.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/ue-replication-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/prototyper.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/ue-test-automation-engineer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/sound-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/ue-world-partition-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/technical-artist.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/operations/ue-build-engineer.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/tools-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/programmers/ue-gameplay-framework-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/ui-programmer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/programmers/ue-ui-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/ux-designer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/qa/ue-diagnostics-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     },
-    "UEGameStudio/agents/specialists/world-builder.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
-    },
-    "UEGameStudio/agents/specialists/writer.md": {
-      "best_score": 1.0,
-      "updated": "2026-08-20",
-      "note": "结构基线（frontmatter+核心小节完整度）；行为基线待建立 test-prompts"
+    "UEGameStudio/agents/specialists/ue-content-pipeline-specialist.md": {
+      "best_score": 1,
+      "updated": "2026-08-24",
+      "evaluation_status": "pending_behavior_baseline",
+      "note": "HITL-approved profile evaluation baseline."
     }
   }
 }
