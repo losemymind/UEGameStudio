@@ -2,6 +2,16 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
+## 2026-08-24 — agents/skills 重整后校验：清理 evolutions 孤儿演进记录
+
+来源：用户"重新整理了 agents 和 skills"，要求校验新结构、跑 validate-skill.py / validate-agent-improvements.py 并同步 CHANGELOG。
+
+- **校验结果**：`validate-skill.py --skills-dir .opencode/skills` 发现 3 个错误，全部集中在 `.opencode/skills/_evolutions/evolutions.json`——两条 `solidified` 条目缺 `score_before`（`evo-agent-craft`、`evo-tool-craft`），`evo-tool-craft` 的 `score_after=0.47` 低于通过线 0.7。
+- **根因**：「70→42 去重合并」（commit b502463）删除了 agent-craft / tool-craft 技能，但其演进记录残留在注册表 → 孤儿记录。`validate-agent-improvements.py` 一次通过（改进注册表与棘轮基线 OK）。
+- **修复**：删除 `evolutions.json` 中 agent-craft / tool-craft 相关全部 4 条（含 `evo-agent-craft-fix-1`、`evo-tool-craft-fix-1` 两条指向已删父记录的 FIX 子记录），仅保留 task-retrospective 两条。未伪造任何分数。
+- **复核**：`validate-skill.py` 通过（4 个技能 + evolutions.json OK）；`validate-agent-improvements.py` 通过。
+- **当前结构**：`.opencode/skills/` 实存 4 个技能（agent-improvement、skill-craft、task-retrospective、version-verify）；`SEA/agents/` 仅余 `_improvements/`。
+
 ## 2026-08-24 — UEGameStudio 0.6.0 全流程修复 + SEA 0.4.0 可信评估门
 
 来源：用户要求结合四个源数据仓库审计成品后“全部完整修复”。
