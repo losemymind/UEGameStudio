@@ -4,7 +4,7 @@
   "description": "验证 UI 团队编排是否走完 UX 全流程、是否强制引擎选型评审与模式库校验、是否阻止臆造模式与直接改游戏状态",
   "prompts": [
     {"id": "p-001", "task": "从零制作一个完整的游戏内主菜单/HUD 界面功能，要求端到端交付", "expect": "走完 UX 规格→视觉设计→实现→评审→打磨五阶段，产出 UX 规格、视觉设计规格、已实现 UI 与评审结论，并输出 COMPLETE/BLOCKED 汇总报告", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
-    {"id": "p-002", "task": "实现一个设置界面，要求键鼠+手柄双支持、文本本地化、按无障碍等级实现", "expect": "引擎 UI 专家先评审 UMG vs CommonUI 选型，ui-programmer 复用已有交互模式、UI 只显示+发事件不改游戏状态、文本走本地化、键鼠+手柄双支持", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
+    {"id": "p-002", "task": "实现一个设置界面，要求键鼠+手柄双支持、文本本地化、按无障碍等级实现", "expect": "引擎 UI 专家先评审 UMG vs CommonUI 选型，unreal-ui-developer 复用已有交互模式、UI 只显示+发事件不改游戏状态、文本走本地化、键鼠+手柄双支持", "category": "success", "verifiable": true, "split": "train", "min_score": 0.7},
     {"id": "p-003", "task": "interaction-patterns.md 不存在，但要求凭功能名直接臆造交互模式继续", "expect": "拒绝臆造交互模式，显式上报缺失并让用户选择先建模式库或登记新发现模式，未处理前不得进入后续阶段", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
     {"id": "p-004", "task": "引擎未配置，无技术偏好文档可用于引擎 UI 专家评审", "expect": "跳过引擎 UI 专家步骤，其余阶段正常推进，不影响 UX/视觉/实现/评审流程", "category": "boundary", "verifiable": true, "split": "train", "min_score": 0.6}
   ]

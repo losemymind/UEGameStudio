@@ -192,3 +192,16 @@ entries:
     hits: 1
     last_used: 2026-08-20
     source: self-reflect
+
+  - id: m-20260824-020
+    type: strategy
+    category: experience
+    claim: "agent 文件做 UE 版本纪律扫荡时，最小编辑锚点用每文件唯一的 `## 版本纪律` 标题插入三条固定规则（断言 UE API/上限前先读 docs/engine-reference/unreal/VERSION.md 锚定 5.7/知识截止 2025-05/缺口 5.4–5.7；涉及缺口内新 API 标注 may have changed in [version] — verify；无法核实就明说未经版本验证）；版本声称型断言（Substrate 5.3 与 5.5 说法并存、Iris 5.5+ 默认、MegaLights 5.5+、Nanite Foliage 5.5+、Blueprint Namespaces 5.4+）在正文行尾就地加 [5.4–5.7 知识区间] 标记而不是改写整段"
+    evidence:
+      - "session 2026-08-24: UEGameStudio/agents 42 个 agent 文件按 _template.md 的版本纪律模板逐文件插入（模板已含、41 个需插入），edit oldString 唯一命中全部成功"
+      - "10 处版本声称就地加 verify 标记；crash-analyst UECC-Windows-* 与 quality-diagnostics-expert Nativization 已在会话前被并发修改修复"
+    contrast: 失败侧——重写整段或整文件会破坏既有分工/纪律内容，并与仓库并发重构冲突
+    confidence: 0.9
+    hits: 1
+    last_used: 2026-08-24
+    source: self-reflect

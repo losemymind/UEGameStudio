@@ -16,8 +16,8 @@ description: 编排战斗团队端到端设计、实现并验证一个战斗功�
 
 ### 团队组成（哪些 agent 参与）
 - **game-designer** — 设计机制、公式、边界情况
-- **gameplay-programmer** — 核心玩法代码
-- **ai-programmer** — NPC/敌人 AI 行为
+- **unreal-gameplay-programmer** — 核心玩法代码
+- **unreal-ai-programmer** — NPC/敌人 AI 行为
 - **technical-artist** — VFX、着色器、视觉反馈
 - **sound-designer** — 音频事件、打击音、环境战斗音频
 - **引擎专家（主）** — 校验架构与实现是否符合引擎惯用法
@@ -26,13 +26,13 @@ description: 编排战斗团队端到端设计、实现并验证一个战斗功�
 ### 阶段 1：设计（game-designer）
 - 产出设计文档：机制概览、玩家幻想、详细规则、含变量定义的公式、边界情况、依赖、可调参数及安全范围、验收标准
 
-### 阶段 2：架构（gameplay-programmer，涉及 AI 加 ai-programmer）
+### 阶段 2：架构（unreal-gameplay-programmer，涉及 AI 加 unreal-ai-programmer）
 1. 设计类/接口/数据流，识别与现有系统的集成点
 2. 引擎专家校验：类/组件结构是否惯用、是否应改用引擎原生系统、API 是否过期，产出引擎架构笔记并入架构
 3. 决策点确认后才并行实现
 
 ### 阶段 3：实现（并行）
-- gameplay-programmer 实现核心机制；ai-programmer 实现 AI；technical-artist 做 VFX/着色器；sound-designer 定音频事件与混音
+- unreal-gameplay-programmer 实现核心机制；unreal-ai-programmer 实现 AI；technical-artist 做 VFX/着色器；sound-designer 定音频事件与混音
 
 ### 阶段 4：集成
 - 串联玩法代码、AI、VFX、音效；确保调参项数据驱动；验证与现有战斗系统协同

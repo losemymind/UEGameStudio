@@ -3,44 +3,48 @@
 > 面向游戏开发智能化的**直接可安装** Agents 与 Skills 成品包。
 > 目标平台：opencode / OpenWork（subagent + skill 机制）。支持安装到**单个游戏项目**或**全局**。
 >
-> 当前版本：`0.4.0`（见 `VERSION`；安装说明见 `INSTALL.md`）
+> 当前版本：`0.5.0`（见 `VERSION`；安装说明见 `INSTALL.md`）
 
 ## 这是什么
 
-把游戏开发工作室的完整智能化工序蒸馏为**可复用、可验证、可进化**的资产。分类方式对齐业界成熟的工作室职能层级（Studio Hierarchy）与技能测试框架（Skill Testing Framework）：
+把游戏开发工作室的完整智能化工序蒸馏为**可复用、可验证、可进化**的资产。分类方式对齐业界成熟的工作室职能层级（Tier 1 导演 → Tier 2 主管 → Tier 3 专项 → 学术支持组）：
 
-- **agents/** — 按职能层级分类（directors / leads / specialists / operations / qa / engine），引擎无关的职能角色通用，只有引擎专属专家才进 `engine/<engine>/`
+- **agents/** — 按职能层级分类（directors / leads / designers / programmers / artists / qa / operations / academic）
 - **skills/** — 按生命周期分类（gate / review / readiness / pipeline / authoring / analysis / team / sprint / utility）
 
-内容来自业界成熟 agent 技能库与游戏工作室工作流的方法论蒸馏与本地化适配，随版本持续迭代。
+内容来自业界成熟 agent 技能库与游戏工作室工作流的方法论蒸馏与本地化适配，命名规范参考 [jnMetaCode/agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh)。随版本持续迭代。
 
 ## 资产清单
 
-### Agents（40 个，7 类）
+### Agents（41 个，9 类）
 
 | 分类 | 数量 | 内容 |
 |---|---|---|
-| `directors/` | 4 | creative-director · technical-director · producer · art-director（Tier1 决策层） |
-| `leads/` | 7 | lead-programmer · game-designer · systems-designer · level-designer · narrative-director · audio-director · qa-lead（Tier2 部门主管） |
-| `specialists/` | 13 | gameplay/engine/ai/network/tools/ui-programmer · technical-artist · sound-designer · ux-designer · performance-analyst · prototyper · writer · world-builder |
-| `operations/` | 7 | devops-engineer · release-manager · live-ops-designer · community-manager · analytics-engineer · economy-designer · localization-lead |
-| `qa/` | 3 | qa-tester · security-engineer · accessibility-specialist |
-| `engine/unreal/` | 5 | unreal-specialist · ue-gas-specialist · ue-blueprint-specialist · ue-replication-specialist · ue-umg-specialist（UE 引擎专属） |
+| `directors/` | 3 | creative-director · technical-director · game-producer（Tier 1 导演层） |
+| `leads/` | 7 | game-designer · lead-programmer · art-director · audio-director · narrative-director · qa-lead · release-manager（Tier 2 主管层） |
+| `designers/` | 8 | economy-designer · level-designer · systems-designer · world-builder · narrative-designer · live-ops-designer · writer · ux-designer（Tier 3 设计组） |
+| `programmers/` | 5 | engine-programmer · gameplay-programmer · blueprint-developer · ui-developer · prototyper（Tier 3 编程组） |
+| `artists/` | 2 | technical-artist · sound-designer（Tier 3 美术/音频组） |
+| `qa/` | 6 | qa-tester · crash-analyst · performance-analyst · quality-diagnostics-expert · accessibility-specialist · reality-checker（Tier 3 QA 组） |
+| `operations/` | 6 | devops-engineer · security-engineer · analytics-engineer · studio-operations · localization-specialist · community-manager（Tier 3 运维/本地化/社区） |
+| `academic/` | 4 | historian · anthropologist · geographer · psychologist（学术支持组，按需咨询） |
 | `utility/` | 1 | image-captioner（图片→结构化文字，服务资产/关卡/UX 规格） |
 
-### Skills（70 个，9 类）
+### Skills（42 个，11 类）
 
-| 分类 | 数量 | 用途 |
+| 分类 | 数量 | 技能 |
 |---|---|---|
-| `gate/` | 1 | gate-check（阶段门裁决） |
-| `review/` | 3 | design-review · review-all-gdds · architecture-review |
-| `readiness/` | 2 | story-readiness · story-done |
-| `pipeline/` | 6 | create-epics · create-stories · dev-story · create-control-manifest · propagate-design-change · map-systems |
-| `authoring/` | 7 | architecture-decision · design-system · quick-design · ux-design · ux-review · art-bible · create-architecture |
-| `analysis/` | 12 | consistency-check · code-review · balance-check · asset-audit · content-audit · tech-debt · scope-check · estimate · perf-profile · security-audit · test-evidence-review · test-flakiness |
-| `team/` | 9 | team-ui · team-combat · team-narrative · team-audio · team-level · team-polish · team-release · team-live-ops · team-qa |
-| `sprint/` | 5 | sprint-plan · sprint-status · milestone-review · retrospective · changelog（含玩家向补丁说明） |
-| `utility/` | 25 | start · help · setup-engine · skill-test · skill-improve · test-setup · test-helpers · smoke-check · soak-test · release-checklist（含上线级） · 等 |
+| `onboarding/` | 3 | start · setup-engine · project-stage-detect |
+| `design/` | 6 | brainstorm · design-system · design-review · balance-check · consistency-check · ux-design |
+| `architecture/` | 4 | create-architecture · architecture-decision · architecture-review · art-bible |
+| `planning/` | 5 | create-epics · create-stories · dev-story · sprint-plan · estimate |
+| `dev/` | 4 | prototype · vertical-slice · reverse-document · localize |
+| `review/` | 3 | code-review · gate-check · scope-check |
+| `qa/` | 5 | qa-plan · smoke-check · regression-suite · bug-report · bug-triage |
+| `release/` | 4 | release-checklist · launch-checklist · changelog · hotfix |
+| `production/` | 2 | milestone-review · retrospective |
+| `team/` | 5 | team-combat · team-level · team-ui · team-qa · team-polish |
+| `perf/` | 1 | perf-profile |
 
 > **目录说明**：`agents/`、`skills/` 内采用分类子文件夹。安装脚本会**展平复制**到目标目录（见 `INSTALL.md`），opencode 加载器递归扫描、自进化运行时校验均兼容。
 
@@ -68,18 +72,21 @@ UEGameStudio/
 ├── README.md         # 本文件
 ├── INSTALL.md        # 安装指南（全局 / 项目，含展平安装脚本）
 ├── VERSION           # 成品版本号
-├── agents/           # 40 个 agent（按职能层级分类）
-│   ├── directors/    #   Tier1 决策层（4）
-│   ├── leads/        #   Tier2 部门主管（7）
-│   ├── specialists/  #   核心专家（13）
-│   ├── operations/   #   运营/发布（7）
-│   ├── qa/           #   质量与安全（3）
-│   ├── engine/unreal/ #  UE 引擎专属（5）
+├── agents/           # 41 个 agent（按职能层级分类）
+│   ├── directors/    #   Tier 1 导演层（3）
+│   ├── leads/        #   Tier 2 主管层（7）
+│   ├── designers/    #   Tier 3 设计组（8）
+│   ├── programmers/  #   Tier 3 编程组（5）
+│   ├── artists/      #   Tier 3 美术/音频组（2）
+│   ├── qa/           #   Tier 3 QA 组（6）
+│   ├── operations/   #   Tier 3 运维/本地化/社区（6）
+│   ├── academic/     #   学术支持组（4，按需咨询）
 │   └── utility/      #   工具类（1：image-captioner）
-├── skills/           # 70 个技能（按生命周期分类，每个含 SKILL.md + test-prompts.json）
-│   ├── gate/ review/ readiness/ pipeline/ authoring/
-│   ├── analysis/ team/ sprint/ utility/
-│   └── _evolutions/  # 技能演进注册表（70 条 CAPTURED 谱系 + L0 基线）
+├── skills/           # 42 个技能（11 类，去重合并后）
+│   ├── onboarding/ on combat/ on design/ 
+│   ├── architecture/ planning/ dev/ review/
+│   ├── qa/ release/ production/ team/ perf/
+│   └── _evolutions/
 ├── rules/            # 10 条路径作用域编码规则（ue-*）
 ├── docs/             # engine-reference/unreal/VERSION.md 版本锚定
 └── references/       # 共享清单

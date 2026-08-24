@@ -1,18 +1,7 @@
 {
   "schema_version": 1,
-  "description": "UE 成品技能演进注册表。记录 72 个技能的 CAPTURED 谱系（业界方法论蒸馏来源）与棘轮基线（L0 覆盖率）。后续演进（FIX/DERIVED）追加为新条目，经评估+审批后 solidify。",
+  "description": "UE 成品技能演进注册表。记录当前 42 个实际存在技能的 CAPTURED 谱系。合并吸收的技能（如 asset-audit→code-review、quick-design→design-system 等）已移除；新建技能（vertical-slice、launch-checklist）补齐注册。",
   "evolutions": [
-    {
-      "id": "evo-asset-audit-captured",
-      "skill": "asset-audit",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.686
-    },
     {
       "id": "evo-balance-check-captured",
       "skill": "balance-check",
@@ -47,17 +36,6 @@
       "score_after": 0.698
     },
     {
-      "id": "evo-content-audit-captured",
-      "skill": "content-audit",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.652
-    },
-    {
       "id": "evo-estimate-captured",
       "skill": "estimate",
       "kind": "CAPTURED",
@@ -89,50 +67,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.78
-    },
-    {
-      "id": "evo-security-audit-captured",
-      "skill": "security-audit",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.781
-    },
-    {
-      "id": "evo-tech-debt-captured",
-      "skill": "tech-debt",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.757
-    },
-    {
-      "id": "evo-test-evidence-review-captured",
-      "skill": "test-evidence-review",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.737
-    },
-    {
-      "id": "evo-test-flakiness-captured",
-      "skill": "test-flakiness",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.696
     },
     {
       "id": "evo-architecture-decision-captured",
@@ -179,17 +113,6 @@
       "score_after": 0.584
     },
     {
-      "id": "evo-quick-design-captured",
-      "skill": "quick-design",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.688
-    },
-    {
       "id": "evo-ux-design-captured",
       "skill": "ux-design",
       "kind": "CAPTURED",
@@ -201,17 +124,6 @@
       "score_after": 0.664
     },
     {
-      "id": "evo-ux-review-captured",
-      "skill": "ux-review",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.682
-    },
-    {
       "id": "evo-gate-check-captured",
       "skill": "gate-check",
       "kind": "CAPTURED",
@@ -221,17 +133,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.816
-    },
-    {
-      "id": "evo-create-control-manifest-captured",
-      "skill": "create-control-manifest",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.779
     },
     {
       "id": "evo-create-epics-captured",
@@ -267,50 +168,6 @@
       "score_after": 0.803
     },
     {
-      "id": "evo-map-systems-captured",
-      "skill": "map-systems",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.775
-    },
-    {
-      "id": "evo-propagate-design-change-captured",
-      "skill": "propagate-design-change",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.724
-    },
-    {
-      "id": "evo-story-done-captured",
-      "skill": "story-done",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.851
-    },
-    {
-      "id": "evo-story-readiness-captured",
-      "skill": "story-readiness",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.779
-    },
-    {
       "id": "evo-architecture-review-captured",
       "skill": "architecture-review",
       "kind": "CAPTURED",
@@ -331,17 +188,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.877
-    },
-    {
-      "id": "evo-review-all-gdds-captured",
-      "skill": "review-all-gdds",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.701
     },
     {
       "id": "evo-changelog-captured",
@@ -388,28 +234,6 @@
       "score_after": 0.777
     },
     {
-      "id": "evo-sprint-status-captured",
-      "skill": "sprint-status",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.751
-    },
-    {
-      "id": "evo-team-audio-captured",
-      "skill": "team-audio",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.686
-    },
-    {
       "id": "evo-team-combat-captured",
       "skill": "team-combat",
       "kind": "CAPTURED",
@@ -430,28 +254,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.656
-    },
-    {
-      "id": "evo-team-live-ops-captured",
-      "skill": "team-live-ops",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.664
-    },
-    {
-      "id": "evo-team-narrative-captured",
-      "skill": "team-narrative",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.712
     },
     {
       "id": "evo-team-polish-captured",
@@ -476,17 +278,6 @@
       "score_after": 0.802
     },
     {
-      "id": "evo-team-release-captured",
-      "skill": "team-release",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.762
-    },
-    {
       "id": "evo-team-ui-captured",
       "skill": "team-ui",
       "kind": "CAPTURED",
@@ -496,28 +287,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.663
-    },
-    {
-      "id": "evo-adopt-captured",
-      "skill": "adopt",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.723
-    },
-    {
-      "id": "evo-asset-spec-captured",
-      "skill": "asset-spec",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.545
     },
     {
       "id": "evo-brainstorm-captured",
@@ -553,28 +322,6 @@
       "score_after": 0.686
     },
     {
-      "id": "evo-day-one-patch-captured",
-      "skill": "day-one-patch",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.695
-    },
-    {
-      "id": "evo-help-captured",
-      "skill": "help",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.677
-    },
-    {
       "id": "evo-hotfix-captured",
       "skill": "hotfix",
       "kind": "CAPTURED",
@@ -595,28 +342,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.84
-    },
-    {
-      "id": "evo-onboard-captured",
-      "skill": "onboard",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.681
-    },
-    {
-      "id": "evo-playtest-report-captured",
-      "skill": "playtest-report",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.699
     },
     {
       "id": "evo-project-stage-detect-captured",
@@ -696,28 +421,6 @@
       "score_after": 0.845
     },
     {
-      "id": "evo-skill-improve-captured",
-      "skill": "skill-improve",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.531
-    },
-    {
-      "id": "evo-skill-test-captured",
-      "skill": "skill-test",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.789
-    },
-    {
       "id": "evo-smoke-check-captured",
       "skill": "smoke-check",
       "kind": "CAPTURED",
@@ -727,17 +430,6 @@
       "created": "2026-08-20",
       "solidified_at": "2026-08-20",
       "score_after": 0.774
-    },
-    {
-      "id": "evo-soak-test-captured",
-      "skill": "soak-test",
-      "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
-      "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.815
     },
     {
       "id": "evo-start-captured",
@@ -751,26 +443,26 @@
       "score_after": 0.646
     },
     {
-      "id": "evo-test-helpers-captured",
-      "skill": "test-helpers",
+      "id": "evo-launch-checklist-captured",
+      "skill": "launch-checklist",
       "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
+      "signal": "UE 成品技能：新建/合并后补齐注册条目",
+      "proposal": "对齐实际技能目录，注册缺失条目；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
       "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.843
+      "created": "2026-08-24",
+      "solidified_at": "2026-08-24",
+      "score_after": 0.0
     },
     {
-      "id": "evo-test-setup-captured",
-      "skill": "test-setup",
+      "id": "evo-vertical-slice-captured",
+      "skill": "vertical-slice",
       "kind": "CAPTURED",
-      "signal": "UE 成品技能：业界游戏工作室流程 + 技能工程方法论蒸馏适配",
-      "proposal": "UE 成品技能；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
+      "signal": "UE 成品技能：新建/合并后补齐注册条目",
+      "proposal": "对齐实际技能目录，注册缺失条目；补齐 test-prompts.json（4 用例，含 verifiable heldout）+ 反合理化表/Red Flags/Verification 三节",
       "status": "solidified",
-      "created": "2026-08-20",
-      "solidified_at": "2026-08-20",
-      "score_after": 0.806
+      "created": "2026-08-24",
+      "solidified_at": "2026-08-24",
+      "score_after": 0.0
     }
   ]
 }

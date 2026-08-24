@@ -6,6 +6,7 @@
 > - [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)（88.6k★）— 生产级工程技能
 > - [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents)（146k★）— AI agent 个性集合
 > - [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios)（24.2k★）— 游戏开发工作室编排
+> - [jnMetaCode/agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh)（19.7k★）— agency-agents 中文社区版，268 个 AI 专家角色，含 52 个中国市场原创
 
 ---
 

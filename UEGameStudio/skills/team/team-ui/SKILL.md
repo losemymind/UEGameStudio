@@ -17,7 +17,7 @@ description: 编排 UI 团队走完 UX 全流程（UX 规格 → 视觉设计 �
 
 ### 团队组成（哪些 agent 参与）
 - **ux-designer** — 用户流程、线框图、无障碍、输入处理
-- **ui-programmer** — UI 框架、屏幕、控件、数据绑定、实现
+- **unreal-ui-developer** — UI 框架、屏幕、控件、数据绑定、实现
 - **art-director** — 视觉风格、布局打磨、与美术圣经一致性
 - **引擎 UI 专家** — 校验实现是否符合引擎惯用法（从技术偏好文档读取）
 - **accessibility-specialist** — 阶段 4 无障碍合规审计
@@ -31,9 +31,9 @@ description: 编排 UI 团队走完 UX 全流程（UX 规格 → 视觉设计 �
 ### 阶段 2：视觉设计（art-director）
 - 依据美术圣经定义配色/排版/间距/动画，校验对比度且颜色不得是唯一状态指示，输出资源清单（尺寸/格式）
 
-### 阶段 3：实现（先引擎专家后 ui-programmer）
+### 阶段 3：实现（先引擎专家后 unreal-ui-developer）
 1. 引擎 UI 专家先评审：该用哪个 UI 框架（UMG vs CommonUI 等）、引擎特有坑、推荐控件结构
-2. ui-programmer 实现：复用已有交互模式、UI 不得直接改游戏状态（只显示+发事件）、文本全走本地化、键鼠+手柄双支持、按无障碍等级实现
+2. unreal-ui-developer 实现：复用已有交互模式、UI 不得直接改游戏状态（只显示+发事件）、文本全走本地化、键鼠+手柄双支持、按无障碍等级实现
 
 ### 阶段 4：评审（并行）
 - ux-designer 验线框图/交互，键鼠与手柄导航测试；art-director 验视觉一致与分辨率；accessibility-specialist 按等级查合规，违规即 blocker
@@ -53,7 +53,7 @@ description: 编排 UI 团队走完 UX 全流程（UX 规格 → 视觉设计 �
 
 ## 反例（不要这样）
 - 阶段 1 未 APPROVED 就进入视觉设计
-- ui-programmer 直接修改游戏状态或在 UI 里硬编码玩家可见字符串
+- unreal-ui-developer 直接修改游戏状态或在 UI 里硬编码玩家可见字符串
 - 忽略 interaction-patterns.md 缺失，凭空从功能名臆造模式
 - 无障碍只在最后阶段才想起来补
 
@@ -61,7 +61,7 @@ description: 编排 UI 团队走完 UX 全流程（UX 规格 → 视觉设计 �
 | 借口（会怎么说） | 反驳（为什么不对） |
 |---|---|
 | 「interaction-patterns.md 缺失，但这个功能很常见，直接套标准模式就行」 | 模式库是交互模式的唯一真源，臆造会让视觉设计、实现、无障碍评审全部建立在虚构基座上，返工成本更高 |
-| 「ui-programmer 顺手直接改游戏状态更快」 | UI 只显示+发事件，直接改状态破坏数据流与可测试性，且与游戏逻辑耦合 |
+| 「unreal-ui-developer 顺手直接改游戏状态更快」 | UI 只显示+发事件，直接改状态破坏数据流与可测试性，且与游戏逻辑耦合 |
 | 「无障碍最后阶段补一下就行」 | 无障碍是阶段 4 的 blocker，最后才补必然返工，且对比度/颜色指示等要在视觉设计就定 |
 
 ## Red Flags（违规信号）

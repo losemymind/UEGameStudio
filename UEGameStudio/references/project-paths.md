@@ -8,11 +8,11 @@
 
 | 约定路径 | 内容 | 对应技能 |
 |---|---|---|
-| `design/gdd/` | GDD（game-concept.md / systems-index.md / 各系统 GDD） | design-system / map-systems / quick-design 等 |
+| `design/gdd/` | GDD（game-concept.md / systems-index.md / 各系统 GDD） | design-system 等 |
 | `design/registry/entities.yaml` | 跨系统实体注册表 | consistency-check / systems-designer |
-| `design/ux/` | UX/HUD/交互模式库 | ux-design / ux-review / team-ui |
-| `design/art/` | art-bible / 资产规格 | art-bible / asset-spec |
-| `design/levels/`、`design/audio/`、`design/live-ops/` | 关卡/音频/运营文档 | team-level / team-audio / team-live-ops |
+| `design/ux/` | UX/HUD/交互模式库 | ux-design / team-ui |
+| `design/art/` | art-bible / 资产规格 | art-bible |
+| `design/levels/`、`design/audio/`、`design/live-ops/` | 关卡/音频/运营文档（团队协作类 skill 按需使用） | team-level |
 | `production/` | stage.txt / review-mode.txt / sprints / milestones / qa / security | gate-check / sprint-* / bug-* |
 | `docs/architecture/` | ADR | create-architecture / architecture-decision |
 | `docs/technical-preferences.md` | 引擎/命名/性能预算/测试框架偏好（项目级） | setup-engine / smoke-check / dev-story 等 |

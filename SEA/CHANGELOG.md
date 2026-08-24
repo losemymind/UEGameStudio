@@ -2,7 +2,15 @@
 
 每次记忆/技能/定义变更在此记录，与 git 提交对应。
 
-## 2026-08-20 — 蒸馏合并 ME 工作区 3 个 agent（成品 agents 39→40）
+## 2026-08-24 — agents 全量补入 UE 版本纪律（41 文件）+ 版本声称 verify 标记
+
+对 `UEGameStudio/agents/` 42 个 agent 文件做 UE 版本纪律扫荡（模板 `_template.md` 已合规，其余 41 个逐文件插入）：
+
+- **每个文件 `## 版本纪律` 小节补入三条固定规则**：① 断言任何 UE API/上限/能力前先读 `docs/engine-reference/unreal/VERSION.md`（锚定 UE 5.7，LLM 知识截止 2025-05，知识缺口 5.4–5.7）；② 涉及缺口内新 API 标注 `may have changed in [version] — verify` 或联网核实后写明来源；③ 无法核实就明说"基于我的判断，未经版本验证"。
+- **10 处版本声称就地加 `[5.4–5.7 知识区间] — may have changed — verify` 标记**：technical-artist ×2（Substrate UE5.3+）、art-director ×1（Substrate UE5.5+，并注明与 technical-artist 声称不一致）、technical-director ×3（Nanite Foliage 5.5+、MegaLights 5.5+、Iris 5.5+ 默认）、engine-programmer ×1（MegaLights CVar）、performance-analyst ×1（MegaLights 5.5+）、creative-director ×1（MegaLights 5.5+）、blueprint-developer ×1（Blueprint Namespaces 5.4+）。
+- **会话前已被并发修复、未重复处理**：crash-analyst UECC-Windows-* 目录、quality-diagnostics-expert Blueprint Nativization Validation；PLATFORM_XBOXONE 不存在（engine-programmer 已用 PLATFORM_XBOX），MakeOutgoingSpec 无旧名（全为 MakeOutgoingGameplayEffectSpec）。
+- **验证**：grep 确认 41 文件均含三条规则且 `## 版本纪律` 唯一无重复；14 处 claim 标记全部落地。
+- 记忆条目：m-20260824-020（strategy/experience）。
 
 对 `E:\GitHub\ME\.opencode\agents` 的 10 个 agent 评估后，蒸馏合并 3 个（其余 7 个与成品包重复不蒸馏）：
 

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill": "vertical-slice",
+  "description": "验证垂直切片是否定义完整游戏循环、范围受限（3-5 机制）、Shipping 构建性能验证、代码不导入生产、试玩后修阻塞问题",
+  "prompts": [
+    {"id": "p-001", "task": "原型验证通过后，要求制作可玩的垂直切片演示并给出范围", "expect": "定义完整游戏循环（启动→主菜单→核心玩法→结算→返回菜单），输出范围文档（包含清单、排除清单、预期体验时长 10–30 分钟），核心机制 ≤5 个", "category": "success", "verifiable": true, "split": "heldout", "min_score": 0.7},
+    {"id": "p-002", "task": "用户想直接把垂直切片代码重构成生产代码", "expect": "技能应拒绝：切片代码仅供验证，生产实现应从零重写，可复用架构设计但不可直接导入生产源文件", "category": "failure", "verifiable": true, "split": "train", "min_score": 0.6},
+    {"id": "p-003", "task": "在 Development 构建上测试性能并宣称达标", "expect": "技能应纠正：性能必须在 Shipping 构建上验证，Development 配置有调试开销性能不可靠", "category": "failure", "verifiable": true, "split": "heldout", "min_score": 0.6},
+    {"id": "p-004", "task": "试玩后发现已知阻塞 Bug，用户仍想宣布 GO", "expect": "技能应拒绝：垂直切片不允许已知但未修的阻塞问题，必须修复后复测才可 GO", "category": "failure", "verifiable": true, "split": "train", "min_score": 0.6}
+  ]
+}
