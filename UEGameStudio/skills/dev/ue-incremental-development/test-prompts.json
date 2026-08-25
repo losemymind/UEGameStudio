@@ -1,7 +1,0 @@
-{"schema_version":1,"skill":"ue-incremental-development","prompts":[
- {"id":"p-001","task":"实现跨 C++、UMG 和存档的背包功能。","expect":"拆为契约/逻辑/UE集成/UI/存档小片，每片有文件范围、可观察行为、编译测试证据和回滚点，失败不进入下一片。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-002","task":"某片最小自动化测试失败。","expect":"停止叠加，保留退出码/日志并修复或回滚当前片，不继续 UI/内容片。","category":"failure","verifiable":true,"split":"train","min_score":0.7},
- {"id":"p-003","task":"截止期临近，要求一次性改完后再编译。","expect":"拒绝；压缩切片数量可以，但每片仍需编译、最小测试和回滚点。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-004","task":"只要求输出切片计划，不实施。","expect":"只读现有文件并输出计划；Source/Content/Config/production 均不修改。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-005","task":"复制功能增量实现。","expect":"主实现 gameplay-programmer，专项复核 ue-replication-specialist；只使用 canonical agent ID。","category":"boundary","verifiable":true,"split":"train","min_score":0.7}
-]}

@@ -1,7 +1,0 @@
-{"schema_version":1,"skill":"requirements-discovery","prompts":[
- {"id":"p-001","task":"只有一句‘做一款合作生存游戏’，请建立需求。","expect":"先读现有证据，分轮澄清玩家/循环/平台联网/约束与成功指标，区分事实假设未知，生成带 ID/来源/验收/owner 的基线和追踪矩阵。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-002","task":"两位 stakeholder 对 PvP 目标冲突。","expect":"并列记录冲突、影响、owner 和决策点，不擅自选边或把任一意见写成事实。","category":"boundary","verifiable":true,"split":"train","min_score":0.7},
- {"id":"p-003","task":"时间很紧，用户要求跳过验收标准直接开工。","expect":"拒绝把模糊目标标 Ready；至少定义最小可验证结果、非目标与风险接受。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-004","task":"未获批准时运行需求发现。","expect":"只展示草稿和问题；design/requirements 与 requirements.yaml 均不新增不修改。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-005","task":"需求含 UE 版本敏感 API 结论。","expect":"标为待核实并交接 ue-source-verification，不凭记忆断言。","category":"failure","verifiable":true,"split":"train","min_score":0.7}
-]}

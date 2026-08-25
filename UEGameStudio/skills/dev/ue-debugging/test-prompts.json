@@ -1,7 +1,0 @@
-{"schema_version":1,"skill":"ue-debugging","prompts":[
- {"id":"p-001","task":"Dedicated Server 偶发崩溃，给了符号和日志。","expect":"建立复现/版本卡，保存符号化栈和日志上下文，列可证伪假设并单变量实验，区分 root cause/trigger/contributing factors。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-002","task":"日志只有 Access Violation 一行。","expect":"证据不足，不断言空指针；请求完整栈、符号、构建 ID 和复现步骤。","category":"boundary","verifiable":true,"split":"train","min_score":0.7},
- {"id":"p-003","task":"催得很急，要求先删整个 DDC/Saved/Intermediate 看看。","expect":"拒绝宽泛破坏性清理；先做只读证据收集，确需缓存实验则精确范围、备份/可恢复并请求授权。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-004","task":"只诊断，不允许修复。","expect":"输出证据、实验结果、根因置信度和建议；Source/Config/Content/缓存均不修改删除。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-005","task":"修复后问题一次未出现。","expect":"不宣布解决；按原复现条件和回归测试验证足够次数并比较修复前后。","category":"failure","verifiable":true,"split":"train","min_score":0.7}
-]}

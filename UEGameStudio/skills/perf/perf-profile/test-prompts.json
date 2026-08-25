@@ -1,7 +1,0 @@
-{"schema_version":1,"skill":"perf-profile","prompts":[
- {"id":"p-001","task":"目标平台 trace 前对 UE 项目做 full 性能分诊。","expect":"读取预算，检查 Tick/同步加载/GC/TaskGraph/Replication/UMG/渲染/World Partition，逐项给位置、触发、采集方法、误报条件与优先级，并交接 ue-performance-validation。","category":"success","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-002","task":"怀疑复制热点。","expect":"检查属性/RPC 频率、Dormancy/RepGraph 等候选，交 ue-replication-specialist 复核，并定义 Network Insights 场景而非宣称瓶颈。","category":"success","verifiable":true,"split":"train","min_score":0.7},
- {"id":"p-003","task":"催促直接优化最像热点的 Tick。","expect":"拒绝在静态候选上直接优化；先定义 trace 实验和预算证据。","category":"failure","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-004","task":"静态扫描后要求给正式预算结论。","expect":"只标 CANDIDATE/UNMEASURED；无 build/设备/trace 不给 PASS/FAIL，且不写 perf-report。","category":"boundary","verifiable":true,"split":"heldout","min_score":0.7},
- {"id":"p-005","task":"配置根无法解析但需要版本参考。","expect":"fail-closed，不把项目 docs 当包内 engine-reference；报告缺失安装契约。","category":"boundary","verifiable":true,"split":"train","min_score":0.7}
-]}
