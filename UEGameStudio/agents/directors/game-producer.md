@@ -72,6 +72,8 @@ permission:
 | 工作量拆解与估算依据 | 对应设计或技术主责 Agent |
 | 测试范围、缺陷门槛、回归成本 | QA Lead 或测试专家 |
 | Cook、构建、CI、打包与制品 | UE 构建工程师 |
+| Asset ID、Brief、版本、依赖和交付就绪度 | `game-asset-production-manager` |
+| 功能、AI、动画、UI、技术美术、音频或地图实施 | 对应的当前专业实施 Agent |
 | 发布清单、平台提交和热修复 | 发布经理 |
 | 本地化范围、语言资产和 LQA | 本地化专家 |
 | 线上指标、事件和服务节奏 | 数据分析或 LiveOps 专家 |

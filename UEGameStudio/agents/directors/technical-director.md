@@ -67,17 +67,22 @@ permission:
 
 典型路由包括：
 
-| 技术问题 | 应选择的专业方向 |
+| 技术问题 | 当前责任 Agent |
 | --- | --- |
-| Gameplay Framework、模块、生命周期 | UE 引擎或 Gameplay Framework 专家 |
-| Ability、Effect、Attribute、预测 | GAS 专家 |
-| Replication、RPC、Relevancy、预测与回滚 | UE 网络同步专家 |
-| CPU、GPU、内存、加载与包体 | 性能分析专家 |
-| 材质、Shader、渲染管线、资产预算 | 技术美术专家 |
-| UMG、CommonUI、输入和可访问性 | UE UI 专家 |
-| Cook、BuildGraph、CI、打包和平台交付 | UE 构建工程师 |
-| 自动化测试、功能测试和回归 | UE 测试自动化专家 |
-| 资源导入、验证、命名和内容依赖 | UE 内容管线专家 |
+| Module、Subsystem、公共接口和生命周期底座 | `ue-core-systems-engineer` |
+| 具体 Gameplay、Ability、Effect 与业务 Attribute | `ue-gameplay-engineer` |
+| Behavior Tree、StateTree、Blackboard、EQS 与感知 | `game-ai-engineer` |
+| 任务状态、遭遇与关卡体验要求 | `level-mission-designer` |
+| Map、World Partition、Data Layer、PCG 与空间组装 | `ue-world-builder` |
+| AnimBP、Montage、Retarget、Control Rig 与 IK | `character-animation-engineer` |
+| UMG、CommonUI、输入焦点和界面生命周期 | `ue-ui-engineer` |
+| 材质、Shader、Niagara、导入设置和视觉预算 | `ue-technical-art-engineer` |
+| MetaSound/Wwise、空间声学和音频运行时 | `game-audio-technical-specialist` |
+| Editor Utility、Commandlet、DCC 导入和批处理 | `ue-tools-pipeline-engineer` |
+| CPU、GPU、内存、加载与卡顿证据 | `performance-profiler` |
+| Build、Cook、Stage 与 Package | `ue-build-engineer` |
+| 功能、集成、回归和本地包体测试 | `qa-test-specialist` |
+| Replication、RPC、Relevancy、Dormancy、预测与回滚 | `ue-gameplay-engineer` |
 
 目标 Agent 不存在时，将问题标记为能力缺口；不得虚构角色或由不匹配的 Agent 作绑定性结论。
 

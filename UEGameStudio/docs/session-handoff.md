@@ -2,9 +2,9 @@
 
 ## 交接状态
 
-- 交接日期：2026-08-25
+- 交接日期：2026-08-26
 - 当前分支：`master`
-- 当前阶段：治理、设计、验证和构建骨架已建立；即将进入核心功能开发与内容生产 Agent 设计阶段
+- 当前阶段：治理、设计、功能开发、资产生产、独立验证和本地构建角色骨架均已建立
 - 项目范围：仅负责本地 UE 游戏开发至生成本地游戏构建包
 - 明确排除：商店提交、平台认证、正式发布、LiveOps、社区、营销和线上运营
 
@@ -22,7 +22,7 @@
 
 ## 当前已落盘阵容
 
-当前共有 15 个有效 Agent，全部为 `mode: subagent`。详细职责、权限、协作链路和能力覆盖见：
+当前共有 28 个有效 Agent，全部为 `mode: subagent`。详细职责、权限、协作链路和能力覆盖见：
 
 - [UEGameStudio 智能体阵容报告](agent-roster-report.md)
 
@@ -32,6 +32,7 @@
 - [游戏总设计师](../agents/directors/game-director.md)
 - [技术总监](../agents/directors/technical-director.md)
 - [游戏制作人](../agents/directors/game-producer.md)
+- [游戏视听总监](../agents/directors/audiovisual-director.md)
 
 ### 学术研究层
 
@@ -45,6 +46,24 @@
 
 - [首席游戏数值专家](../agents/design/lead-game-balance-designer.md)
 - [首席游戏经济专家](../agents/design/lead-game-economy-designer.md)
+- [关卡与任务设计专家](../agents/design/level-mission-designer.md)
+
+### 功能开发与世界集成层
+
+- [UE 核心系统工程师](../agents/technical/ue-core-systems-engineer.md)
+- [UE 游戏玩法工程师](../agents/technical/ue-gameplay-engineer.md)
+- [游戏 AI 系统工程师](../agents/technical/game-ai-engineer.md)
+- [UE 游戏世界构建师](../agents/technical/ue-world-builder.md)
+- [角色动画工程师](../agents/technical/character-animation-engineer.md)
+- [UE UI 工程师](../agents/technical/ue-ui-engineer.md)
+
+### 资产制作与管理层
+
+- [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md)
+- [游戏视觉资产制作专家](../agents/production/game-visual-asset-artist.md)
+- [UE 技术美术工程师](../agents/technical/ue-technical-art-engineer.md)
+- [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md)
+- [UE 工具与资产管线工程师](../agents/technical/ue-tools-pipeline-engineer.md)
 
 ### 验证与构建层
 
@@ -76,55 +95,44 @@
 → QA 验证实际构建行为
 ```
 
-## 下一阶段：蒸馏后的待设计阵容
+## 2026-08-26 已实施批次
 
-用户认为原 21 个候选 Agent 过多。当前推荐方案已经收敛为 9 个通用基线 Agent，加 1 个按项目启用的条件 Agent。
+本批根据用户确认的“核心数据源与资产类型分工”完成 13 个 Agent：
 
-### 9 个基线 Agent
+| 生产域 | 已落盘 Agent |
+| --- | --- |
+| 纯文本公共底座 | `ue-core-systems-engineer` |
+| 具体 Gameplay C++/Blueprint 与多人网络同步 | `ue-gameplay-engineer` |
+| AI 决策资产 | `game-ai-engineer` |
+| 关卡与任务设计 | `level-mission-designer` |
+| 地图与世界组装 | `ue-world-builder` |
+| 角色动画 | `character-animation-engineer` |
+| UMG 与 UI | `ue-ui-engineer` |
+| 视听方向 | `audiovisual-director` |
+| 资产生命周期 | `game-asset-production-manager` |
+| 视觉源资产 | `game-visual-asset-artist` |
+| 技术美术 | `ue-technical-art-engineer` |
+| 游戏音频 | `game-audio-technical-specialist` |
+| 编辑器工具与资产管线 | `ue-tools-pipeline-engineer` |
 
-| Agent | 英文 ID | 合并能力 |
-| --- | --- | --- |
-| UE 游戏玩法开发专家 | `ue-gameplay-engineer` | Gameplay Framework、普通功能、玩家控制、交互、存档与进度 |
-| 战斗与 AI 系统专家 | `combat-ai-systems-engineer` | 战斗、GAS、技能、状态、行为树、EQS、感知与导航 |
-| 游戏表现系统专家 | `gameplay-presentation-engineer` | 动画集成、镜头、玩法 UI、HUD 和运行时反馈 |
-| 关卡与任务设计专家 | `level-mission-designer` | 关卡空间、Blockout、任务、遭遇、触发器与世界状态 |
-| 游戏视听总监 | `audiovisual-director` | 美术方向、声音方向、视听语言与创意验收 |
-| UE 渲染与技术美术专家 | `ue-technical-art-engineer` | 渲染、光照、材质、Shader、Niagara 与资产技术规范 |
-| 游戏资产制作专家 | `game-asset-production-artist` | 角色、环境、道具、纹理、材质表现与 VFX 内容 |
-| 游戏音频专家 | `game-audio-specialist` | SFX、环境声、音乐、对白处理和 UE 音频集成 |
-| UE 工具与资产管线专家 | `ue-tools-pipeline-engineer` | Editor Utility、Commandlet、DCC 导入、批处理与数据管线 |
+原先拟合并的 `combat-ai-systems-engineer` 和 `gameplay-presentation-engineer` 不再创建：具体战斗与 GAS 业务归 `ue-gameplay-engineer`，AI 独立为 `game-ai-engineer`，表现责任按动画、UI、技术美术和音频的资产所有权拆分。
 
-### 条件 Agent
+## 已确认的实施不变量
 
-| Agent | 英文 ID | 启用条件 |
-| --- | --- | --- |
-| 多人网络同步专家 | `multiplayer-network-engineer` | 项目包含联机、合作或竞技功能时启用 |
-
-## 推荐继续顺序
-
-下一会话不要一次性设计或创建全部 Agent。建议先评审第一批核心玩法执行层：
-
-1. `ue-gameplay-engineer`
-2. `combat-ai-systems-engineer`
-3. `gameplay-presentation-engineer`
-4. `level-mission-designer`
-
-设计时重点检查：
-
-- 通用玩法专家是否过宽，以及内部工作模式如何分流。
-- 战斗与 AI 合并后如何保持 GAS、AI 和数值职责边界。
-- 表现系统是否仅负责运行时集成，不越权决定视听创意。
-- 关卡任务专家的设计责任与 UE 实施责任如何交接。
-- 哪些执行 Agent 需要 `edit`、`bash`、`lsp` 或 `external_directory`，必须遵守最小权限。
-
-第一批设计展示并经用户确认后，再逐个或分批落盘。
+1. UE 核心系统工程师只改纯文本底座，禁止任何 `.uasset`，不拥有具体功能的网络同步。
+2. Gameplay、AI、动画、UI、技术美术、音频和世界构建分别拥有列明的二进制资产类型。
+3. `.uasset` 只能通过 UE Editor、Editor API、Editor Utility 或 Commandlet 修改，禁止文本或字节补丁。
+4. 引用资产不转移写入权；地图、Gameplay 或工具 Agent 不能修改被引用资产内部实现。
+5. 编辑器或 DCC 工具不可用时必须返回 `BLOCKED_TOOLING`，不能声称二进制资产已完成。
+6. 资产生产管理专家管理 Asset ID、Brief、版本、依赖和门禁状态，不直接制作或批准资产。
+7. 多人网络同步归 `ue-gameplay-engineer`，不再设计独立的 `multiplayer-network-engineer`；联机任务按实际需求启用该 Agent 的网络工作模式。
 
 ## 当前需要后续修订的治理问题
 
 1. **人类学家权限过宽**：当前使用 `"*": allow`，与其他学术专家的只读模型不一致。
 2. **游戏制作人范围超界**：仍包含发布、平台认证和 LiveOps 等表述，与本地开发至构建包的边界不一致。
-3. **核心实施层缺失**：当前阵容能设计、规划和验证，但尚不能承担完整游戏功能与内容生产。
-4. **统一注册表缺失**：完成核心阵容后可建立单一权威 Agent 注册表；当前以目录和阵容报告为准。
+3. **统一注册表缺失**：当前共有 28 个 Agent，仍以目录和阵容报告为准；后续可建立单一机器可读注册表。
+4. **真实工具能力待项目验证**：二进制资产角色已经定义安全边界，但具体项目仍需验证 UE Editor、Commandlet、DCC 和音频工具是否可用。
 
 未经用户确认，不要在下一会话顺带修订以上问题。
 
@@ -139,6 +147,7 @@
   - `UEGameStudio/agents/directors/`
   - `UEGameStudio/agents/academic/`
   - `UEGameStudio/agents/design/`
+  - `UEGameStudio/agents/production/`
   - `UEGameStudio/agents/qa/`
   - `UEGameStudio/agents/technical/`
 - 当前文档：
@@ -150,6 +159,5 @@
 1. 先阅读本交接说明和智能体阵容报告。
 2. 扫描实际存在的 Agent 文件，不能根据 Git 删除记录推断当前阵容。
 3. 使用 `skill-creator` 指导 Agent 设计或创建。
-4. 本轮从第一批四个核心玩法 Agent 的设计评审开始。
-5. 先展示设计，不修改文件，等待用户确认。
-
+4. 核对 2026-08-26 新增 13 个 Agent 与实际项目工具能力，不重新创建旧候选 Agent。
+5. 后续新增、合并或治理修订仍须先展示设计，取得用户确认后再落盘。
