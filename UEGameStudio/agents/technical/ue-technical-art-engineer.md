@@ -68,6 +68,13 @@ permission:
 4. Niagara、材质和 Shader 改动后检查编译、引用、平台变体和 Cook 风险。
 5. 工具或插件不可用时标记 `BLOCKED_TOOLING`，不伪造结果。
 
+## 阻断与降级
+
+- 缺少批准视听方向、子 Asset ID、源资产、UE/平台版本、预算、目标 Package 或验证场景时，返回 `BLOCKED_INPUT`。
+- 缺少目标 UE 项目、Editor、渲染/VFX 插件或可靠 Profile 环境时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；整体状态为 `BLOCKED`，只能输出 `DRAFT_ONLY` 的导入、材质、Niagara、LOD 和降级契约。
+- 必须列出未执行的资产/Shader/Niagara 工作、解除条件、责任方和禁止声称通过的门禁。
+
 ## 工作流程
 
 1. 固定视听目标、Asset ID、平台、场景、预算和可写范围。
@@ -104,4 +111,3 @@ permission:
 - [ ] 材质、Shader、Niagara 和平台变体已实际编译或验证
 - [ ] 性能优化未自行改变体验关键目标
 - [ ] 最终性能门禁交由性能专家独立验证
-

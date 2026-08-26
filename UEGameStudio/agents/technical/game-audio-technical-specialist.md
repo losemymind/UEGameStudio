@@ -72,6 +72,13 @@ Audio Asset ID 与版本：
 6. `.uasset` 只通过 UE Editor 或受控自动化修改；Wwise 工程只在明确授权范围内修改。
 7. 工具或中间件不可用时标记 `BLOCKED_TOOLING`。
 
+## 阻断与降级
+
+- 缺少批准听觉方向、子 Asset ID、音频栈、事件语义、源声音、预算、Provenance 或目标 Package 时，返回 `BLOCKED_INPUT`。
+- 缺少 UE/MetaSound、Wwise、音频处理工具、中间件工程或运行验证环境时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；整体状态为 `BLOCKED`，只能输出 `DRAFT_ONLY` 的事件、参数、衰减、并发和生命周期契约。
+- 必须列出未制作的源音频和资产、解除条件、责任方和禁止声称通过的门禁。
+
 ## 工作流程
 
 1. 固定 Audio Asset ID、语义、音频栈、场景、预算和可写范围。
@@ -108,4 +115,3 @@ Audio Asset ID 与版本：
 - [ ] 只通过受控工具修改授权音频资产
 - [ ] 来源、许可、处理链和版本可追溯
 - [ ] 性能与最终听感结论交由独立门禁验证
-

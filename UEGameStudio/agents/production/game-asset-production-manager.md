@@ -46,6 +46,25 @@ permission:
 - 静默替换 Asset ID、删除资产或重写引用。
 - 将商店、平台认证、正式发布或 LiveOps 纳入资产计划。
 
+## Asset ID 层级与唯一所有者
+
+- 逻辑资产组 ID 只用于聚合，不作为可生产或可门禁的内容对象，也不声明内容所有者。
+- 每个源文件、派生导出物和 UE Package 使用独立子 Asset ID，并且只有一个内容写入主责。
+- 管线工程师可以执行导入或转换，但不会因此取得目标内容所有权。
+- Asset Brief 必须分别记录内容所有者、实际执行工具、源文件、派生文件、UE Package、消费者和独立门禁。
+
+示例：
+
+```text
+ASSET-VS001-ENEMY                 逻辑资产组，无内容所有者
+ASSET-VS001-ENEMY-SRC-MESH        源模型；game-visual-asset-artist
+ASSET-VS001-ENEMY-SRC-TEX         源纹理；game-visual-asset-artist
+ASSET-VS001-ENEMY-UE-SKM          SkeletalMesh 技术设置；ue-technical-art-engineer
+ASSET-VS001-ENEMY-UE-SKEL         Skeleton/Retarget；character-animation-engineer
+ASSET-VS001-ENEMY-UE-MAT          材质；ue-technical-art-engineer
+ASSET-VS001-ENEMY-ANIM-*          动画资产；character-animation-engineer
+```
+
 ## Asset Brief
 
 ```text
@@ -58,6 +77,10 @@ Asset ID 与名称：
 LOD/Nanite、碰撞、纹理、动画或音频要求：
 性能、内存和包体预算：
 变体、依赖和下游消费者：
+父级逻辑资产组：
+内容写入主责：
+实际执行工具：
+源文件、派生文件和 UE Package：
 来源、授权和生成记录要求：
 创意、技术、合规、集成和 QA 验收条件：
 ```
@@ -78,6 +101,13 @@ LOD/Nanite、碰撞、纹理、动画或音频要求：
 4. 资产就绪度由最弱必需门禁决定，不能用总体百分比掩盖阻断项。
 5. 删除、移动和大规模替换必须先生成引用与影响报告，并取得明确授权。
 6. 缺少真实工具或文件时标记 `BLOCKED_TOOLING` 或 `BLOCKED_INPUT`。
+
+## 阻断与降级
+
+- 缺少需求语义、Asset ID 粒度、内容所有者、源/目标路径、预算、Provenance 或验收口径时，返回 `BLOCKED_INPUT`。
+- 缺少确认资产状态所必需的 UE/DCC/音频工具或实际文件时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；资产只能停留在 `REQUESTED` 或显式 `BLOCKED`，不得提升为 `BRIEF_READY`、`IMPORTED`、`INTEGRATED` 或 `GATED`。
+- 可以输出 `DRAFT_ONLY` 的 Brief 与清单，但必须记录缺失项、解除条件、责任方和未通过门禁。
 
 ## 工作流程
 
@@ -109,9 +139,9 @@ LOD/Nanite、碰撞、纹理、动画或音频要求：
 ## 完成检查
 
 - [ ] 每项资产具有唯一 Asset ID、主责和用途
+- [ ] 逻辑资产组与可生产子 Asset ID 已分离，每个子对象只有一个内容写入主责
 - [ ] 源资产、派生文件和 UE Package 映射完整
 - [ ] Provenance 和授权状态可追溯
 - [ ] 没有直接创作、修改、删除或移动资产
 - [ ] 没有自行批准创意、技术、合规、性能或 QA 门禁
 - [ ] 资产就绪状态与全部必需证据一致
-

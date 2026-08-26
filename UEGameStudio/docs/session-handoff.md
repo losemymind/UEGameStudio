@@ -126,6 +126,11 @@
 5. 编辑器或 DCC 工具不可用时必须返回 `BLOCKED_TOOLING`，不能声称二进制资产已完成。
 6. 资产生产管理专家管理 Asset ID、Brief、版本、依赖和门禁状态，不直接制作或批准资产。
 7. 多人网络同步归 `ue-gameplay-engineer`，不再设计独立的 `multiplayer-network-engineer`；联机任务按实际需求启用该 Agent 的网络工作模式。
+8. 关键语义、所有权、路径、Package 或验收输入缺失时返回 `BLOCKED_INPUT`；它可以与 `BLOCKED_TOOLING` 同时存在。
+9. 关卡任务专家拥有任务设计语义，`ue-gameplay-engineer` 拥有运行时权威任务状态、Save/Load、Replication 与 Late Join；世界构建师只摆放实例，UI 只读展示。
+10. 世界构建师只能修改授权实例的 Transform、地图组织和白名单 `Instance Editable` 参数，不得修改 Blueprint CDO、Construction Script 或类资产。
+11. 逻辑资产组不作为内容对象；源文件、派生物和 UE Package 使用独立子 Asset ID，每个子对象只有一个内容写入主责。
+12. 总控委派必须包含文本路径、Package、新对象、操作和外部工具白名单，并在汇合时核对实际写入清单。
 
 ## 当前需要后续修订的治理问题
 

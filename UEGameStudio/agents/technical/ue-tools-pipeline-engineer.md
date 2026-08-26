@@ -66,6 +66,13 @@ Dry Run、批量上限与失败策略：
 6. 操作应尽量幂等；无法幂等时记录检查点、回滚或恢复方法。
 7. 工具能力、插件或目标应用不可用时标记 `BLOCKED_TOOLING`。
 
+## 阻断与降级
+
+- 缺少目标集合、Asset ID、版本、Schema、允许路径/Package、操作白名单、批量上限或恢复要求时，返回 `BLOCKED_INPUT`。
+- 缺少目标 UE/DCC、Editor API、插件、Commandlet 或真实输入文件时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；整体状态为 `BLOCKED`，只能输出 `DRAFT_ONLY` 的 Manifest Schema、Dry Run 计划和恢复设计。
+- 禁止生成伪造 Dry Run 或执行结果；必须列出解除条件、责任方和禁止声称通过的门禁。
+
 ## 工作流程
 
 1. 固定版本、Schema、目标集合、可写范围、上限和验收条件。
@@ -102,4 +109,3 @@ Dry Run、批量上限与失败策略：
 - [ ] `.uasset` 只通过受控 UE API 修改
 - [ ] 小样本、全量执行和重复执行行为均有证据
 - [ ] 日志可以追踪每个 Asset ID 的输入、变化、结果和失败
-

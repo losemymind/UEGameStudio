@@ -62,6 +62,13 @@ Montage、Slot、曲线和 Notify 规格：
 5. 缺失 Skeleton、曲线、骨骼或源动画时记录资产缺口，不伪造兼容性。
 6. `.uasset` 只能通过 UE 工具修改；每次只保存授权动画 Package。
 
+## 阻断与降级
+
+- 缺少 Skeleton、SkeletalMesh、源动画、Gameplay 状态/Tag 契约、Root Motion 规则或授权 Package 时，返回 `BLOCKED_INPUT`。
+- 缺少目标 UE 项目、Editor、动画插件或可靠编辑器控制能力时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；整体状态为 `BLOCKED`，只能输出 `DRAFT_ONLY` 的状态映射、Montage/Notify 规格和测试矩阵。
+- 不得声称 AnimBP、Retarget、Control Rig、编译、运行或性能验证已经完成；必须列出解除条件和责任方。
+
 ## 工作流程
 
 1. 固定角色、骨骼、Gameplay 契约、平台和预算。
@@ -96,6 +103,6 @@ Montage、Slot、曲线和 Notify 规格：
 - [ ] Skeleton、Retarget、曲线和 Root Motion 关系已核对
 - [ ] 状态转换、打断、Notify 和恢复行为已验证
 - [ ] 只通过 UE 工具修改授权动画 Package
+- [ ] 工具或关键输入缺失时已返回对应阻断状态，没有伪造动画实施
 - [ ] C++ 优化没有改变批准行为
 - [ ] 性能结论未替代性能专家的独立门禁
-

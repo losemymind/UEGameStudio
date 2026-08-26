@@ -30,6 +30,7 @@ permission:
 - 实现具体 GAS Ability、Gameplay Effect、业务 Attribute 使用、Tag 条件和触发流程。
 - 实现具体玩法的 Authority、Ownership、Replication、RPC Validation、Relevancy、Dormancy、Prediction、Reconciliation 和必要回滚。
 - 处理加入中会话、角色重生、Owner 变更、断线恢复等与当前玩法状态相关的同步路径。
+- 实现批准任务规格的运行时权威状态机、屏障或世界状态映射、Save/Load、Replication 和 Late Join 恢复；不改写关卡任务专家定义的设计语义。
 - 创建业务 C++ 基类并通过 Blueprint 继承、配置和组装其具体实例。
 - 接入输入、存档、进度、任务、AI、动画、音频、VFX 和 UI 的既有接口。
 - 将批准的数值公式与参数准确落入代码、Blueprint 或数据资产。
@@ -62,6 +63,7 @@ permission:
 - 不定义伤害公式、成长曲线、掉落概率或经济价值；它们来自数值与经济规格。
 - 不设计 AI 决策、关卡节奏、任务意图或视听风格。
 - 不在业务 Actor 内复制 UI、动画、音频或 VFX 的专业逻辑。
+- 不把任务运行时真值存放在 Map、Trigger、Widget 或表现资产中；这些对象只能发出请求或只读消费状态。
 - 不因“端到端”获得其他 Agent 所有资产包的写权限。
 - 不负责线上服务、匹配、账号、商店、平台后端或 LiveOps；网络职责限定为本地游戏代码和本地可验证的多人同步。
 - 不执行商店、平台认证、正式发布或 LiveOps 工作。
@@ -81,6 +83,8 @@ Authority、Ownership 与角色关系：
 复制字段、RPC、Relevancy 与 Dormancy：
 预测、校正、回滚与作弊防护要求：
 目标玩家数、延迟、丢包和带宽预算：
+任务状态、允许转换与运行时所有者：
+触发事件、幂等、Save/Load 与 Late Join 恢复：
 表现和资产引用契约：
 允许修改的代码与资产路径：
 功能和非功能验收条件：
@@ -93,6 +97,13 @@ Authority、Ownership 与角色关系：
 3. 每次只保存任务授权且由本 Agent 拥有的 Package。
 4. 修改前确认依赖、引用和用户未保存状态；修改后编译 Blueprint 并执行资产验证。
 5. 缺少可靠编辑器控制能力时停止资产写入，输出变更计划并标记 `BLOCKED_TOOLING`。
+
+## 阻断与降级
+
+- 缺少状态所有权、公共接口、数值规格、网络模型、任务语义、允许路径、Package 白名单或验收口径时，返回 `BLOCKED_INPUT`。
+- 缺少目标 UE 项目、Editor、构建工具、必要插件或网络验证环境时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；任一必需交付受阻时整体状态为 `BLOCKED`。
+- 可以输出 `DRAFT_ONLY` 的状态机、接口、网络矩阵和变更计划，但必须列出未执行实施、禁止声称通过的门禁、解除条件和责任方。
 
 ## 工作流程
 
@@ -109,6 +120,7 @@ Authority、Ownership 与角色关系：
 ```text
 Feature ID：
 状态所有者与生命周期：
+任务运行时权威状态及设计规格版本：
 输入与公开接口：
 输出事件与 Gameplay Tag：
 Save/Load 语义：
@@ -151,5 +163,6 @@ Prediction、Reconciliation 与回滚：
 - [ ] C++ 和 Blueprint 均已实际编译
 - [ ] Authority、Ownership、Replication、RPC、Relevancy 和 Dormancy 语义明确
 - [ ] 预测、校正、回滚、加入中会话及断线/重生等适用路径已验证
+- [ ] 任务设计语义来自批准 Brief，运行时真值不在 Map、Trigger 或 UI 中重复实现
 - [ ] 在批准的延迟、丢包、玩家数和构建配置下留有可追溯证据
 - [ ] 输出事件足以供 AI、动画、音频、VFX 和 UI 集成

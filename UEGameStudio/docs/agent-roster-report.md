@@ -91,7 +91,7 @@
 | [首席游戏经济专家](../agents/design/lead-game-economy-designer.md) | `lead-game-economy-designer` | 游戏包内货币、资源、物品与服务的价值结构、产出消耗、库存、转换和稳定性 | `ECO-STRUCTURE`、`ECO-FLOW`、`ECO-PRICING`、`ECO-PROGRESSION`、`ECO-STABILITY` |
 | [关卡与任务设计专家](../agents/design/level-mission-designer.md) | `level-mission-designer` | 玩家路径、空间节奏、任务状态、遭遇 Brief、检查点与失败恢复 | `LEVEL-FLOW`、`MISSION-STATE`、`ENCOUNTER-BRIEF`、`LEVEL-ACCEPTANCE` |
 
-两者的职责分界：
+三者的职责分界：
 
 ```text
 游戏总设计师：定义体验和机制目的
@@ -108,19 +108,19 @@ QA 测试专家：验证实际功能和构建包行为
 | Agent | 英文 ID | 核心责任 | 资产或写入边界 |
 | --- | --- | --- | --- |
 | [UE 核心系统工程师](../agents/technical/ue-core-systems-engineer.md) | `ue-core-systems-engineer` | Module、Subsystem、公共接口、组件与生命周期基础设施 | 仅纯文本 C++、构建规则和文本配置；禁止 `.uasset` 和具体网络业务 |
-| [UE 游戏玩法工程师](../agents/technical/ue-gameplay-engineer.md) | `ue-gameplay-engineer` | 具体玩法业务、Gameplay Actor、GA/GE，以及 Replication、RPC、Relevancy、预测与回滚 | 当前功能所属 Gameplay 源码和资产；禁止 Map、UMG 及专业表现资产 |
+| [UE 游戏玩法工程师](../agents/technical/ue-gameplay-engineer.md) | `ue-gameplay-engineer` | 具体玩法、运行时任务真值、Gameplay Actor、GA/GE，以及 Replication、RPC、Relevancy、预测与回滚 | 当前功能所属 Gameplay 源码和资产；禁止 Map、UMG 及专业表现资产 |
 | [游戏 AI 系统工程师](../agents/technical/game-ai-engineer.md) | `game-ai-engineer` | 感知、Behavior Tree、StateTree、Blackboard、EQS、导航查询与战术决策 | AIController、AI 源码与 AI 专属资产；禁止遭遇设计和地图摆放 |
-| [UE 游戏世界构建师](../agents/technical/ue-world-builder.md) | `ue-world-builder` | Map、World Partition、Data Layer、Level Instance、PCG 与最终空间组装 | 只拥有地图级 Package；不得修改被引用资产内部实现 |
+| [UE 游戏世界构建师](../agents/technical/ue-world-builder.md) | `ue-world-builder` | Map、World Partition、Data Layer、Level Instance、PCG 与最终空间组装 | 只拥有地图级 Package 和白名单实例参数；禁止 Blueprint CDO、Construction Script 与类资产 |
 | [角色动画工程师](../agents/technical/character-animation-engineer.md) | `character-animation-engineer` | Retarget、AnimBP、Montage、Motion Warping、Control Rig、IK 与动画优化 | 动画资产及动画专属 C++；禁止战斗结算和模型源资产创作 |
 | [UE UI 工程师](../agents/technical/ue-ui-engineer.md) | `ue-ui-engineer` | UMG、CommonUI、Widget C++、数据绑定、输入焦点、HUD 与菜单 | UI 源码和 Widget 资产；禁止核心玩法、任务和战斗计算 |
 
-功能实施遵循“公共底座—具体业务—专业集成”的依赖方向。具体玩法只通过批准接口调用 AI、动画、UI、音频和视觉表现，不能因为需要引用资产而取得其写入权。
+功能实施遵循“公共底座—具体业务—专业集成”的依赖方向。关卡任务专家拥有任务设计语义，UE 游戏玩法工程师拥有运行时权威任务状态、Save/Load 和多人复制，世界构建师只摆放实例，UI 只读展示。具体玩法只通过批准接口调用 AI、动画、UI、音频和视觉表现，不能因为需要引用资产而取得其写入权。
 
 ## 六、资产制作与管理层
 
 | Agent | 英文 ID | 核心责任 | 资产或写入边界 |
 | --- | --- | --- | --- |
-| [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md) | `game-asset-production-manager` | Asset ID、Brief、版本、状态、依赖、Provenance 与多门禁就绪管理 | 只维护资产台账和交付文档，不直接制作或批准专业资产 |
+| [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md) | `game-asset-production-manager` | 父子 Asset ID、Brief、版本、状态、依赖、Provenance 与多门禁就绪管理 | 逻辑组只聚合；每个可生产子对象只有一个内容主责 |
 | [游戏视觉资产制作专家](../agents/production/game-visual-asset-artist.md) | `game-visual-asset-artist` | 角色、环境、道具、纹理的视觉源资产与规范导出物 | 源内容和导出物；禁止运行时系统、地图和技术资产 |
 | [UE 技术美术工程师](../agents/technical/ue-technical-art-engineer.md) | `ue-technical-art-engineer` | 材质、Shader、Niagara、导入设置、LOD/Nanite 与视觉性能适配 | 技术美术 Package 和授权资产技术设置 |
 | [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md) | `game-audio-technical-specialist` | SFX、环境声、音乐、对白、MetaSound/Wwise、空间声学与触发句柄 | 音频源文件和音频资产；禁止 Gameplay、动画和地图内部逻辑 |
@@ -154,6 +154,8 @@ QA 测试专家：验证实际功能和构建包行为
 ### 实施权限
 
 新增功能、世界、资产和管线 Agent 具有与其实施职责匹配的 `edit`、`bash`、必要的 `lsp` 及 `external_directory` 权限。权限不代表任意项目写入权；每个 Agent 的正文进一步限定可写源码、Package、外部工具和目录。
+
+每个实施任务还必须由总控编排专家提供精确的文本路径、Package、新对象、操作类型和外部工具白名单。交付时比较预期写入与实际修改清单；任何越界写入都不能被接受。
 
 - UE 核心系统工程师只改纯文本底座，明确禁止 `.uasset`。
 - Gameplay、AI、动画、UI、技术美术、音频与世界构建 Agent 只拥有其列明资产类型。
@@ -196,8 +198,9 @@ QA 测试专家：验证实际功能和构建包行为
 ```text
 游戏总设计师定义体验与机制
 → 技术总监批准架构、接口、数据所有权和预算
+→ 关卡与任务设计专家定义任务设计语义和状态转换
 → UE 核心系统工程师实现纯文本公共底座
-→ UE 游戏玩法工程师实现具体业务 C++ 与 Gameplay Blueprint
+→ UE 游戏玩法工程师实现具体业务、运行时权威任务状态、C++、Gameplay Blueprint 和多人同步
 → AI、动画、UI、音频和技术美术按各自资产所有权集成
 → 关卡任务设计专家定义流程与遭遇
 → UE 游戏世界构建师完成地图空间组装
@@ -217,6 +220,8 @@ QA 测试专家：验证实际功能和构建包行为
 ```
 
 跨链交接使用运行时事件/状态契约和 Asset Brief。引用资产不转移资产所有权，工具自动化也不转移内容决定权。
+
+实施型 Agent 统一使用 `BLOCKED_INPUT` 与 `BLOCKED_TOOLING`。两者可以同时存在；阻断时整体状态为 `BLOCKED`，只允许输出明确标记的 `DRAFT_ONLY` 文本工件，并列出解除条件和禁止声称通过的门禁。核心系统的 `BLOCKED_ARCHITECTURE` 是专业化输入阻断，资产审计继续使用 `BLOCKED_UNVERIFIED`。
 
 ### 本地构建包验证
 
@@ -288,6 +293,9 @@ QA 测试专家：验证实际功能和构建包行为
 1. 以核心数据源、资产包所有权和可验证交付物确定 Agent 边界，不按职位名称无限拆分。
 2. 引用资产不转移写入权；跨域修改通过契约交回唯一所有者。
 3. `.uasset` 只能通过 UE Editor 或受控自动化修改，工具不可用时返回 `BLOCKED_TOOLING`。
-4. 继续保持“制定—实施—验证”分离，实施者不能批准自己的创意、合规、性能或 QA 门禁。
-5. 新 Agent 继续采用英文 kebab-case ID、中文专业正文和 `mode: subagent`。
-6. 所有能力严格止于本地开发和构建游戏包，不扩展到商店、认证、正式发布与 LiveOps。
+4. 关键输入缺失时返回 `BLOCKED_INPUT`；草案不得冒充批准基线或完成状态。
+5. 每个实施任务使用路径、Package、操作和外部工具白名单，并核对实际写入。
+6. 逻辑资产组与可生产子 Asset ID 分离，每个子对象只有一个内容写入主责。
+7. 继续保持“制定—实施—验证”分离，实施者不能批准自己的创意、合规、性能或 QA 门禁。
+8. 新 Agent 继续采用英文 kebab-case ID、中文专业正文和 `mode: subagent`。
+9. 所有能力严格止于本地开发和构建游戏包，不扩展到商店、认证、正式发布与 LiveOps。

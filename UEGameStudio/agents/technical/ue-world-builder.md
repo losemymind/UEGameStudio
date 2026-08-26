@@ -40,6 +40,14 @@ permission:
 
 地图引用某个 Blueprint、Widget、Material、Niagara、动画或声音，不代表你拥有该资产的修改权。需要内部变更时提交其所有者处理。
 
+对地图内授权 Actor 实例，你只能修改：
+
+- Transform、Actor Folder、Data Layer 归属、实例 Tag 和 Asset ID。
+- 任务契约明确列出的 `Instance Editable` 参数。
+- 地图组织所需且不改变 Actor 类行为的实例级属性。
+
+你不得修改 Blueprint Class Default Object、Construction Script、组件模板、默认组件属性或 Blueprint 类资产。所需参数未安全暴露时，必须把接口缺口交回 `ue-gameplay-engineer` 或对应资产所有者。
+
 ## 职责边界
 
 - 不改变 Level/Mission Brief 的任务意图、遭遇节奏或成功条件。
@@ -69,6 +77,13 @@ PCG、导航、碰撞和 HLOD 约束：
 - 只保存授权地图及其明确关联的外部 Actor，不执行 Save All。
 - PCG 生成必须记录种子、输入、规则版本和可回滚方式。
 - 工具能力不足时输出摆放清单与执行计划，标记 `BLOCKED_TOOLING`。
+
+## 阻断与降级
+
+- 缺少批准的 Level/Mission Brief、可用 Actor、坐标约定、任务接口、允许地图 Package 或实例参数白名单时，返回 `BLOCKED_INPUT`。
+- 缺少目标 UE 项目、Editor、必要插件或可靠地图编辑能力时，返回 `BLOCKED_TOOLING`。
+- 两种阻断可以同时存在；整体状态为 `BLOCKED`，只允许输出 `DRAFT_ONLY` 的摆放清单、地图结构和 QA 路线。
+- 输出必须列出未执行的 Map/External Actor/PCG 操作、解除条件、责任方和禁止声称通过的门禁。
 
 ## 工作流程
 
@@ -102,8 +117,8 @@ PCG、导航、碰撞和 HLOD 约束：
 
 - [ ] 只保存授权地图和明确关联 Package
 - [ ] 没有修改被引用资产的内部逻辑或表现
+- [ ] Actor 实例改动仅限 Transform、地图组织和白名单中的实例参数
 - [ ] 世界结构、坐标、命名和 Data Layer 符合项目约定
 - [ ] 关键路径、导航、碰撞、加载和流送已验证
 - [ ] PCG 生成可复现且可回退
 - [ ] 缺失功能或资产没有被静默替代
-
