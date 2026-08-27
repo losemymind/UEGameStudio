@@ -17,6 +17,8 @@
 - 总控收到任何新任务后的首次响应必须先提问，不得读取项目、制定计划、委派或实施。
 - 总控只有在需求理解置信度达到至少 98%、需求理解摘要经用户明确确认后，才能读取实际阵容和项目上下文并开始制定任务计划。
 - 总控制定计划期间遇到会改变计划的不确定项必须暂停并提问；若答案改变已确认需求，必须重置需求置信度和确认状态。
+- 总控在 `PLAN_READY` 后将计划写入 `.opencode/task-plans/<Plan-ID>/`，以 `M0` 为根使用 `M0.1`、`M0.1.1` 等稳定路径式编号递归展开。
+- 总控只能编辑 `.opencode/task-plans/**`；任务树写入属于治理状态维护，不授予源码、配置、资产或普通项目文档写入权。
 - 决策、实施和独立验证保持分离。
 - 创建新 Agent 时先展示分析与设计，取得用户确认后才能落盘；用户明确说“落盘”后才写文件。
 - 可以蒸馏以下仓库中适合 UEGameStudio 的能力，但不能复制其组织冗余：
@@ -125,18 +127,20 @@
 1. 总控收到任何新任务后必须先提问；首次响应不得读取项目、制定计划、拆分任务、委派 Agent 或开始实施。
 2. 总控只有在需求理解置信度达到至少 98% 并取得用户对当前需求摘要的明确确认后，才能读取实际阵容与项目上下文并开始规划。
 3. 总控规划期间遇到会影响主责、依赖、范围、写入边界、门禁或验收方式的不确定项时必须暂停并提问；答案改变需求时须重置确认并重新澄清。
-4. UE 核心系统工程师只改纯文本底座，禁止任何 `.uasset`，不拥有具体功能的网络同步。
-5. Gameplay、AI、动画、UI、技术美术、音频和世界构建分别拥有列明的二进制资产类型。
-6. `.uasset` 只能通过 UE Editor、Editor API、Editor Utility 或 Commandlet 修改，禁止文本或字节补丁。
-7. 引用资产不转移写入权；地图、Gameplay 或工具 Agent 不能修改被引用资产内部实现。
-8. 编辑器或 DCC 工具不可用时必须返回 `BLOCKED_TOOLING`，不能声称二进制资产已完成。
-9. 资产生产管理专家管理 Asset ID、Brief、版本、依赖和门禁状态，不直接制作或批准资产。
-10. 多人网络同步归 `ue-gameplay-engineer`，不再设计独立的 `multiplayer-network-engineer`；联机任务按实际需求启用该 Agent 的网络工作模式。
-11. 关键语义、所有权、路径、Package 或验收输入缺失时返回 `BLOCKED_INPUT`；它可以与 `BLOCKED_TOOLING` 同时存在。
-12. 关卡任务专家拥有任务设计语义，`ue-gameplay-engineer` 拥有运行时权威任务状态、Save/Load、Replication 与 Late Join；世界构建师只摆放实例，UI 只读展示。
-13. 世界构建师只能修改授权实例的 Transform、地图组织和白名单 `Instance Editable` 参数，不得修改 Blueprint CDO、Construction Script 或类资产。
-14. 逻辑资产组不作为内容对象；源文件、派生物和 UE Package 使用独立子 Asset ID，每个子对象只有一个内容写入主责。
-15. 总控委派必须包含文本路径、Package、新对象、操作和外部工具白名单，并在汇合时核对实际写入清单。
+4. 总控在 `PLAN_READY` 后生成稳定 Plan ID，将完整任务计划落盘为以 `M0` 为根的递归树；子节点使用父 ID 追加序号，节点 ID 签发后不得重编号或复用。
+5. 总控通过细粒度 `edit` 规则只能维护 `.opencode/task-plans/**`；有子任务的节点才创建同名目录，父子包含关系与显式执行依赖必须分开记录。
+6. UE 核心系统工程师只改纯文本底座，禁止任何 `.uasset`，不拥有具体功能的网络同步。
+7. Gameplay、AI、动画、UI、技术美术、音频和世界构建分别拥有列明的二进制资产类型。
+8. `.uasset` 只能通过 UE Editor、Editor API、Editor Utility 或 Commandlet 修改，禁止文本或字节补丁。
+9. 引用资产不转移写入权；地图、Gameplay 或工具 Agent 不能修改被引用资产内部实现。
+10. 编辑器或 DCC 工具不可用时必须返回 `BLOCKED_TOOLING`，不能声称二进制资产已完成。
+11. 资产生产管理专家管理 Asset ID、Brief、版本、依赖和门禁状态，不直接制作或批准资产。
+12. 多人网络同步归 `ue-gameplay-engineer`，不再设计独立的 `multiplayer-network-engineer`；联机任务按实际需求启用该 Agent 的网络工作模式。
+13. 关键语义、所有权、路径、Package 或验收输入缺失时返回 `BLOCKED_INPUT`；它可以与 `BLOCKED_TOOLING` 同时存在。
+14. 关卡任务专家拥有任务设计语义，`ue-gameplay-engineer` 拥有运行时权威任务状态、Save/Load、Replication 与 Late Join；世界构建师只摆放实例，UI 只读展示。
+15. 世界构建师只能修改授权实例的 Transform、地图组织和白名单 `Instance Editable` 参数，不得修改 Blueprint CDO、Construction Script 或类资产。
+16. 逻辑资产组不作为内容对象；源文件、派生物和 UE Package 使用独立子 Asset ID，每个子对象只有一个内容写入主责。
+17. 总控委派必须包含文本路径、Package、新对象、操作和外部工具白名单，并在汇合时核对实际写入清单。
 
 ## 2026-08-27 已实施治理修订
 
@@ -147,6 +151,9 @@
 3. 只有当前需求摘要被确认后，才能读取实际阵容与项目上下文并制定任务计划。
 4. 规划期间发现会改变计划的不确定项时必须暂停并提问；答案改变需求时，旧确认和计划草案失效。
 5. 门禁状态统一为 `REQUIREMENTS_CLARIFICATION`、`REQUIREMENTS_CONFIRMATION`、`PLANNING_CLARIFICATION` 和 `PLAN_READY`。
+6. `PLAN_READY` 后由总控生成 `YYYYMMDD-HHMMSS-<slug>` 格式的 Plan ID，并把任务计划写入 `.opencode/task-plans/<Plan-ID>/`。
+7. 任务树以 `M0` 为根，使用 `M0.1`、`M0.1.1` 等稳定路径式编号递归展开；废弃节点保留并标记 `CANCELLED` 或 `SUPERSEDED`。
+8. 总控新增的 `edit` 权限采用路径级默认拒绝，只允许 `.opencode/task-plans/**`；不开放 Bash，也不扩大项目实施权限。
 
 ## 当前需要后续修订的治理问题
 
@@ -183,3 +190,4 @@
 4. 核对 2026-08-26 新增 13 个 Agent 与实际项目工具能力，不重新创建旧候选 Agent。
 5. 后续新增、合并或治理修订仍须先展示设计，取得用户确认后再落盘。
 6. 总控处理用户新任务时必须执行“首次提问 → 98% 需求理解 → 用户明确确认摘要 → 规划期疑点继续提问”的门禁，不能直接进入任务计划。
+7. 总控在委派前必须检查 `.opencode/task-plans/<Plan-ID>/M0.md` 及递归节点已完整落盘，实际写入不得超出该计划目录。
