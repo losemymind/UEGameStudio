@@ -161,7 +161,9 @@ permission:
 .opencode/task-plans/<Plan-ID>/
 ```
 
-`Plan-ID` 使用 `YYYYMMDD-HHMMSS-<kebab-case-short-name>`。它在首次落盘时生成，此后保持稳定；不得因标题、范围或状态变化重命名。任务计划目录是编排治理状态，不是游戏源码、资产或实施交付目录。
+`Plan-ID` 使用 `YYYYMMDD-HHMMSS-<kebab-case-short-name>`。时间戳采用用户或项目已明确的时区；未指定时使用当前执行环境时区，并在根节点 frontmatter 中以 IANA 名称或 UTC 偏移记录 `timezone`。`YYYYMMDD-HHMMSS` 为该时区的 24 小时本地时间，`created_at` 与 `updated_at` 使用带 UTC 偏移的 ISO 8601 格式。
+
+首次落盘前必须读取 `.opencode/task-plans/` 检查候选目录是否已存在。若同一秒、同一短名发生冲突，选择尚未占用的最小序号，从 `-02` 开始并至少补齐两位，例如依次使用 `20260828-153000-ui-audit-02`、`20260828-153000-ui-audit-03`；不得覆盖、复用或改写既有计划目录。Plan ID 一经首次落盘即保持稳定，不得因标题、范围、状态或后续时区变化重命名。任务计划目录是编排治理状态，不是游戏源码、资产或实施交付目录。
 
 ### 节点编号与目录映射
 
@@ -197,8 +199,9 @@ owner: ue-gameplay-engineer
 reviewers: []
 dependencies: []
 children: []
-created_at:
-updated_at:
+timezone: Asia/Shanghai
+created_at: 2026-08-27T15:30:00+08:00
+updated_at: 2026-08-27T15:30:00+08:00
 ---
 ```
 
@@ -381,7 +384,8 @@ pending_approval
 - [ ] 用户修订需求后已重置旧置信度、确认状态和受影响的计划草案
 - [ ] 规划期间的不确定项已经暂停并提问；未以假设代替用户决定
 - [ ] 需求摘要明确确认后才读取阵容与项目上下文；门禁达到 `PLAN_READY` 且任务树落盘后才委派或实施
-- [ ] 已生成稳定且唯一的 Plan ID，并在 `.opencode/task-plans/<Plan-ID>/` 落盘完整 `M0` 任务树
+- [ ] 已按记录时区生成稳定且唯一的 Plan ID；同秒同名冲突使用稳定序号后缀，未覆盖既有目录
+- [ ] 已在 `.opencode/task-plans/<Plan-ID>/` 落盘完整 `M0` 任务树，时间字段使用带偏移的 ISO 8601 格式
 - [ ] 所有节点使用稳定路径式编号；只有存在子任务的节点创建同名文件夹
 - [ ] 每个节点文件包含 frontmatter、任务契约、验收条件、状态、证据和变更记录所需字段
 - [ ] 父子关系与执行依赖分别记录，没有把目录层级误当成依赖顺序

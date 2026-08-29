@@ -4,7 +4,7 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 盘点日期 | 2026-08-27 |
+| 盘点日期 | 2026-08-29 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 `_template.md` 和 Git 中已删除的旧 Agent |
 | 当前数量 | 28 |
@@ -16,6 +16,10 @@
 当前阵容已经形成“总控编排—创意/技术/生产决策—专业设计—功能与资产实施—独立验证—本地构建”的完整骨架。新增 13 个 Agent 补齐了纯文本核心系统、具体 Gameplay、AI、关卡任务设计、地图集成、角色动画、UI、视听方向、资产生命周期、视觉资产制作、技术美术、音频和工具管线。
 
 体系按核心数据源和资产包所有权分工：纯文本底座、具体 Gameplay、AI、动画、UI、视觉技术资产、音频资产和地图资产分别有唯一主责。二进制 `.uasset` 只能通过 UE Editor 或受控编辑器自动化修改；实施者不能替代 QA、性能、合规与构建门禁。
+
+2026-08-28 全阵容审计后的确定性整改已经落盘：人类学家已收敛为只读研究权限并补齐证据、Canon 与文化敏感性边界；游戏制作人已严格限制为本地开发和本地游戏构建包，并只路由到实际存在的 Agent；总监路由、纯文本写入白名单、视听 Provenance、UI/音频可访问性和 Plan ID 唯一性规则已同步强化。静态检查与安装回归通过；真实 UE Editor、Commandlet、DCC、音频、性能和构建行为仍需在目标项目验证。
+
+2026-08-29 将人类学家进一步通用化：其专业输入和输出不再硬编码游戏世界、目标玩家、Canon 或 `game-director`，而由每次委派提供应用场景、受众、既定前提和决策责任人。UEGameStudio 中的游戏语境由游戏总设计师注入，Canon 裁决和游戏化转译仍归游戏总设计师；未新增重复的“游戏人类学家”。
 
 ## 当前阵容总览
 
@@ -75,13 +79,13 @@
 
 | Agent | 英文 ID | 专业覆盖 | 典型交付 |
 | --- | --- | --- | --- |
-| [人类学家](../agents/academic/academic-anthropologist.md) | `academic-anthropologist` | 文化、亲属、仪式、信仰、生计、交换与社会权力 | 文化模型、制度关系、民族志式细节与风险 |
+| [人类学家](../agents/academic/academic-anthropologist.md) | `academic-anthropologist` | 现实或虚构社会的文化、亲属、仪式、信仰、生计、交换与社会权力 | 文化模型、制度关系、民族志式分析、敏感性风险与应用选项 |
 | [地理学家](../agents/academic/academic-geographer.md) | `academic-geographer` | 地形、气候、水文、资源、聚落、交通和地缘关系 | 地理一致性、空间因果与地图约束 |
 | [历史学家](../agents/academic/academic-historian.md) | `academic-historian` | 时间线、物质文化、制度变迁、时代条件和历史因果 | 史实核验、时代错误与反事实影响 |
 | [叙事学家](../agents/academic/academic-narratologist.md) | `academic-narratologist` | 叙事结构、信息流、人物弧、类型承诺、玩家选择和主题 | 叙事诊断、因果链与改稿方案比较 |
 | [心理学家](../agents/academic/academic-psychologist.md) | `academic-psychologist` | 人格、动机、信念、压力反应、关系动力和成长轨迹 | 角色心理模型、冲突机制与行为预测 |
 
-五位学术专家提供专业分析、证据、假设和风险，不直接决定正式 Canon。游戏总设计师负责取舍并完成游戏化转译。
+五位学术专家均使用默认拒绝的只读研究权限，提供专业分析、证据、假设和风险，不直接决定正式 Canon。人类学家保持通用研究角色，额外负责现实文化借用、Provenance、授权状态、群体内部差异与敏感性风险分析；其应用场景、受众和决策责任人由委派契约提供。在 UEGameStudio 中，游戏总设计师注入游戏语境、负责取舍并完成 Canon 裁决和游戏化转译。
 
 ## 四、专业设计层
 
@@ -101,7 +105,7 @@
 QA 测试专家：验证实际功能和构建包行为
 ```
 
-数值和经济专家可以执行本地只读分析和模拟，但不能直接修改代码、Blueprint、DataTable、资产或配置。关卡与任务设计专家可以维护授权设计交付物，但不直接修改最终生产地图。
+数值和经济专家可以执行本地只读分析和模拟，但不能直接修改代码、Blueprint、DataTable、资产或配置。关卡与任务设计专家的 `edit` 仅用于任务级精确路径白名单内的纯文本 Level/Mission Brief 与设计交付，不得创建或修改 `.uasset`、`.umap` 或最终生产地图。
 
 ## 五、功能开发与世界集成层
 
@@ -112,7 +116,7 @@ QA 测试专家：验证实际功能和构建包行为
 | [游戏 AI 系统工程师](../agents/technical/game-ai-engineer.md) | `game-ai-engineer` | 感知、Behavior Tree、StateTree、Blackboard、EQS、导航查询与战术决策 | AIController、AI 源码与 AI 专属资产；禁止遭遇设计和地图摆放 |
 | [UE 游戏世界构建师](../agents/technical/ue-world-builder.md) | `ue-world-builder` | Map、World Partition、Data Layer、Level Instance、PCG 与最终空间组装 | 只拥有地图级 Package 和白名单实例参数；禁止 Blueprint CDO、Construction Script 与类资产 |
 | [角色动画工程师](../agents/technical/character-animation-engineer.md) | `character-animation-engineer` | Retarget、AnimBP、Montage、Motion Warping、Control Rig、IK 与动画优化 | 动画资产及动画专属 C++；禁止战斗结算和模型源资产创作 |
-| [UE UI 工程师](../agents/technical/ue-ui-engineer.md) | `ue-ui-engineer` | UMG、CommonUI、Widget C++、数据绑定、输入焦点、HUD 与菜单 | UI 源码和 Widget 资产；禁止核心玩法、任务和战斗计算 |
+| [UE UI 工程师](../agents/technical/ue-ui-engineer.md) | `ue-ui-engineer` | UMG、CommonUI、Widget C++、数据绑定、输入焦点、HUD、菜单与适用的 UI 可访问性 | UI 源码和 Widget 资产；禁止核心玩法、任务和战斗计算 |
 
 功能实施遵循“公共底座—具体业务—专业集成”的依赖方向。关卡任务专家拥有任务设计语义，UE 游戏玩法工程师拥有运行时权威任务状态、Save/Load 和多人复制，世界构建师只摆放实例，UI 只读展示。具体玩法只通过批准接口调用 AI、动画、UI、音频和视觉表现，不能因为需要引用资产而取得其写入权。
 
@@ -120,10 +124,10 @@ QA 测试专家：验证实际功能和构建包行为
 
 | Agent | 英文 ID | 核心责任 | 资产或写入边界 |
 | --- | --- | --- | --- |
-| [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md) | `game-asset-production-manager` | 父子 Asset ID、Brief、版本、状态、依赖、Provenance 与多门禁就绪管理 | 逻辑组只聚合；每个可生产子对象只有一个内容主责 |
+| [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md) | `game-asset-production-manager` | 父子 Asset ID、Brief、版本、状态、依赖、Provenance 与多门禁就绪管理 | 只写授权纯文本登记；只读清点；不修改任何 `.uasset`、`.umap` 或内容资产 |
 | [游戏视觉资产制作专家](../agents/production/game-visual-asset-artist.md) | `game-visual-asset-artist` | 角色、环境、道具、纹理的视觉源资产与规范导出物 | 源内容和导出物；禁止运行时系统、地图和技术资产 |
 | [UE 技术美术工程师](../agents/technical/ue-technical-art-engineer.md) | `ue-technical-art-engineer` | 材质、Shader、Niagara、导入设置、LOD/Nanite 与视觉性能适配 | 技术美术 Package 和授权资产技术设置 |
-| [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md) | `game-audio-technical-specialist` | SFX、环境声、音乐、对白、MetaSound/Wwise、空间声学与触发句柄 | 音频源文件和音频资产；禁止 Gameplay、动画和地图内部逻辑 |
+| [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md) | `game-audio-technical-specialist` | SFX、环境声、音乐、对白、MetaSound/Wwise、空间声学、对白动态和字幕/替代通道交接 | 音频源文件和音频资产；禁止 Gameplay、动画、UI 和地图内部逻辑 |
 | [UE 工具与资产管线工程师](../agents/technical/ue-tools-pipeline-engineer.md) | `ue-tools-pipeline-engineer` | Editor Utility、Python、Commandlet、DCC 导入、批处理与资产验证 | 只执行授权批次；工具能力不扩大目标资产所有权 |
 
 角色动画工程师同时参与功能表现链和资产生产链，但每项动画任务仍具有唯一主责。全部二进制资产只能通过目标 UE 版本的 Editor 或受控编辑器自动化修改；不能通过文本或字节补丁修改 `.uasset`。
@@ -159,13 +163,13 @@ QA 测试专家：验证实际功能和构建包行为
 
 - UE 核心系统工程师只改纯文本底座，明确禁止 `.uasset`。
 - Gameplay、AI、动画、UI、技术美术、音频与世界构建 Agent 只拥有其列明资产类型。
-- 资产生产管理专家只维护清单、Brief 和状态，不直接修改内容资产。
+- 资产生产管理专家只在任务级路径白名单内维护纯文本 Manifest、Brief、Provenance 和状态；Bash 仅用于授权的清点与只读核验，外部目录仅限显式授权来源/交付目录，不直接修改内容资产。
 - 工具管线工程师必须先 Dry Run，批处理能力不扩大资产所有权。
 - UE 游戏构建专家继续只负责构建配置、脚本和本地构建产物。
 
-### 当前权限异常
+### 当前权限结论
 
-[人类学家](../agents/academic/academic-anthropologist.md) 当前采用 `"*": allow`，拥有编辑、命令执行、委派、LSP、联网和外部目录等广泛权限；其他四位学术专家均为只读研究权限。这一差异与学术咨询职责不一致，应在后续治理修订中收敛，但本报告未修改其文件。
+排除 `_template.md` 后，28 个 Agent 均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计和资产生产管理仍保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理的 Bash 与外部目录能力也具有任务级白名单和只读操作边界。
 
 ## 主要协作链路
 
@@ -185,13 +189,14 @@ QA 测试专家：验证实际功能和构建包行为
 → 委派与执行
 ```
 
-用户对需求摘要的纠正或实质追加会使旧确认失效，总控必须重置置信度和确认状态。规划期问题如果改变目标、范围、固定决策、授权或验收条件，也必须返回需求澄清门禁，不得沿用旧计划。任务树使用 `M0`、`M0.1`、`M0.1.1` 等稳定路径式 ID；节点有子任务时才创建同名目录，父子包含关系与显式执行依赖分别记录。
+用户对需求摘要的纠正或实质追加会使旧确认失效，总控必须重置置信度和确认状态。规划期问题如果改变目标、范围、固定决策、授权或验收条件，也必须返回需求澄清门禁，不得沿用旧计划。任务树使用 `M0`、`M0.1`、`M0.1.1` 等稳定路径式 ID；节点有子任务时才创建同名目录，父子包含关系与显式执行依赖分别记录。Plan ID 使用记录时区的秒级时间戳；同秒同名冲突依次追加 `-02`、`-03`，不得覆盖既有目录。
 
 ### 世界设定与玩法定义
 
 ```text
 总控编排专家
 → 游戏总设计师
+→ 注入游戏世界、目标玩家、Canon 与表达媒介等应用语境
 → 选择最小充分的学术专家组合
 → 专业分析、证据与风险
 → 游戏总设计师进行 Canon 裁决和游戏化转译
@@ -282,16 +287,16 @@ QA 测试专家：验证实际功能和构建包行为
 | 材质、Shader、Niagara 与技术美术 | 已覆盖 | UE 技术美术工程师 |
 | 音频生产与 UE 音频集成 | 已覆盖 | 游戏音频技术专家 |
 | UE 编辑器工具与资产管线 | 已覆盖 | UE 工具与资产管线工程师 |
+| 本地化专业策划与 LQA | 专职能力缺口 | 当前无独立 Agent；按任务记录 `CAPABILITY_GAP` 并由用户指定责任方 |
+| 独立安全专业评审 | 专职能力缺口 | 当前无独立 Agent；不得由不匹配角色给出绑定性结论 |
 
 ## 当前治理问题
 
 | 优先级 | 问题 | 影响 | 建议 |
 | --- | --- | --- | --- |
-| 高 | 人类学家权限显著高于同组专家 | 学术咨询任务可能获得不必要的项目修改和外部执行能力 | 将权限收敛为与其他学术专家一致的只读研究模型 |
-| 中 | 游戏制作人仍包含发布、平台认证、LiveOps 等表述 | 与“本地开发至构建包”的项目边界不一致，可能造成错误路由 | 后续专项修订其职责、路由表、工作流和完成检查 |
 | 中 | 当前没有统一机器可读的 Agent 注册表 | 28 个 Agent 仍只能通过目录扫描发现，编排时容易遗漏或使用过期身份 | 建立单一权威注册表并从实际文件验证 |
 | 中 | 二进制资产实施依赖可用的 UE/DCC 控制能力 | 角色定义具备边界，但环境没有对应工具时只能输出计划 | 在具体项目接入时验证 Editor、Commandlet、DCC 与音频工具链 |
-| 低 | 人类学家 H1 为“人类学家智能体人格” | 与其他中文角色标题风格不一致 | 后续风格统一时调整标题，不改变专业内容 |
+| 中 | 当前无独立本地化/LQA 与安全专业 Agent | 相关任务无法获得专职绑定性结论 | 按任务登记 `CAPABILITY_GAP`，由用户指定外部责任方或另行批准建设 |
 
 ## 当前成熟度判断
 
@@ -304,7 +309,7 @@ QA 测试专家：验证实际功能和构建包行为
 | 质量、性能与构建 | 已具备独立验证角色 |
 | 游戏功能开发 | 已形成公共底座、具体业务、专项集成与世界组装链路 |
 | 视听内容生产 | 已形成方向、管理、制作、技术化、管线和独立审计链路 |
-| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环已建立；进入真实项目后仍需验证编辑器/DCC 工具可用性、统一注册表和既有治理债务 |
+| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环和本轮确定性治理整改已完成；进入真实项目后仍需验证编辑器/DCC 工具可用性，并处理统一注册表与专职能力缺口 |
 
 ## 后续建设原则
 
