@@ -2,12 +2,12 @@
 
 ## 1. 成品内容
 
-本目录包含 28 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
+本目录包含 30 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
 
 | 路径 | 说明 |
 | --- | --- |
 | `AGENTS.md` | 安装后由目标项目 `opencode.json` 加载的 UEGameStudio 统一规则 |
-| `agents/` | 28 个 `mode: subagent` 专业 Agent；`_template.md` 不安装 |
+| `agents/` | 30 个 `mode: subagent` 专业 Agent；`_template.md` 不安装 |
 | `docs/formal-project-validation.md` | 正式 UE 项目中的完整实测、故障注入和自动修复方法 |
 | `scripts/install.ps1` | 幂等安装/升级脚本，复制 Agent 并安全合并 `opencode.json` |
 | `scripts/test-install.ps1` | 安装器的隔离回归测试 |
@@ -36,7 +36,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 
 安装器会：
 
-1. 将 28 个 Agent 复制到 `<目标项目>/.opencode/agent/`，排除 `_template.md`。
+1. 将 30 个 Agent 复制到 `<目标项目>/.opencode/agent/`，排除 `_template.md`。
 2. 复制 `AGENTS.md` 到 `<目标项目>/UEGameStudio/AGENTS.md`。
 3. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
 4. 解析并保留目标工程已有 `opencode.json` 配置。
@@ -92,7 +92,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 该测试在系统临时目录建立隔离目标，验证：
 
 - 已有 `opencode.json` 属性被保留。
-- 28 个 Agent 被复制且 `_template.md` 被排除。
+- 30 个 Agent 被复制且 `_template.md` 被排除。
 - 目标项目根 `AGENTS.md` 内容保持不变，且不会被安装器注入 `instructions`。
 - 新建配置只加入 `UEGameStudio/AGENTS.md`。
 - `UEGameStudio/AGENTS.md` 和正式项目验证方法被部署。
@@ -102,7 +102,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 
 1. 打开目标 `opencode.json`，确认已有配置仍在。
 2. 确认 `instructions` 包含且只包含一份 `UEGameStudio/AGENTS.md`，没有由安装器新增的 `AGENTS.md`。
-3. 确认 `.opencode/agent/` 有 28 个 Agent，不含 `_template.md`。
+3. 确认 `.opencode/agent/` 有 30 个 Agent，不含 `_template.md`。
 4. 重启 opencode，使配置和 Agent 重新加载。
 5. 使用 `/agents` 或当前版本等价命令确认阵容。
 6. 向 `orchestration-director` 提交一个只读项目发现任务，验证它读取两层 AGENTS 指令并执行最小充分路由。

@@ -39,7 +39,7 @@ try {
     & $installer -TargetProject $testRoot -NoConfigBackup
 
     $installedAgents = @(Get-ChildItem -LiteralPath (Join-Path $testRoot '.opencode\agent') -Recurse -Filter '*.md' -File)
-    Assert-True ($installedAgents.Count -eq 28) "Expected 28 installed agents, found $($installedAgents.Count)."
+    Assert-True ($installedAgents.Count -eq 30) "Expected 30 installed agents, found $($installedAgents.Count)."
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $testRoot '.opencode\agent\_template.md'))) 'Template must not be installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\AGENTS.md')) 'UEGameStudio/AGENTS.md was not installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\docs\formal-project-validation.md')) 'Validation method was not installed.'
@@ -67,7 +67,7 @@ try {
     Assert-True ($freshConfig.instructions[0] -eq 'UEGameStudio/AGENTS.md') 'Fresh config must add UEGameStudio/AGENTS.md.'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $freshRoot 'AGENTS.md'))) 'Installer must not create project-owned AGENTS.md.'
 
-    Write-Host 'Installer tests passed: automatic root AGENTS separation, 28-agent copy, UEGameStudio-only merge, fresh config, and idempotence.'
+    Write-Host 'Installer tests passed: automatic root AGENTS separation, 30-agent copy, UEGameStudio-only merge, fresh config, and idempotence.'
 }
 finally {
     if (Test-Path -LiteralPath $testRoot) {

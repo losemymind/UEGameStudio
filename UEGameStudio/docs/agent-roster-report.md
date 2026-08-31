@@ -7,7 +7,8 @@
 | 盘点日期 | 2026-08-29 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 `_template.md` 和 Git 中已删除的旧 Agent |
-| 当前数量 | 28 |
+| 机器可读注册表 | `docs/agent-registry.json`（30 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
+| 当前数量 | 30 |
 | 运行模式 | 全部为 `mode: subagent` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
 
@@ -20,6 +21,8 @@
 2026-08-28 全阵容审计后的确定性整改已经落盘：人类学家已收敛为只读研究权限并补齐证据、Canon 与文化敏感性边界；游戏制作人已严格限制为本地开发和本地游戏构建包，并只路由到实际存在的 Agent；总监路由、纯文本写入白名单、视听 Provenance、UI/音频可访问性和 Plan ID 唯一性规则已同步强化。静态检查与安装回归通过；真实 UE Editor、Commandlet、DCC、音频、性能和构建行为仍需在目标项目验证。
 
 2026-08-29 将人类学家进一步通用化：其专业输入和输出不再硬编码游戏世界、目标玩家、Canon 或 `game-director`，而由每次委派提供应用场景、受众、既定前提和决策责任人。UEGameStudio 中的游戏语境由游戏总设计师注入，Canon 裁决和游戏化转译仍归游戏总设计师；未新增重复的“游戏人类学家”。
+
+2026-08-31 蒸馏补齐两个专职能力缺口：`localization-lqa-specialist`（本地化数据模型、Loc 文本/术语、i18n 就绪契约与语言质量验证）与 `security-engineer`（本地构建包范围的安全评审与威胁建模）已落盘，阵容由 28 增至 30；统一机器可读注册表同步更新。
 
 ## 当前阵容总览
 
@@ -50,7 +53,9 @@
 └─ 游戏制作人
    ├─ 游戏资产生产管理专家
    ├─ 游戏视觉资产制作专家
+   ├─ 本地化与 LQA 专家
    ├─ 资产合规与审计专家
+   ├─ 安全专业评审
    └─ QA 测试专家
 ```
 
@@ -126,6 +131,7 @@ QA 测试专家：验证实际功能和构建包行为
 | --- | --- | --- | --- |
 | [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md) | `game-asset-production-manager` | 父子 Asset ID、Brief、版本、状态、依赖、Provenance 与多门禁就绪管理 | 只写授权纯文本登记；只读清点；不修改任何 `.uasset`、`.umap` 或内容资产 |
 | [游戏视觉资产制作专家](../agents/production/game-visual-asset-artist.md) | `game-visual-asset-artist` | 角色、环境、道具、纹理的视觉源资产与规范导出物 | 源内容和导出物；禁止运行时系统、地图和技术资产 |
+| [本地化与 LQA 专家](../agents/production/localization-lqa-specialist.md) | `localization-lqa-specialist` | 本地化数据模型、Loc 文本/术语/字符串资源、i18n 就绪契约与语言质量验证 | 只写授权纯文本 Loc 表/术语/字符串与登记；禁止 `.uasset`、`.umap`、UI、音频与 Gameplay 资产 |
 | [UE 技术美术工程师](../agents/technical/ue-technical-art-engineer.md) | `ue-technical-art-engineer` | 材质、Shader、Niagara、导入设置、LOD/Nanite 与视觉性能适配 | 技术美术 Package 和授权资产技术设置 |
 | [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md) | `game-audio-technical-specialist` | SFX、环境声、音乐、对白、MetaSound/Wwise、空间声学、对白动态和字幕/替代通道交接 | 音频源文件和音频资产；禁止 Gameplay、动画、UI 和地图内部逻辑 |
 | [UE 工具与资产管线工程师](../agents/technical/ue-tools-pipeline-engineer.md) | `ue-tools-pipeline-engineer` | Editor Utility、Python、Commandlet、DCC 导入、批处理与资产验证 | 只执行授权批次；工具能力不扩大目标资产所有权 |
@@ -137,6 +143,7 @@ QA 测试专家：验证实际功能和构建包行为
 | Agent | 英文 ID | 核心责任 | 门禁或结论 |
 | --- | --- | --- | --- |
 | [资产合规与审计专家](../agents/qa/asset-compliance-auditor.md) | `asset-compliance-auditor` | 命名、目录、引用、导入设置、预算、Cook 范围、来源记录和项目规范审计 | 资产合规门禁；只审计，不自动修复 |
+| [安全专业评审](../agents/qa/security-engineer.md) | `security-engineer` | 威胁建模、C++/Blueprint 静态审查、Replication/RPC、Save/Load、凭据与构建产物安全审查 | `SEC-REVIEW`；绑定性安全结论，只评审不修复 |
 | [QA 测试专家](../agents/qa/qa-test-specialist.md) | `qa-test-specialist` | 功能、集成、探索、回归和本地构建包 Smoke Test | `QA-FUNCTIONAL`、`QA-INTEGRATION`、`QA-REGRESSION`、`QA-PACKAGE` |
 | [性能剖析专家](../agents/technical/performance-profiler.md) | `performance-profiler` | CPU、GPU、内存、加载与卡顿采集，瓶颈定位和优化前后验证 | `PERF-BUDGET`；测量和证明，不直接修复 |
 | [UE 游戏构建专家](../agents/technical/ue-build-engineer.md) | `ue-build-engineer` | UBT、UAT、BuildCookRun、BuildGraph，以及本地 Build、Cook、Stage、Package | 可追溯的本地构建产物；不负责商店提交或部署 |
@@ -152,7 +159,7 @@ QA 测试专家：验证实际功能和构建包行为
 ### 分析与验证权限
 
 - 首席游戏数值专家和首席游戏经济专家可运行本地计算，但禁止编辑项目。
-- 资产合规、QA 和性能剖析专家可执行诊断命令，但禁止直接修复项目。
+- 资产合规、安全专业评审、QA 和性能剖析专家可执行诊断命令，但禁止直接修复项目。
 - 性能剖析专家允许访问外部目录，用于目标构建、Capture 或引擎工具；需要保持路径和证据范围明确。
 
 ### 实施权限
@@ -165,11 +172,13 @@ QA 测试专家：验证实际功能和构建包行为
 - Gameplay、AI、动画、UI、技术美术、音频与世界构建 Agent 只拥有其列明资产类型。
 - 资产生产管理专家只在任务级路径白名单内维护纯文本 Manifest、Brief、Provenance 和状态；Bash 仅用于授权的清点与只读核验，外部目录仅限显式授权来源/交付目录，不直接修改内容资产。
 - 工具管线工程师必须先 Dry Run，批处理能力不扩大资产所有权。
+- 本地化与 LQA 专家只写授权纯文本 Loc/术语/字符串资源且自产自验分离；Bash 仅限只读校验，外部目录仅限授权术语库/翻译交付目录。
+- 安全专业评审只评审与验证，不修复任何源码、资产或配置；结论仅限本地 UE 开发与本地构建包范围。
 - UE 游戏构建专家继续只负责构建配置、脚本和本地构建产物。
 
 ### 当前权限结论
 
-排除 `_template.md` 后，28 个 Agent 均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计和资产生产管理仍保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理的 Bash 与外部目录能力也具有任务级白名单和只读操作边界。
+排除 `_template.md` 后，30 个 Agent（含本轮新增的 `localization-lqa-specialist` 与 `security-engineer`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。
 
 ## 主要协作链路
 
@@ -287,16 +296,16 @@ QA 测试专家：验证实际功能和构建包行为
 | 材质、Shader、Niagara 与技术美术 | 已覆盖 | UE 技术美术工程师 |
 | 音频生产与 UE 音频集成 | 已覆盖 | 游戏音频技术专家 |
 | UE 编辑器工具与资产管线 | 已覆盖 | UE 工具与资产管线工程师 |
-| 本地化专业策划与 LQA | 专职能力缺口 | 当前无独立 Agent；按任务记录 `CAPABILITY_GAP` 并由用户指定责任方 |
-| 独立安全专业评审 | 专职能力缺口 | 当前无独立 Agent；不得由不匹配角色给出绑定性结论 |
+| 本地化专业策划与 LQA | 已覆盖 | 本地化与 LQA 专家（自产自验分离） |
+| 独立安全专业评审 | 已覆盖 | 安全专业评审（只评审不修复，限本地构建包范围） |
 
 ## 当前治理问题
 
 | 优先级 | 问题 | 影响 | 建议 |
 | --- | --- | --- | --- |
-| 中 | 当前没有统一机器可读的 Agent 注册表 | 28 个 Agent 仍只能通过目录扫描发现，编排时容易遗漏或使用过期身份 | 建立单一权威注册表并从实际文件验证 |
+| 已解决 | 缺失统一机器可读的 Agent 注册表 | ~~28 个 Agent 仍只能通过目录扫描发现~~ | `docs/agent-registry.json` 已建立；编排与报告可读取该注册表，并由 `scripts/verify-registry.ps1` 与实际 Agent frontmatter 双向校验，漂移即 FAIL |
 | 中 | 二进制资产实施依赖可用的 UE/DCC 控制能力 | 角色定义具备边界，但环境没有对应工具时只能输出计划 | 在具体项目接入时验证 Editor、Commandlet、DCC 与音频工具链 |
-| 中 | 当前无独立本地化/LQA 与安全专业 Agent | 相关任务无法获得专职绑定性结论 | 按任务登记 `CAPABILITY_GAP`，由用户指定外部责任方或另行批准建设 |
+| 中 | 已解决 | ~~当前无独立本地化/LQA 与安全专业 Agent~~ | | 本地化与 LQA、安全专业评审已按其设计落盘；路由、能力矩阵与注册表已同步更新 |
 
 ## 当前成熟度判断
 
@@ -309,7 +318,7 @@ QA 测试专家：验证实际功能和构建包行为
 | 质量、性能与构建 | 已具备独立验证角色 |
 | 游戏功能开发 | 已形成公共底座、具体业务、专项集成与世界组装链路 |
 | 视听内容生产 | 已形成方向、管理、制作、技术化、管线和独立审计链路 |
-| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环和本轮确定性治理整改已完成；进入真实项目后仍需验证编辑器/DCC 工具可用性，并处理统一注册表与专职能力缺口 |
+| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环和确定性治理整改已完成；统一注册表已落地，本地化/LQA 与安全专业能力缺口已补齐；进入真实项目后仍需验证编辑器/DCC 工具可用性 |
 
 ## 后续建设原则
 

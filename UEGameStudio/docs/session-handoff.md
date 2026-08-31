@@ -2,25 +2,26 @@
 
 ## 交接状态
 
-- 交接日期：2026-08-29
+- 交接日期：2026-08-31
 - 当前分支：`master`
-- 交接基线：`bd242a7 feat: persist orchestration plans as task trees`
-- 远端状态：交接生成前 `master` 与 `origin/master` 同步
-- 当前阶段：可安装成品、治理规则、递归任务计划、正式项目验证方法和安装回归均已建立；28-Agent 全阵容审计整改及人类学家通用化已落盘，可接入真实 UE 项目验证
+- 交接基线：`0db7340 refactor: harden agent governance and generalize anthropology`
+- 远端状态：交接生成前 `master` 与 `origin/master` 同步于 `0db7340`；当前批次为未提交差异
+- 当前阶段：可安装成品、治理规则、递归任务计划、正式项目验证方法和安装回归均已建立；统一机器可读注册表已落地，本地化/LQA 与安全专业能力缺口已补齐，当前阵容 30 Agent（28 基线 + 2 新增），可接入真实 UE 项目验证
 - 项目范围：仅负责本地 UE 游戏开发至生成本地游戏构建包
 - 明确排除：商店提交、平台认证、正式发布、LiveOps、社区、营销和线上运营
-- 当前活动任务：人类学家已按用户确认方案通用化，游戏应用语境与游戏化转译由 `game-director` 承担；未新增 Agent，未创建运行时 Plan ID，未提交、未推送
+- 当前活动任务：已完成统一注册表与 `localization-lqa-specialist`、`security-engineer` 落盘批次；未提交、未推送
 
 ## 当前可交付内容
 
 | 路径 | 当前用途 |
 | --- | --- |
-| `UEGameStudio/agents/` | 28 个可安装 opencode subagent，按 7 个专业层级组织 |
+| `UEGameStudio/agents/` | 30 个可安装 opencode subagent，按 7 个专业层级组织 |
 | `UEGameStudio/AGENTS.md` | 部署到目标项目的统一 UEGameStudio 协作规则 |
 | `UEGameStudio/INSTALL.md` | 安装、升级、验证和卸载说明 |
 | `UEGameStudio/scripts/install.ps1` | 幂等安装与 `opencode.json` 安全合并 |
 | `UEGameStudio/scripts/test-install.ps1` | 安装器隔离回归测试 |
 | `UEGameStudio/docs/formal-project-validation.md` | 正式 UE 项目的全阵容实测、故障注入和自动修复方法 |
+| `UEGameStudio/docs/agent-registry.json` | 机器可读权威注册表（30 条），由 `scripts/verify-registry.ps1` 与实际 Agent frontmatter 双向校验 |
 | `UEGameStudio/docs/agent-roster-report.md` | 当前阵容、权限、协作链和治理问题报告 |
 
 ## 用户确认的 Agent 规范
@@ -42,7 +43,7 @@
 
 ## 当前已落盘阵容
 
-当前共有 28 个有效 Agent，全部为 `mode: subagent`。详细职责、权限、协作链路和能力覆盖见：
+当前共有 30 个有效 Agent，全部为 `mode: subagent`。详细职责、权限、协作链路和能力覆盖见：
 
 - [UEGameStudio 智能体阵容报告](agent-roster-report.md)
 
@@ -81,6 +82,7 @@
 
 - [游戏资产生产管理专家](../agents/production/game-asset-production-manager.md)
 - [游戏视觉资产制作专家](../agents/production/game-visual-asset-artist.md)
+- [本地化与 LQA 专家](../agents/production/localization-lqa-specialist.md)
 - [UE 技术美术工程师](../agents/technical/ue-technical-art-engineer.md)
 - [游戏音频技术专家](../agents/technical/game-audio-technical-specialist.md)
 - [UE 工具与资产管线工程师](../agents/technical/ue-tools-pipeline-engineer.md)
@@ -88,6 +90,7 @@
 ### 验证与构建层
 
 - [资产合规与审计专家](../agents/qa/asset-compliance-auditor.md)
+- [安全专业评审](../agents/qa/security-engineer.md)
 - [QA 测试专家](../agents/qa/qa-test-specialist.md)
 - [性能剖析专家](../agents/technical/performance-profiler.md)
 - [UE 游戏构建专家](../agents/technical/ue-build-engineer.md)
@@ -215,11 +218,22 @@
 
 收尾结论为 `READY_WITH_CONCERNS`：仓库内成品已经形成自包含安装和治理闭环，可以进入真实 UE 项目接入；真实 Editor、Commandlet、DCC、音频、性能和构建链仍须在目标项目中验证，不能仅凭仓库内静态规则判定整套体系为 `PASS`。
 
+## 2026-08-31 注册表落地与专职缺口补齐
+
+本批复盘已完成 2026-08-29 交接中登记的两个治理问题，并落盘两个新 Agent：
+
+- **统一机器可读注册表**：新增 `UEGameStudio/docs/agent-registry.json`（30 条，含 `id`/`file`/`layer`/`title`/`mode`/`description`/`permission` 摘要），并新增 `UEGameStudio/scripts/verify-registry.ps1` 双向校验脚本：实际 `agents/**/*.md` 扫描数、`mode: subagent`、默认 `"*": deny`、标题/描述/权限六项与实际 frontmatter 逐条比对，漂移即 FAIL。
+- **本地化与 LQA 专家**：新增 `agents/production/localization-lqa-specialist.md`。蒸馏自 Donchitos `localization-lead`/`/localize` 与 msitarzewski `i18n-engineer`，去组织冗余。负责 Loc 数据模型、纯文本 Loc/术语/字符串资源、i18n 就绪契约与 LQA；其自产 Loc 交付不可自验，LQA 只验证 UI/音频/运行时文本集成，交付由 `asset-compliance-auditor` 与 `qa-test-specialist` 独立验收。编辑权仅限任务白名单纯文本 Loc 路径。
+- **安全专业评审**：新增 `agents/qa/security-engineer.md`。蒸馏自 addyosmani `security-and-hardening`/`security-auditor`、msitarzewski/jnMetaCode `security-engineer` 与 Donchitos `/security-audit`。审计型角色（同 `asset-compliance-auditor` 体例），范围限本地 UE 开发至本地构建包：威胁建模、C++/Blueprint 静态审查、Replication/RPC、Save/Load、凭据/密钥、插件依赖与构建产物泄漏检查；只评审不修复，给出 `SEC-REVIEW` 门禁。
+- **同步更新**：`agent-roster-report.md`（数量 28→30、阵容总览、权限画像、能力矩阵两缺口→已覆盖、治理问题两条→已解决）、`INSTALL.md`（28→30，5 处）、`scripts/test-install.ps1`（断言 28→30 与文案）。
+- **本轮验证**：`verify-registry.ps1` PASS（30 agents）、`test-install.ps1` PASS（30-Agent 复制、模板排除、配置合并、幂等）、治理文档相对链接 PASS、5 个 `task: allow` Agent 与两个新 Agent 的反引号路由未发现缺失 ID、新增/修改文件行尾全部 LF。以上不替代真实 UE Editor/Commandlet/DCC/音频/性能/构建环境验证，也未经真实项目调用验证两个新 Agent 的权限与门禁行为。
+- 未提交、未推送。
+
 ## 当前需要后续修订的治理问题
 
-1. **统一注册表缺失**：当前共有 28 个 Agent，仍以目录和阵容报告为准；后续可建立单一机器可读注册表。
-2. **真实工具能力待项目验证**：二进制资产角色已经定义安全边界，但具体项目仍需验证 UE Editor、Commandlet、DCC 和音频工具是否可用。
-3. **专职能力缺口**：当前没有独立本地化/LQA 与安全专业 Agent；遇到相关任务必须登记 `CAPABILITY_GAP` 并由用户指定责任方，不能由不匹配角色作绑定性结论。
+1. **统一机器可读注册表**：已落地为 `UEGameStudio/docs/agent-registry.json`，由 `verify-registry.ps1` 双向校验；后续可让总控编排直接读取注册表作为阵容发现入口并保持同步。
+2. **真实工具能力待项目验证**：二进制资产角色已经定义安全边界，但具体项目仍需验证 UE Editor、Commandlet、DCC 和音频工具是否可用；本地化 LQA 与安全评审能力同样只在真实 Editor/构建环境中调用验证。
+3. **本地化/LQA 与安全专业能力**：已补齐为 `localization-lqa-specialist` 与 `security-engineer`；能力覆盖矩阵、路由与治理问题登记已更新，遇到相关任务不再登记 `CAPABILITY_GAP`。
 
 未经用户确认，不要在下一会话顺带修订以上问题。
 
@@ -245,8 +259,8 @@
 
 1. 先阅读本交接说明、智能体阵容报告、项目根 `AGENTS.md` 和成品 `UEGameStudio/AGENTS.md`。
 2. 运行 `git status`，核对当前 HEAD、远端同步状态和本交接文件是否已提交；不得依赖交接生成时的瞬时工作树状态。
-3. 扫描实际存在的 Agent 文件，不能根据 Git 删除记录推断当前阵容；当前期望为 28 个有效 `mode: subagent`。
-4. 使用 `skill-creator` 指导 Agent 设计或创建；后续新增、合并或治理修订仍须先展示设计，取得用户明确“落盘”授权后再写文件。
+3. 扫描实际存在的 Agent 文件，不能根据 Git 删除记录推断当前阵容；当前期望为 30 个有效 `mode: subagent`（排除 `_template.md`）。
+4. 使用 `skill-creator` 指导 Agent 设计或创建；后续新增、合并或治理修订仍须先展示设计，取得用户明确“落盘”授权后再写文件；涉及 Agent 阵容变化时，落盘后必须同步更新 `docs/agent-registry.json` 并运行 `scripts/verify-registry.ps1` 确认 PASS。
 5. 不重新创建已删除的旧候选 Agent，不顺带修订“当前需要后续修订的治理问题”或新增缺口角色。
 6. 总控处理新任务时必须执行“首次提问 → 98% 需求理解 → 用户明确确认摘要 → 规划期疑点继续提问 → `PLAN_READY` → 落盘任务树”的门禁。
 7. 总控在委派前必须检查 `.opencode/task-plans/<Plan-ID>/M0.md` 及递归节点已完整落盘，实际写入不得超出 `.opencode/task-plans/**`。
