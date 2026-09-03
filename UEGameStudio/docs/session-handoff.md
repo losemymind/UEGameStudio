@@ -2,19 +2,20 @@
 
 ## 交接状态
 
-- 交接日期：2026-08-31
+- 交接日期：2026-09-01
 - 当前分支：`master`
-- 交接基线：`0db7340 refactor: harden agent governance and generalize anthropology`
-- 远端状态：交接生成前 `master` 与 `origin/master` 同步于 `0db7340`；当前批次为未提交差异
-- 当前阶段：可安装成品、治理规则、递归任务计划、正式项目验证方法和安装回归均已建立；统一机器可读注册表已落地，本地化/LQA 与安全专业能力缺口已补齐，当前阵容 30 Agent（28 基线 + 2 新增），可接入真实 UE 项目验证
+- 交接基线：`f705a7e feat: add machine-readable agent registry and localization/security agents`
+- 远端状态：本交接生成时 `master` 与 `origin/master` 同步于 `f705a7e`；本会话全部成果为未提交差异
+- 当前阶段：可安装成品、治理规则、递归任务计划、正式项目验证方法和安装回归均已建立；统一机器可读注册表已落地；**skills 安装类别已建立并扩充至 37 个 `ue5.6/` skill（含清理后的 15 个单文档形态）**；当前阵容 30 Agent
 - 项目范围：仅负责本地 UE 游戏开发至生成本地游戏构建包
 - 明确排除：商店提交、平台认证、正式发布、LiveOps、社区、营销和线上运营
-- 当前活动任务：已完成统一注册表与 `localization-lqa-specialist`、`security-engineer` 落盘批次；未提交、未推送
+- 当前活动任务：本会话完成 skills 批次的实现与清理（含空 API 10 个删除、13 个低方法量 overview 移除、2 个基座 skill 的 overview 并入），并新增"≤10 方法不建 overview"规范；未提交、未推送
 
 ## 当前可交付内容
 
 | 路径 | 当前用途 |
 | --- | --- |
+| `UEGameStudio/skills/` | 按 UE 版本组织的 skill 目录（`skills/<ue-版本>/<skill>/SKILL.md`），当前 `ue5.6/` 下 37 个 skill；仅方法数量 > 10 的 skill 带 `docs/overview.md` |
 | `UEGameStudio/agents/` | 30 个可安装 opencode subagent，按 7 个专业层级组织 |
 | `UEGameStudio/AGENTS.md` | 部署到目标项目的统一 UEGameStudio 协作规则 |
 | `UEGameStudio/INSTALL.md` | 安装、升级、验证和卸载说明 |
@@ -228,6 +229,19 @@
 - **同步更新**：`agent-roster-report.md`（数量 28→30、阵容总览、权限画像、能力矩阵两缺口→已覆盖、治理问题两条→已解决）、`INSTALL.md`（28→30，5 处）、`scripts/test-install.ps1`（断言 28→30 与文案）。
 - **本轮验证**：`verify-registry.ps1` PASS（30 agents）、`test-install.ps1` PASS（30-Agent 复制、模板排除、配置合并、幂等）、治理文档相对链接 PASS、5 个 `task: allow` Agent 与两个新 Agent 的反引号路由未发现缺失 ID、新增/修改文件行尾全部 LF。以上不替代真实 UE Editor/Commandlet/DCC/音频/性能/构建环境验证，也未经真实项目调用验证两个新 Agent 的权限与门禁行为。
 - 未提交、未推送。
+
+## 2026-09-XX skills 范本批次
+
+本批复盘新增 `skills/` 安装类别（用户已确认三种决策）：
+
+- **存放结构**：`UEGameStudio/skills/<ue-版本>/<skill>/`，当前只建 `ue5.6/`（引擎根 `E:\UnrealEngine\UE_5.6` 已确认存在）；只创建目标引擎版本的 skills。
+- **命名与形态**：skill 目录名直接用类名（如 `editor-actor-subsystem`）；形态为 `SKILL.md` + `docs/overview.md` 文档（overview.md 逐方法给出 C++ 签名、Python 参数、返回/Out 约定与完整示例，完整示例即调用样板），任务代码在用时实时生成；参考社区 SKILL 写法但成品自包含、正文不出现来源仓库名称。原 `scripts/*.py` 样板已按用户确认全部移除（overview.md 是唯一权威示例来源）。
+- **overview 创建门槛（已确认规则，后续批次必须遵守）**：只有 Python 可调用方法数 **> 10** 的 skill 才创建 `docs/overview.md`；方法数 **≤ 10** 的 skill **不创建 overview**，`SKILL.md` 即完整参考（末尾引用改为自足声明）。已按此清理 13 个低方法量 skill（`asset-editor`、`instanced-struct`、`editor-config`、`game-viewport`、`input-device`、`kismet-array`、`kismet-guid`、`kismet-material`、`kismet-string-table`、`media-blueprint`、`replay`、`unreal-editor`、`world-partition`）的 overview，并将基座 `game-instance-subsystem` 与 `world-subsystem` 的 overview 并入 `SKILL.md` 后删除。
+- **两种技能**：Subsystem 类 skill 与 FunctionLibrary 类 skill。首批范本：
+  - `skills/ue5.6/editor-actor-subsystem/`：内容来自 `Engine/Source/Editor/UnrealEd/Public/Subsystems/EditorActorSubsystem.h`，只收录 Python 可访问的 `UFUNCTION(BlueprintCallable/Pure)` 成员（spawn/duplicate/destroy/select/query/transform 等），未标记 UFUNCTION 的静态方法标注"Python 不可调用"，`BlueprintAssignable` 委托标注"是否可订阅需实测确认"。
+  - `skills/ue5.6/data-table-function-library/`：内容来自 `Engine/Source/Runtime/Engine/Classes/Kismet/DataTableFunctionLibrary.h`，只收录静态 `BlueprintCallable/Pure` + `ScriptMethod` 成员，`CustomThunk`/`CustomStructureParam` 方法标注"Python 不可调用"，Out/ByRef 参数返回约定与 `WITH_EDITOR` 限定已写明。
+- **安装器变更**：`install.ps1` 新增**必填** `-SkillsVersion <版本>` 参数，缺失即报错；校验 `skills/<版本>/` 存在后复制到 `<目标项目>/.opencode/skills/<版本>/`（保留版本子目录，opencode 自动发现）。`INSTALL.md`、`scripts/test-install.ps1`（含不存在的版本拒绝用例）已同步；`agent-registry.json`/`verify-registry.ps1` 只登记 Agent，skills 不入注册表。
+- 未提交、未推送；真实 UE 5.6 Editor 中 skill 的 Python 反射暴露名仍需按正式项目验证方法实测确认。
 
 ## 当前需要后续修订的治理问题
 

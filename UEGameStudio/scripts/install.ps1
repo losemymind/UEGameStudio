@@ -3,6 +3,9 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$TargetProject,
 
+    [Parameter(Mandatory = $true)]
+    [string]$SkillsVersion,
+
     [switch]$AllowMissingUProject,
 
     [switch]$NoConfigBackup
@@ -58,6 +61,32 @@ foreach ($agentFile in $agentFiles) {
     $destination = Join-Path $targetAgentRoot $relativePath
     Ensure-Directory (Split-Path -Parent $destination)
     Copy-Item -LiteralPath $agentFile.FullName -Destination $destination -Force
+}
+
+$sourceSkillsRoot = Join-Path $packageRoot 'skills'
+$sourceSkillsVersion = Join-Path $sourceSkillsRoot $SkillsVersion
+
+if (-not (Test-Path -LiteralPath $sourceSkillsVersion -PathType Container)) {
+    throw "Skills version directory does not exist: $sourceSkillsVersion"
+}
+
+$targetSkillsRoot = Join-Path $targetRoot '.opencode\skills'
+Ensure-Directory $targetSkillsRoot
+
+$skillDirs = @(Get-ChildItem -LiteralPath $sourceSkillsVersion -Directory)
+foreach ($skillDir in $skillDirs) {
+    $destination = Join-Path $targetSkillsRoot (Join-Path $SkillsVersion $skillDir.Name)
+    Ensure-Directory $destination
+    $skillFiles = @(Get-ChildItem -LiteralPath $skillDir.FullName -Recurse -File)
+    foreach ($skillFile in $skillFiles) {
+        $skillRelativePath = $skillFile.FullName.Substring($skillDir.FullName.Length).TrimStart(
+            [System.IO.Path]::DirectorySeparatorChar,
+            [System.IO.Path]::AltDirectorySeparatorChar
+        )
+        $skillDestination = Join-Path $destination $skillRelativePath
+        Ensure-Directory (Split-Path -Parent $skillDestination)
+        Copy-Item -LiteralPath $skillFile.FullName -Destination $skillDestination -Force
+    }
 }
 
 $targetProductRoot = Join-Path $targetRoot 'UEGameStudio'
@@ -138,6 +167,7 @@ $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 Move-Item -LiteralPath $temporaryConfig -Destination $configPath -Force
 
 Write-Host "Installed $($agentFiles.Count) UEGameStudio agents."
+Write-Host "Installed skills ($SkillsVersion): $($skillDirs.Count) skills to $(Join-Path $targetRoot '.opencode/skills')"
 Write-Host "Installed project instructions: $(Join-Path $targetProductRoot 'AGENTS.md')"
 Write-Host "Installed validation method: $(Join-Path $targetProductDocs 'formal-project-validation.md')"
 Write-Host "Updated opencode configuration: $configPath"

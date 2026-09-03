@@ -8,6 +8,7 @@
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 `_template.md` 和 Git 中已删除的旧 Agent |
 | 机器可读注册表 | `docs/agent-registry.json`（30 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
+| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 37 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
 | 当前数量 | 30 |
 | 运行模式 | 全部为 `mode: subagent` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |

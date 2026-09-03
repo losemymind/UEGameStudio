@@ -8,6 +8,7 @@
 | --- | --- |
 | `AGENTS.md` | 安装后由目标项目 `opencode.json` 加载的 UEGameStudio 统一规则 |
 | `agents/` | 30 个 `mode: subagent` 专业 Agent；`_template.md` 不安装 |
+| `skills/` | 按 UE 版本组织的 skill（`skills/<ue-版本>/<skill>/SKILL.md`），部署到目标项目 `.opencode/skills/`；只安装目标引擎版本 |
 | `docs/formal-project-validation.md` | 正式 UE 项目中的完整实测、故障注入和自动修复方法 |
 | `scripts/install.ps1` | 幂等安装/升级脚本，复制 Agent 并安全合并 `opencode.json` |
 | `scripts/test-install.ps1` | 安装器的隔离回归测试 |
@@ -31,17 +32,21 @@ OpenCode 启动时会自动发现并加载工作目录/项目根的 `AGENTS.md`�
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
-  -TargetProject "E:\Path\To\YourUnrealProject"
+  -TargetProject "E:\Path\To\YourUnrealProject" `
+  -SkillsVersion "ue5.6"
 ```
+
+`-SkillsVersion` 为必填参数，取值对应 `skills/` 下的 UE 版本目录（当前：`ue5.6`）。复制到目标项目的 skill 属于 `.opencode/skills/<版本>/`，由 opencode 自动发现；不传递该参数时安装器报错退出。
 
 安装器会：
 
 1. 将 30 个 Agent 复制到 `<目标项目>/.opencode/agent/`，排除 `_template.md`。
-2. 复制 `AGENTS.md` 到 `<目标项目>/UEGameStudio/AGENTS.md`。
-3. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
-4. 解析并保留目标工程已有 `opencode.json` 配置。
-5. 幂等加入 `UEGameStudio/AGENTS.md`，不产生重复项；根 `AGENTS.md` 继续由 OpenCode 自动加载。
-6. 修改已有配置前创建 `opencode.json.uegamestudio-<时间>.bak`。
+2. 将 `-SkillsVersion` 指定版本的 skills 复制到 `<目标项目>/.opencode/skills/<版本>/`。
+3. 复制 `AGENTS.md` 到 `<目标项目>/UEGameStudio/AGENTS.md`。
+4. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
+5. 解析并保留目标工程已有 `opencode.json` 配置。
+6. 幂等加入 `UEGameStudio/AGENTS.md`，不产生重复项；根 `AGENTS.md` 继续由 OpenCode 自动加载。
+7. 修改已有配置前创建 `opencode.json.uegamestudio-<时间>.bak`。
 
 如果目标目录暂时没有 `.uproject`，只有在明确的安装测试中使用：
 
@@ -75,9 +80,10 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 如不使用脚本：
 
 1. 将 `agents/` 的子目录复制到 `<目标项目>/.opencode/agent/`，排除 `_template.md`。
-2. 将本目录 `AGENTS.md` 复制到 `<目标项目>/UEGameStudio/AGENTS.md`。
-3. 将 `docs/formal-project-validation.md` 复制到 `<目标项目>/UEGameStudio/docs/`。
-4. 备份并人工合并目标 `opencode.json`，保留全部现有 instruction，仅追加 `UEGameStudio/AGENTS.md`。
+2. 将 `skills/<目标版本>/` 的子目录复制到 `<目标项目>/.opencode/skills/<目标版本>/`。
+3. 将本目录 `AGENTS.md` 复制到 `<目标项目>/UEGameStudio/AGENTS.md`。
+4. 将 `docs/formal-project-validation.md` 复制到 `<目标项目>/UEGameStudio/docs/`。
+5. 备份并人工合并目标 `opencode.json`，保留全部现有 instruction，仅追加 `UEGameStudio/AGENTS.md`。
 
 不要直接用示例 JSON 覆盖已有 `opencode.json`，否则可能丢失 provider、权限或其他项目配置。
 
@@ -93,6 +99,8 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 
 - 已有 `opencode.json` 属性被保留。
 - 30 个 Agent 被复制且 `_template.md` 被排除。
+- `-SkillsVersion` 指定版本的 skills 被复制到 `.opencode/skills/<版本>/`，且 SKILL.md / docs/overview.md 齐全。
+- 不存在的版本目录会被安装器拒绝且不产生 `.opencode/skills/`。
 - 目标项目根 `AGENTS.md` 内容保持不变，且不会被安装器注入 `instructions`。
 - 新建配置只加入 `UEGameStudio/AGENTS.md`。
 - `UEGameStudio/AGENTS.md` 和正式项目验证方法被部署。
@@ -103,9 +111,10 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 1. 打开目标 `opencode.json`，确认已有配置仍在。
 2. 确认 `instructions` 包含且只包含一份 `UEGameStudio/AGENTS.md`，没有由安装器新增的 `AGENTS.md`。
 3. 确认 `.opencode/agent/` 有 30 个 Agent，不含 `_template.md`。
-4. 重启 opencode，使配置和 Agent 重新加载。
-5. 使用 `/agents` 或当前版本等价命令确认阵容。
-6. 向 `orchestration-director` 提交一个只读项目发现任务，验证它读取两层 AGENTS 指令并执行最小充分路由。
+4. 确认 `.opencode/skills/<版本>/<skill>/SKILL.md` 存在（例如 `.opencode/skills/ue5.6/editor-actor-subsystem/SKILL.md`）。
+5. 重启 opencode，使配置、Agent 和 skill 重新加载。
+6. 使用 `/agents` 或当前版本等价命令确认阵容。
+7. 向 `orchestration-director` 提交一个只读项目发现任务，验证它读取两层 AGENTS 指令并执行最小充分路由。
 
 ## 7. 正式项目实测与自动修复
 
@@ -122,6 +131,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 重新执行 `install.ps1` 即可：
 
 - 同名 Agent、UEGameStudio 指令和验证方法会被更新。
+- `-SkillsVersion` 指定版本的 skills 会被更新到 `.opencode/skills/<版本>/`。
 - `instructions` 不会重复。
 - 已有项目配置会保留。
 - 安装器不会自动删除成品中已经移除的旧 Agent；升级前后应比较实际安装 manifest，明确批准后再删除陈旧文件。
@@ -131,9 +141,10 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 ## 9. 卸载
 
 1. 从 `.opencode/agent/` 只删除由 UEGameStudio 安装的 Agent 文件；不要清理用户自有 Agent。
-2. 删除 `<目标项目>/UEGameStudio/AGENTS.md` 和部署的验证方法。
-3. 从 `opencode.json.instructions` 删除 `UEGameStudio/AGENTS.md`；项目根 `AGENTS.md` 是否保留由项目自行决定。
-4. 重启 opencode。
+2. 从 `.opencode/skills/` 删除对应 `<版本>/` 子目录（仅限由 UEGameStudio 安装的 skill）。
+3. 删除 `<目标项目>/UEGameStudio/AGENTS.md` 和部署的验证方法。
+4. 从 `opencode.json.instructions` 删除 `UEGameStudio/AGENTS.md`；项目根 `AGENTS.md` 是否保留由项目自行决定。
+5. 重启 opencode。
 
 ## 10. 安全要求
 
