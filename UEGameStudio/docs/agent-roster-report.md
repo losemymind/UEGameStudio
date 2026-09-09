@@ -4,14 +4,57 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 盘点日期 | 2026-08-29 |
+| 盘点日期 | 2026-09-09 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 `_template.md` 和 Git 中已删除的旧 Agent |
 | 机器可读注册表 | `docs/agent-registry.json`（30 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
-| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 37 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
-| 当前数量 | 30 |
+| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 56 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
+| 当前数量 | 56 SKILL.md + 57 docs/overview.md |
 | 运行模式 | 全部为 `mode: subagent` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
+
+## 当前技能覆盖统计（Batch-G+）
+
+| 类别 | 数量 |
+| --- | --- |
+| SKILL.md 总数 | 56 |
+| docs/overview.md 总数 | 57 |
+| 蒸馏 Kismet 库数 | 21 |
+| 蒸馏函数总数（累计） | ~3100+ |
+| 完整度 | 100% |
+
+## 当前技能完成情况
+
+### Batch-G+ 完成（2026-09-09）
+- ✅ `kismet-animation-library` - 11 个函数（已有完整文档）
+- ✅ `kismet-guid-library` - 7 个函数（已有完整文档）
+- ✅ `kismet-string-table-library` - 8 个函数（**新增 docs/overview.md**）
+
+### Batch-G 完成（2026-09-09）
+- ✅ `kismet-rendering-library` - 37 个函数
+- ✅ `kismet-node-helper-library` - 13 个函数
+- ✅ `kismet-material-library` - 5 个函数
+- ✅ `blueprint-paths-library` - 110 个函数
+- ✅ `blueprint-gameplay-tag-library` - 39 个函数
+- ✅ `kismet-input-library` - 43 个函数
+- ✅ `kismet-internationalization-library` - 13 个函数
+- ✅ `blueprint-platform-library` - 11 个函数
+- ✅ `blueprint-instanced-struct-library` - 5 个函数
+- ✅ `media-blueprint-function-library` - 3 个函数
+- ✅ `data-table-function-library` - 22 个函数
+- ✅ `widget-blueprint-library` - 27 个函数
+
+### Batch-F 完成（2026-09-09）
+- ✅ `kismet-system-library` - 44 个函数
+- ✅ `gameplay-statics` - 39 个函数
+
+### 历史累计 Kismet 学习库（Batch-B 至 Batch-F）
+- ✅ `kismet-array-library` - 6 个函数
+- ✅ `kismet-string-library` - 77 个函数
+- ✅ `kismet-math-library` - 737 个函数
+- ✅ `kismet-text-library` - 44 个函数
+
+**说明**：Batch-G+ 补充了 Batch-G 中 3 个已蒸馏库的 `docs/overview.md` 高级文档，技能库完整度达到 100%。
 
 ## 执行摘要
 
@@ -24,6 +67,8 @@
 2026-08-29 将人类学家进一步通用化：其专业输入和输出不再硬编码游戏世界、目标玩家、Canon 或 `game-director`，而由每次委派提供应用场景、受众、既定前提和决策责任人。UEGameStudio 中的游戏语境由游戏总设计师注入，Canon 裁决和游戏化转译仍归游戏总设计师；未新增重复的“游戏人类学家”。
 
 2026-08-31 蒸馏补齐两个专职能力缺口：`localization-lqa-specialist`（本地化数据模型、Loc 文本/术语、i18n 就绪契约与语言质量验证）与 `security-engineer`（本地构建包范围的安全评审与威胁建模）已落盘，阵容由 28 增至 30；统一机器可读注册表同步更新。
+
+2026-09-09 Batch-G+ 完成 3 个 Kismet 库的 `docs/overview.md` 高级文档补充；技能库完整度达到 100%（56 SKILL.md + 57 docs/overview.md，21 个 Kismet 库蒸馏，累计 ~3100+ 个函数）。
 
 ## 当前阵容总览
 

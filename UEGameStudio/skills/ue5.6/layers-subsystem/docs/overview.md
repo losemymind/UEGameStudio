@@ -1,604 +1,368 @@
-# LayersSubsystem - API 参考与完整示例（UE 5.6）
+# LayersSubsystem - 概述（UE 5.6）
 
-本文件按 `Engine/Source/Editor/UnrealEd/Public/Layers/LayersSubsystem.h` 整理 `ULayersSubsystem` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记、可由 Python 调用的成员。方法名由 C++ 函数名按反射约定转 snake_case；精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认。每个成员给出 C++ 签名、Python 参数、返回约定与示例。
+## 库功能概述
 
-## 获取子系统
+`ULayersSubsystem` 是 UE 5.6 中专门用于管理关卡层（Level Layers）组织的编辑器子系统。关卡层是 UE 中用于组织 Actor、分组管理、控制可见性与选择的逻辑分组机制。该子系统提供了完整的层管理能力：创建/删除/重命名层、Actor 加入/移出层、按层查询、层可见性控制等。
 
+与 `UWorldPartitionSubsystem` 不同，`ULayersSubsystem` 专注于传统的关卡层组织（Layer），适用于大小中等的关卡；而 World Partition 是为超大开放世界设计的 Grid Cell 分区系统。
+
+## 核心用途与场景
+
+### 1. 关卡组织与管理
+- **功能分组**：将相关 Actor 分组到不同层（如环境、装饰、路径点）
+- **快速选择**：按层选择 Actor，提高编辑器工作效率
+- **批量操作**：对整个层进行移动、旋转、缩放等操作
+
+### 2. 可见性控制
+- **显示/隐藏层**：快速切换整个层的可见性
+- **选择性显示**：仅显示特定层，隐藏其他层
+- **视口优化**：减少视口渲染负载，提升编辑器性能
+
+### 3. Actor 分组管理
+- **批量添加/移除**：将多个 Actor 一次性加入/移出层
+- **当前选中 Actor 操作**：对当前选中的所有 Actor 进行层操作
+- **层内选择**：选择特定层内的所有 Actor
+
+## 更多使用示例
+
+### 示例 1：创建与管理层
 ```python
 import unreal
 
-api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
-if api is None:
-    raise RuntimeError("BLOCKED_TOOLING: LayersSubsystem 不可用")
-```
-
-## 通用约定
-
-- 层名 `FName` 传 `str` 或 `unreal.Name`；层对象类型为 `unreal.Layer`。
-- 需要 `UWorld` / `ULevel` 参数的方法传入当前编辑器世界与关卡：
-
-```python
-world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-```
-
-- 返回值语义：`None` / 空数组 / `False` 分别表示对象不存在、层内无 Actor、操作未发生；区分错误与正常空结果后再判定阻塞。
-
-## 关卡信息
-
-### add_level_layer_information
-
-- C++ 签名：`void AddLevelLayerInformation(ULevel* Level)`
-- Python：`add_level_layer_information(level) -> None`
-- 说明：聚合关卡及其内容相关的层信息，加载关卡后调用以同步层数据。
-- 示例：
-
-```python
-api.add_level_layer_information(world.get_level(0))
-```
-
-### remove_level_layer_information
-
-- C++ 签名：`void RemoveLevelLayerInformation(ULevel* Level)`
-- Python：`remove_level_layer_information(level) -> None`
-- 说明：清除关卡及其内容的层信息，关卡卸载前调用。
-- 示例：
-
-```python
-api.remove_level_layer_information(world.get_level(0))
-```
-
-### get_world
-
-- C++ 签名：`UWorld* GetWorld() const`（备用 `GWorld`）
-- Python：`get_world() -> World`
-- 说明：返回当前编辑器世界对象，缺省时回退到 `GWorld`。
-- 示例：
-
-```python
-w = api.get_world()
-```
-
-## 单个 Actor
-
-### is_actor_valid_for_layer
-
-- C++ 签名：`bool IsActorValidForLayer(AActor* Actor)`
-- Python：`is_actor_valid_for_layer(actor) -> bool`
-- 说明：检查 Actor 是否处于可与层交互的状态。
-- 示例：
-
-```python
-ok = api.is_actor_valid_for_layer(actor_item)
-```
-
-### initialize_new_actor_layers
-
-- C++ 签名：`bool InitializeNewActorLayers(AActor* Actor)`
-- Python：`initialize_new_actor_layers(actor) -> bool`
-- 说明：同步新建 Actor 的层信息到层系统，生成后调用。
-- 示例：
-
-```python
-api.initialize_new_actor_layers(spawned_actor)
-```
-
-### disassociate_actor_from_layers
-
-- C++ 签名：`bool DisassociateActorFromLayers(AActor* Actor)`
-- Python：`disassociate_actor_from_layers(actor) -> bool`
-- 说明：将 Actor 与层系统解除关联，一般在删除 Actor 前调用。
-- 示例：
-
-```python
-api.disassociate_actor_from_layers(actor_item)
-```
-
-### add_actor_to_layer
-
-- C++ 签名：`bool AddActorToLayer(AActor* Actor, const FName& LayerName)`
-- Python：`add_actor_to_layer(actor, layer_name) -> bool`
-- 说明：把 Actor 加入命名层；Actor 已属于该层时返回 `False`。
-- 示例：
-
-```python
-added = api.add_actor_to_layer(actor_item, "L_Props")
-```
-
-### add_actor_to_layers
-
-- C++ 签名：`bool AddActorToLayers(AActor* Actor, const TArray<FName>& LayerNames)`
-- Python：`add_actor_to_layers(actor, layer_names) -> bool`
-- 说明：把 Actor 加入多个命名层；至少加入一个层返回 `True`。
-- 示例：
-
-```python
-added = api.add_actor_to_layers(actor_item, ["L_Props", "L_Interior"])
-```
-
-### remove_actor_from_layer
-
-- C++ 签名：`bool RemoveActorFromLayer(AActor* Actor, const FName& LayerToRemove, const bool bUpdateStats = true)`
-- Python：`remove_actor_from_layer(actor, layer_to_remove, b_update_stats=True) -> bool`
-- 说明：把 Actor 移出指定层；Actor 原本不属于该层时返回 `False`。
-- 示例：
-
-```python
-removed = api.remove_actor_from_layer(actor_item, "L_Props")
-```
-
-### remove_actor_from_layers
-
-- C++ 签名：`bool RemoveActorFromLayers(AActor* Actor, const TArray<FName>& LayerNames, const bool bUpdateStats = true)`
-- Python：`remove_actor_from_layers(actor, layer_names, b_update_stats=True) -> bool`
-- 说明：把 Actor 移出多个命名层；至少移出一个层返回 `True`。
-- 示例：
-
-```python
-removed = api.remove_actor_from_layers(actor_item, ["L_Props", "L_Interior"])
-```
-
-## 批量 Actor
-
-### add_actors_to_layer
-
-- C++ 签名：`bool AddActorsToLayer(const TArray<AActor*>& Actors, const FName& LayerName)`
-- Python：`add_actors_to_layer(actors, layer_name) -> bool`
-- 说明：把多个 Actor 加入命名层；全部已属于该层时返回 `False`。
-- 示例：
-
-```python
-added = api.add_actors_to_layer(actors_list, "L_Props")
-```
-
-### add_actors_to_layers
-
-- C++ 签名：`bool AddActorsToLayers(const TArray<AActor*>& Actors, const TArray<FName>& LayerNames)`
-- Python：`add_actors_to_layers(actors, layer_names) -> bool`
-- 说明：把多个 Actor 加入多个命名层；至少一个 Actor 加入至少一个层返回 `True`。
-- 示例：
-
-```python
-added = api.add_actors_to_layers(actors_list, ["L_Props", "L_Interior"])
-```
-
-### disassociate_actors_from_layers
-
-- C++ 签名：`bool DisassociateActorsFromLayers(const TArray<AActor*>& Actors)`
-- Python：`disassociate_actors_from_layers(actors) -> bool`
-- 说明：批量解除 Actor 与层系统的关联，批量删除前调用。
-- 示例：
-
-```python
-api.disassociate_actors_from_layers(actors_to_delete)
-```
-
-### remove_actors_from_layer
-
-- C++ 签名：`bool RemoveActorsFromLayer(const TArray<AActor*>& Actors, const FName& LayerName, const bool bUpdateStats = true)`
-- Python：`remove_actors_from_layer(actors, layer_name, b_update_stats=True) -> bool`
-- 说明：把多个 Actor 移出指定层；全部本不属于该层时返回 `False`。
-- 示例：
-
-```python
-removed = api.remove_actors_from_layer(actors_list, "L_Props")
-```
-
-### remove_actors_from_layers
-
-- C++ 签名：`bool RemoveActorsFromLayers(const TArray<AActor*>& Actors, const TArray<FName>& LayerNames, const bool bUpdateStats = true)`
-- Python：`remove_actors_from_layers(actors, layer_names, b_update_stats=True) -> bool`
-- 说明：把多个 Actor 移出多个命名层；至少一个人移出一个层返回 `True`。
-- 示例：
-
-```python
-removed = api.remove_actors_from_layers(actors_list, ["L_Props", "L_Interior"])
-```
-
-## 选中 Actor
-
-### get_selected_actors
-
-- C++ 签名：`TArray<AActor*> GetSelectedActors() const`
-- Python：`get_selected_actors() -> Array[Actor]`
-- 说明：返回当前编辑器选择集。
-- 示例：
-
-```python
-selected = api.get_selected_actors()
-```
-
-### add_selected_actors_to_layer
-
-- C++ 签名：`bool AddSelectedActorsToLayer(const FName& LayerName)`
-- Python：`add_selected_actors_to_layer(layer_name) -> bool`
-- 说明：把选中 Actor 加入命名层；没有选中或全部已属于该层时返回 `False`。
-- 示例：
-
-```python
-api.add_selected_actors_to_layer("L_Props")
-```
-
-### add_selected_actors_to_layers
-
-- C++ 签名：`bool AddSelectedActorsToLayers(const TArray<FName>& LayerNames)`
-- Python：`add_selected_actors_to_layers(layer_names) -> bool`
-- 说明：把选中 Actor 加入多个命名层。
-- 示例：
-
-```python
-api.add_selected_actors_to_layers(["L_Props", "L_Interior"])
-```
-
-### remove_selected_actors_from_layer
-
-- C++ 签名：`bool RemoveSelectedActorsFromLayer(const FName& LayerName)`
-- Python：`remove_selected_actors_from_layer(layer_name) -> bool`
-- 说明：把选中 Actor 从命名层移出。
-- 示例：
-
-```python
-api.remove_selected_actors_from_layer("L_Props")
-```
-
-### remove_selected_actors_from_layers
-
-- C++ 签名：`bool RemoveSelectedActorsFromLayers(const TArray<FName>& LayerNames)`
-- Python：`remove_selected_actors_from_layers(layer_names) -> bool`
-- 说明：把选中 Actor 从多个命名层移出。
-- 示例：
-
-```python
-api.remove_selected_actors_from_layers(["L_Props", "L_Interior"])
-```
-
-## 层内选择
-
-### select_actors_in_layer
-
-- C++ 签名：`bool SelectActorsInLayer(const FName& LayerName, const bool bSelect, const bool bNotify, const bool bSelectEvenIfHidden = false)`
-- Python：`select_actors_in_layer(layer_name, b_select, b_notify, b_select_even_if_hidden=False) -> bool`
-- 说明：按层名选中/取消选中该层 Actor；`b_notify=True` 通知编辑器选择变更；`b_select_even_if_hidden=True` 时隐藏 Actor 也参与选择。
-- 示例：
-
-```python
-done = api.select_actors_in_layer("L_Props", True, True)
-```
-
-### select_actors_in_layers
-
-- C++ 签名：`bool SelectActorsInLayers(const TArray<FName>& LayerNames, const bool bSelect, const bool bNotify, const bool bSelectEvenIfHidden = false)`
-- Python：`select_actors_in_layers(layer_names, b_select, b_notify, b_select_even_if_hidden=False) -> bool`
-- 说明：按多个层名批量选中/取消选中；至少一个 Actor 发生状态变化返回 `True`。
-- 示例：
-
-```python
-done = api.select_actors_in_layers(["L_Props", "L_Character"], True, True)
-```
-
-## 层内查询
-
-### get_actors_from_layer
-
-- C++ 签名：`TArray<AActor*> GetActorsFromLayer(const FName& LayerName) const`
-- Python：`get_actors_from_layer(layer_name) -> Array[Actor]`
-- 说明：返回指定层的全部 Actor；层不存在时返回空数组。
-- 示例：
-
-```python
-prop_actors = api.get_actors_from_layer("L_Props")
-```
-
-### get_actors_from_layers
-
-- C++ 签名：`TArray<AActor*> GetActorsFromLayers(const TArray<FName>& LayerNames) const`
-- Python：`get_actors_from_layers(layer_names) -> Array[Actor]`
-- 说明：返回任意指定层包含的全部 Actor。
-- 示例：
-
-```python
-combined = api.get_actors_from_layers(["L_Props", "L_Character"])
-```
-
-### append_actors_from_layer
-
-- C++ 签名：`void AppendActorsFromLayer(const FName& LayerName, TArray<AActor*>& InOutActors) const`
-- Python：`append_actors_from_layer(layer_name) -> Array[Actor]`（Out 参数直接返回）
-- 说明：把层内 Actor 追加到返回列表，累积到已有集合再补查时使用。
-- 示例：
-
-```python
-acc = api.append_actors_from_layer("L_Props")
-```
-
-### append_actors_from_layers
-
-- C++ 签名：`void AppendActorsFromLayers(const TArray<FName>& LayerNames, TArray<AActor*>& InOutActors) const`
-- Python：`append_actors_from_layers(layer_names) -> Array[Actor]`（Out 参数直接返回）
-- 说明：把任意指定层的 Actor 追加到返回列表。
-- 示例：
-
-```python
-acc = api.append_actors_from_layers(["L_Props", "L_Character"])
-```
-
-## 层可见性
-
-### set_layer_visibility
-
-- C++ 签名：`void SetLayerVisibility(const FName& LayerName, const bool bIsVisible)`
-- Python：`set_layer_visibility(layer_name, b_is_visible) -> None`
-- 说明：设置单层可见性。
-- 示例：
-
-```python
-api.set_layer_visibility("L_Props", False)
-```
-
-### set_layers_visibility
-
-- C++ 签名：`void SetLayersVisibility(const TArray<FName>& LayerNames, const bool bIsVisible)`
-- Python：`set_layers_visibility(layer_names, b_is_visible) -> None`
-- 说明：批量设置层可见性。
-- 示例：
-
-```python
-api.set_layers_visibility(["L_Props", "L_Interior"], False)
-```
-
-### toggle_layer_visibility
-
-- C++ 签名：`void ToggleLayerVisibility(const FName& LayerName)`
-- Python：`toggle_layer_visibility(layer_name) -> None`
-- 说明：切换单层可见性。
-- 示例：
-
-```python
-api.toggle_layer_visibility("L_Props")
-```
-
-### toggle_layers_visibility
-
-- C++ 签名：`void ToggleLayersVisibility(const TArray<FName>& LayerNames)`
-- Python：`toggle_layers_visibility(layer_names) -> None`
-- 说明：切换多个层的可见性。
-- 示例：
-
-```python
-api.toggle_layers_visibility(["L_Props", "L_Character"])
-```
-
-### make_all_layers_visible
-
-- C++ 签名：`void MakeAllLayersVisible()`
-- Python：`make_all_layers_visible() -> None`
-- 说明：把全部层设为可见。
-- 示例：
-
-```python
-api.make_all_layers_visible()
-```
-
-## 视口刷新
-
-### update_all_view_visibility
-
-- C++ 签名：`void UpdateAllViewVisibility(const FName& LayerThatChanged)`
-- Python：`update_all_view_visibility(layer_that_changed) -> None`
-- 说明：更新所有视图中所有 Actor 的可见性；`layer_that_changed` 限定只更新受影响层相关 Actor。
-- 示例：
-
-```python
-api.update_all_view_visibility("L_Props")
-```
-
-### update_actor_all_views_visibility
-
-- C++ 签名：`void UpdateActorAllViewsVisibility(AActor* Actor)`
-- Python：`update_actor_all_views_visibility(actor) -> None`
-- 说明：在所有视图中更新单个 Actor 的可见性。
-- 示例：
-
-```python
-api.update_actor_all_views_visibility(actor_item)
-```
-
-### update_actor_visibility
-
-- C++ 签名：`bool UpdateActorVisibility(AActor* Actor, bool& bOutSelectionChanged, bool& bOutActorModified, const bool bNotifySelectionChange, const bool bRedrawViewports)`
-- Python：`update_actor_visibility(actor, b_notify_selection_change, b_redraw_viewports) -> tuple[bool, bool, bool]`
-- 说明：更新 Actor 在视口中的可见性；返回 `(成功, b_out_selection_changed, b_out_actor_modified)`，Out 参数并入元组。
-- 示例：
-
-```python
-ok, sel_changed, actor_modified = api.update_actor_visibility(actor_item, True, True)
-```
-
-### update_all_actors_visibility
-
-- C++ 签名：`bool UpdateAllActorsVisibility(const bool bNotifySelectionChange, const bool bRedrawViewports)`
-- Python：`update_all_actors_visibility(b_notify_selection_change, b_redraw_viewports) -> bool`
-- 说明：更新全部 Actor 在视口中的可见性。
-- 示例：
-
-```python
-ok = api.update_all_actors_visibility(True, True)
-```
-
-## 层对象管理
-
-### is_layer
-
-- C++ 签名：`bool IsLayer(const FName& LayerName)`
-- Python：`is_layer(layer_name) -> bool`
-- 说明：检查命名层对象是否存在。
-- 示例：
-
-```python
-if api.is_layer("L_Props"):
-    pass
-```
-
-### get_layer
-
-- C++ 签名：`ULayer* GetLayer(const FName& LayerName) const`
-- Python：`get_layer(layer_name) -> Layer`
-- 说明：返回命名层的 `ULayer` 对象；不存在返回 `None`。
-- 示例：
-
-```python
-layer_obj = api.get_layer("L_Props")
-```
-
-### try_get_layer
-
-- C++ 签名：`bool TryGetLayer(const FName& LayerName, ULayer*& OutLayer)`
-- Python：`try_get_layer(layer_name) -> tuple[bool, Layer]`
-- 说明：尝试取层对象；存在返回 `(True, layer)`，不存在返回 `(False, None)`。
-- 示例：
-
-```python
-found, layer_obj = api.try_get_layer("L_Props")
-```
-
-### create_layer
-
-- C++ 签名：`ULayer* CreateLayer(const FName& LayerName)`
-- Python：`create_layer(layer_name) -> Layer`
-- 说明：创建命名层对象并返回；创建失败返回 `None`。
-- 示例：
-
-```python
-new_layer = api.create_layer("L_Props")
-if new_layer is None:
-    print({"status": "BLOCKED_INPUT", "reason": "layer 创建失败"})
-```
-
-### delete_layer
-
-- C++ 签名：`void DeleteLayer(const FName& LayerToDelete)`
-- Python：`delete_layer(layer_to_delete) -> None`
-- 说明：删除单层，并把其中 Actor 与该层解除关联。
-- 示例：
-
-```python
-api.delete_layer("L_Props")
-```
-
-### delete_layers
-
-- C++ 签名：`void DeleteLayers(const TArray<FName>& LayersToDelete)`
-- Python：`delete_layers(layers_to_delete) -> None`
-- 说明：删除多层，批量解除 Actor 关联。
-- 示例：
-
-```python
-api.delete_layers(["L_Props", "L_Interior"])
-```
-
-### rename_layer
-
-- C++ 签名：`bool RenameLayer(const FName& OriginalLayerName, const FName& NewLayerName)`
-- Python：`rename_layer(original_layer_name, new_layer_name) -> bool`
-- 说明：把原层重命名为新名；重命名失败（例如目标名已存在）返回 `False`。
-- 示例：
-
-```python
-ok = api.rename_layer("L_Props", "L_Props_Propaganda")
-```
-
-### add_all_layer_names_to
-
-- C++ 签名：`void AddAllLayerNamesTo(TArray<FName>& OutLayerNames) const`
-- Python：`add_all_layer_names_to() -> Array[Name]`（Out 参数直接返回）
-- 说明：返回全部已知层名。
-- 示例：
-
-```python
-all_names = api.add_all_layer_names_to()
-```
-
-### add_all_layers_to
-
-- C++ 签名：`void AddAllLayersTo(TArray<ULayer*>& OutLayers) const`
-- Python：`add_all_layers_to() -> Array[Layer]`（Out 参数直接返回）
-- 说明：返回全部已知 `ULayer` 对象。
-- 示例：
-
-```python
-all_layers = api.add_all_layers_to()
-```
-
-## 刷新钩子
-
-### editor_map_change
-
-- C++ 签名：`void EditorMapChange()`
-- Python：`editor_map_change() -> None`
-- 说明：地图变更委托处理器，内部广播层变更事件。
-- 示例：
-
-```python
-api.editor_map_change()
-```
-
-### editor_refresh_layer_browser
-
-- C++ 签名：`void EditorRefreshLayerBrowser()`
-- Python：`editor_refresh_layer_browser() -> None`
-- 说明：刷新 Layer 浏览器委托处理器，内部更新各层 Actor 可见性。
-- 示例：
-
-```python
-api.editor_refresh_layer_browser()
-```
-
-## 完整示例：按层组织场景 Actor
-
-```python
-import unreal
-
-def main():
+def manage_layers():
+    """管理关卡层"""
     api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
-    if api is None:
-        print({"status": "BLOCKED_TOOLING", "reason": "LayersSubsystem 不可用"})
-        return
-
     world = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
-
-    layer = api.create_layer("L_Props")
-    if layer is None:
-        print({"status": "BLOCKED_INPUT", "reason": "创建层失败"})
-        return
-
-    actor_class = unreal.load_class("/Script/Engine.StaticMeshActor")
-    if actor_class is None:
-        print({"status": "BLOCKED_INPUT", "reason": "actor class 无法加载"})
-        api.delete_layer("L_Props")
-        return
-
-    editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
-    spawned = []
-    for x in range(0, 300, 100):
-        a = editor_actor_subsystem.spawn_actor_from_class(
-            actor_class,
-            unreal.Vector(float(x), 0.0, 0.0),
-        )
-        if a is not None:
-            spawned.append(a)
-
-    added = api.add_actors_to_layer(spawned, "L_Props")
-    inside = api.get_actors_from_layer("L_Props")
-    api.set_layer_visibility("L_Props", False)
-
-    print({"status": "OK", "added": added, "in_layer": len(inside)})
-
-if __name__ == "__main__":
-    main()
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 创建新层
+    layer = api.create_layer("L_Environment")
+    print(f"Created layer: {layer.get_name()}")
+    
+    # 重命名层
+    api.rename_layer("L_Environment", "L_Nature")
+    
+    # 删除层
+    # api.delete_layer("L_Nature")
+    
+    return {"status": "OK", "actions": ["create", "rename", "delete_supported"]}
 ```
 
-## 阻塞状态与诚实性
+### 示例 2：Actor 加入/移出层
+```python
+import unreal
 
-- `BLOCKED_INPUT`：缺少必要输入（层名、`AActor`、`ULevel` 等），或层/Actor 不存在且无法自动判定。
-- `BLOCKED_TOOLING`：`LayersSubsystem` 或编辑器脚本上下文不可用，无法执行。
-- 层（Layer）是关卡组织数据，配合世界构建流程使用；创建/删除/重命名层与可见性修改会改变关卡组织，必须经编辑器接口保存（`unreal.EditorLoadingAndSavingUtils` / 关卡保存）并由审计/QA 独立验收；未验证前不得声称已完成。
-- 本文件只收录头文件中带 `UFUNCTION` 标记、可由 Python 调用的成员；标称方法与精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认后方可断言。
+def add_actors_to_layer():
+    """将 Actor 添加到层"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 生成测试 Actor
+    static_mesh_actor_class = unreal.load_class("/Script/Engine.StaticMeshActor")
+    actor = editor_actor_subsystem.spawn_actor_from_class(
+        static_mesh_actor_class,
+        unreal.Vector(0.0, 0.0, 0.0)
+    )
+    
+    # 单个 Actor 加入层
+    success = api.add_actor_to_layer(actor, "L_Props")
+    
+    # 批量加入层
+    actor_list = [actor]
+    success_all = api.add_actors_to_layer(actor_list, "L_Props")
+    
+    return {
+        "status": "OK",
+        "single_actor_result": success,
+        "batch_result": success_all
+    }
+
+def actors_in_layer():
+    """查询层内的所有 Actor"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    actors = api.get_actors_from_layer("L_Props")
+    
+    return {
+        "status": "OK",
+        "layer_name": "L_Props",
+        "actor_count": len(actors),
+        "actors": [a.get_actor_label() for a in actors[:5]]  # 限制返回数量
+    }
+
+def remove_actors_from_layer():
+    """将 Actor 移出层"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    actors = api.get_actors_from_layer("L_Props")
+    if actors:
+        success = api.remove_actors_from_layer(actors, "L_Props")
+        return {
+            "status": "OK",
+            "removed_actors": len(actors),
+            "result": success
+        }
+    
+    return {"status": "OK", "message": "No actors in layer"}
+```
+
+### 示例 3：按层选择 Actor
+```python
+import unreal
+
+def select_actors_by_layer():
+    """按层选择 Actor"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 选择层内所有 Actor
+    layer_name = "L_Deco"
+    selected = api.select_actors_in_layer(
+        layer_name,
+        b_select=True,
+        b_notify=True,
+        b_select_even_if_hidden=False
+    )
+    
+    # 取消选择层内所有 Actor
+    api.select_actors_in_layer(layer_name, b_select=False, b_notify=True)
+    
+    return {
+        "status": "OK",
+        "layer_name": layer_name,
+        "selected": selected
+    }
+
+def select_all_selected_to_layer():
+    """将当前选中的所有 Actor 添加到层"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 获取当前选中的 Actor
+    selected_actors = api.get_selected_actors()
+    
+    if selected_actors:
+        success = api.add_selected_actors_to_layer("L_Selected")
+        return {
+            "status": "OK",
+            "selected_count": len(selected_actors),
+            "add_result": success
+        }
+    
+    return {"status": "OK", "message": "No actors currently selected"}
+```
+
+### 示例 4：层可见性控制
+```python
+import unreal
+
+def control_layer_visibility():
+    """控制层可见性"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 设置层可见性
+    api.set_layer_visibility("L_Hidden", False)  # 隐藏
+    api.set_layer_visibility("L_Visible", True)  # 显示
+    
+    # 批量设置层可见性
+    layers = ["L_Hidden1", "L_Hidden2", "L_Visible1"]
+    api.set_layers_visibility(layers, False)  # 批量隐藏
+    
+    # 切换层可见性
+    api.toggle_layer_visibility("L_Toggle")
+    
+    # 显示所有层
+    api.make_all_layers_visible()
+    
+    return {"status": "OK", "actions": ["set", "batch_set", "toggle", "make_all_visible"]}
+
+def toggle_layer_refresh():
+    """刷新视口以应用可见性更改"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    if api is None:
+        return {"status": "BLOCKED_TOOLING"}
+    
+    # 刷新特定层的视口可见性
+    api.update_all_view_visibility("L_Visible")
+    
+    # 刷新所有 Actor 的可见性
+    api.update_all_actors_visibility(
+        b_notify_selection_change=True,
+        b_redraw_viewports=True
+    )
+    
+    return {"status": "OK", "refreshed": True}
+```
+
+### 示例 5：层管理工具集成
+```python
+import unreal
+
+class LayerManagerTool:
+    """关卡层管理工具"""
+    
+    def __init__(self):
+        self.api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+        self.layers = self.get_all_layers()
+    
+    def get_all_layers(self):
+        """获取所有现有层"""
+        if self.api is None:
+            return []
+        
+        layer_names = []
+        self.api.add_all_layer_names_to(layer_names)
+        return layer_names
+    
+    def create_layer_group(self, group_name, actors_to_add):
+        """创建层组并添加 Actors"""
+        layer_name = f"L_{group_name}"
+        
+        # 创建层
+        if not self.api.is_layer(layer_name):
+            self.api.create_layer(layer_name)
+        
+        # 添加 actors
+        if actors_to_add:
+            self.api.add_actors_to_layer(actors_to_add, layer_name)
+        
+        self.layers.append(layer_name)
+        return {"status": "OK", "layer_name": layer_name, "actors_added": len(actors_to_add)}
+    
+    def hide_all_layers_except(self, visible_layer):
+        """隐藏所有层，仅显示指定层"""
+        for layer in self.layers:
+            if layer != visible_layer:
+                self.api.set_layer_visibility(layer, False)
+        self.api.set_layer_visibility(visible_layer, True)
+    
+    def delete_unused_layers(self):
+        """删除空层"""
+        for layer in self.layers[:]:  # 复制列表以便安全删除
+            actors = self.api.get_actors_from_layer(layer)
+            if not actors:
+                self.api.delete_layer(layer)
+                self.layers.remove(layer)
+                print(f"Deleted empty layer: {layer}")
+        
+        return {"status": "OK", "remaining_layers": len(self.layers)}
+
+# 使用示例
+def use_layer_manager_tool():
+    tool = LayerManagerTool()
+    
+    # 创建新层组
+    tool.create_layer_group("Props", [])
+    
+    # 隐藏除指定层外的所有层
+    tool.hide_all_layers_except("L_Props")
+    
+    # 删除空层
+    tool.delete_unused_layers()
+    
+    return {"status": "OK", "tool": "initialized"}
+```
+
+## 高级用法与最佳实践
+
+### 1. 性能优化
+- **批量操作**：使用批量方法（`add_actors_to_layers`）而非循环调用单个方法
+- **选择优化**：选择大量 Actor 时，`b_notify` 设置为 `False` 可提升性能
+- **视口管理**：可见性更改后调用 `update_*` 方法刷新视口
+
+### 2. 编辑器工作流集成
+- **与选择系统集成**：使用 `get_selected_actors()` 获取当前选中 Actor
+- **与层浏览器同步**：调用 `editor_refresh_layer_browser()` 更新编辑器 UI
+- **与关卡保存集成**：层修改后调用保存函数：
+
+```python
+import unreal
+
+def save_after_layer_changes():
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    # ... 层修改操作 ...
+    
+    # 保存修改
+    unreal.EditorLoadingAndSavingUtils.save_dirty_packages(
+        b_save_maps=True,
+        b_check_modified=False
+    )
+    
+    return {"status": "OK", "saved": True}
+```
+
+### 3. 批量 Actor 操作
+```python
+import unreal
+
+def batch_move_to_layer():
+    """批量移动 Actor 到新层"""
+    api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
+    
+    # 从原层移除
+    original_layer = "L_Old"
+    actors = api.get_actors_from_layer(original_layer)
+    
+    # 加入新层
+    new_layer = "L_New"
+    api.add_actors_to_layer(actors, new_layer)
+    
+    # 从原层移除（可选）
+    # api.remove_actors_from_layer(actors, original_layer)
+    
+    return {"status": "OK", "moved_actors": len(actors)}
+```
+
+## 常见问题与注意事项
+
+### 1. 编辑器专用
+- **仅编辑器可用**：`ULayersSubsystem` 仅在编辑器上下文中可用，PIE/运行时不可用
+- **世界依赖**：依赖当前已加载的关卡（Level）
+- **保存要求**：所有修改必须通过编辑器接口保存（`save_dirty_packages()`）
+
+### 2. 阻塞状态处理
+- `BLOCKED_TOOLING`：编辑器子系统不可用、编辑器上下文不可用
+- `BLOCKED_INPUT`：层不存在、Actor 无效、输入参数错误
+- **最佳实践**：先检查 `api` 是否为 `None`，再执行操作
+
+### 3. 层操作返回值
+- **成功返回**：多数方法返回 `bool` 表示操作是否成功
+- **失败情况**：层不存在、Actor 已在层中（add）、Actor 不在层中（remove）等
+- **批量操作**：即使部分失败，只要有一个成功就可能返回 `True`
+
+### 4. Actor 与层的关系
+- **可变归属**：Actor 可以属于多个层，也可以随时更换归属层
+- **去关联**：`disassociate_actor_from_layers()` 将 Actor 从所有层移除
+- **初始化**：新生成的 Actor 需调用 `initialize_new_actor_layers()` 才能加入层
+
+### 5. 与 World Partition 的区别
+- **ULayersSubsystem**：传统的关卡层组织，适合中等规模关卡
+- **UWorldPartitionSubsystem**：Grid Cell 分区系统，适合超大开放世界
+- **选择准则**：地图不大（< 1km²）、需要灵活组织 → Layers；大型开放世界 → World Partition
+
+### 6. 未实测声明
+- 本概述基于 UE 5.6 文档与反射定义整理
+- 精确 Python 方法名需在目标编辑器中通过 `dir(unreal.LayersSubsystem)` 实测确认
+- 个别方法可能因插件而异
+
+详细 API 与完整示例请参阅 `SKILL.md` 中的逐方法清单与快速示例。
