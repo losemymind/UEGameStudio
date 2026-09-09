@@ -51,6 +51,29 @@ api = unreal.KismetSystemLibrary
 | 事务 | `begin_transaction(context, description, primary_object)` | `int32 BeginTransaction(...)` | `int` |
 | 资源 | `get_object_from_primary_asset_id(primary_asset_id)` | `UObject* GetObjectFromPrimaryAssetId(...)` | `Object` 或 `None` |
 | 资源 | `get_primary_asset_id_from_object(object)` | `FPrimaryAssetId GetPrimaryAssetIdFromObject(...)` | `PrimaryAssetId` |
+| 比较 | `equal_equal_class_class(a, b)` | `bool operator==(const UClass*, const UClass*)` | `bool` |
+| 比较 | `not_equal_class_class(a, b)` | `bool operator!=(const UClass*, const UClass*)` | `bool` |
+| 比较 | `equal_equal_object_object(a, b)` | `bool operator==(const UObject*, const UObject*)` | `bool` |
+| 比较 | `not_equal_object_object(a, b)` | `bool operator!=(const UObject*, const UObject*)` | `bool` |
+| 比较 | `equal_equal_vector_vector(a, b)` | `bool operator==(const FVector&, const FVector&)` | `bool` |
+| 比较 | `not_equal_vector_vector(a, b)` | `bool operator!=(const FVector&, const FVector&)` | `bool` |
+| 比较 | `equal_equal_box_box(a, b)` | `bool operator==(const FBox&, const FBox&)` | `bool` |
+| 比较 | `not_equal_box_box(a, b)` | `bool operator!=(const FBox&, const FBox&)` | `bool` |
+| 比较 | `equal_equal_rotator_rotator(a, b)` | `bool operator==(const FRotator&, const FRotator&)` | `bool` |
+| 比较 | `not_equal_rotator_rotator(a, b)` | `bool operator!=(const FRotator&, const FRotator&)` | `bool` |
+| 比较 | `equal_equal_plane_plane(a, b)` | `bool operator==(const FPlane&, const FPlane&)` | `bool` |
+| 比较 | `not_equal_plane_plane(a, b)` | `bool operator!=(const FPlane&, const FPlane&)` | `bool` |
+| 比较 | `equal_equal_quat_quat(a, b)` | `bool operator==(const FQuat&, const FQuat&)` | `bool` |
+| 比较 | `not_equal_quat_quat(a, b)` | `bool operator!=(const FQuat&, const FQuat&)` | `bool` |
+| 比较 | `equal_equal_transform_transform(a, b)` | `bool operator==(const FTransform&, const FTransform&)` | `bool` |
+| 比较 | `not_equal_transform_transform(a, b)` | `bool operator!=(const FTransform&, const FTransform&)` | `bool` |
+| Trace | `sphere_trace_single(world_context_object, start, end, sphere_radi...` | `bool SphereTraceSingle(..., FHitResult& OutHit)` | `(bool, HitResult)` |
+| Trace | `capsule_trace_single(world_context_object, start, end, capsule_radi...` | `bool CapsuleTraceSingle(..., FHitResult& OutHit)` | `(bool, HitResult)` |
+| Trace | `box_trace_single(world_context_object, start, end, box_extent, ...)` | `bool BoxTraceSingle(..., FHitResult& OutHit)` | `(bool, HitResult)` |
+| 调试 | `draw_debug_box(world_context_object, box_center, box_extent, ...)` | `void DrawDebugBox(...)` | `None` |
+| 调试 | `draw_debug_cylinder(world_context_object, start, end, radius, ...)` | `void DrawDebugCylinder(...)` | `None` |
+| 其他 | `get_actor_bounds(actor)` | `void GetActorBounds(..., FVector&, FVector&)` | `(Vector, Vector)` |
+| 其他 | `get_engine_version()` | `FString GetEngineVersion()` | `str` |
 
 ## 快速示例
 
@@ -61,9 +84,13 @@ def main():
     api = unreal.KismetSystemLibrary
     world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
 
+    # 版本与比较
     print(api.get_engine_version())
-    api.print_string(world_context, "tick task", b_print_to_screen=False)
+    v1 = unreal.Vector(1.0, 0.0, 0.0)
+    v2 = unreal.Vector(1.0, 0.0, 0.0)
+    print(api.equal_equal_vector_vector(v1, v2))
 
+    # Trace检测
     start = unreal.Vector(0.0, 0.0, 100.0)
     end = unreal.Vector(0.0, 0.0, -1000.0)
     hit_any, hit = api.line_trace_single(
@@ -72,7 +99,33 @@ def main():
     )
     print({"status": "OK", "hit": hit_any, "actor": hit.get_actor().get_actor_label() if hit_any else None})
 
-    api.draw_debug_line(world_context, start, end, unreal.LinearColor(1.0, 0.0, 0.0, 1.0))
+    sphere_hit_any, sphere_hit = api.sphere_trace_single(
+        world_context, start, end, 10.0,
+        unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [], unreal.DrawDebugTrace.FOR_ONE_FRAME, True,
+    )
+    print({"sphere": sphere_hit_any})
+
+    capsule_hit_any, capsule_hit = api.capsule_trace_single(
+        world_context, start, end, 10.0, 20.0,
+        unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [], unreal.DrawDebugTrace.FOR_ONE_FRAME, True,
+    )
+    print({"capsule": capsule_hit_any})
+
+    box_hit_any, box_hit = api.box_trace_single(
+        world_context, start, end, unreal.Vector(10.0, 10.0, 20.0),
+        unreal.Rotator(0.0, 0.0, 0.0), unreal.TraceTypeQuery.TRACE_TYPE_QUERY1,
+        False, [], unreal.DrawDebugTrace.FOR_ONE_FRAME, True,
+    )
+    print({"box": box_hit_any})
+
+    # 调试绘制
+    api.draw_debug_box(world_context, unreal.Vector(0.0, 0.0, 50.0), unreal.Vector(10.0, 10.0, 10.0), unreal.LinearColor(1.0, 0.0, 0.0, 1.0))
+    api.draw_debug_cylinder(world_context, unreal.Vector(0.0, 0.0, 0.0), unreal.Vector(0.0, 0.0, 100.0), 10.0, unreal.LinearColor(0.0, 1.0, 0.0, 1.0))
+
+    # 边界获取
+    actor = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance().get_world().get_actors()[0]
+    origin, box_ext = api.get_actor_bounds(actor)
+    print({"origin": origin, "extent": box_ext})
 
 if __name__ == "__main__":
     main()
@@ -82,8 +135,9 @@ if __name__ == "__main__":
 
 - 大多数纯查询方法可在编辑器与运行时使用；运行时会话相关（时间、定时器、延迟、Trace 命中世界等）只在 PIE / 运行时语义下有效。
 - 以 `conv_` 开头的方法为类型转换节点对应；`equal_equal_` / `not_equal_` 为比较运算对应。
-- `DrawDebug*`、`PrintString` 等开发类方法使用后按审计要求保存/清理，不留下持久调试资产。
-- 缺世界上下文、类路径、对象引用等必要输入时返回 `BLOCKED_INPUT`；编辑器/运行时上下文不可用或所需引擎系统缺失时返回 `BLOCKED_TOOLING`。
+- Trace 方法调用时传入 `draw_debug_type` 为 `FOR_ONE_FRAME` 或 `FOR_DURATION` 会在视口产生临时调试绘制，影响性能，生产代码中应关闭调试输出。
+- `DrawDebug*` 系列方法需在 PIE / 运行时或 Editor 视口调试模式下可见；编辑器非调试模式下调用无效果，不产生持久资产。
+- 缺世界上下文、类路径、对象引用、Trace 参数（起点/终点/半径/方向等）等必要输入时返回 `BLOCKED_INPUT`；编辑器/运行时上下文不可用或所需引擎系统缺失时返回 `BLOCKED_TOOLING`。
 - 未在真实 UE 5.6 中实测的调用不做"已验证"断言。
 
 详细 API 与完整示例见 `docs/overview.md`。

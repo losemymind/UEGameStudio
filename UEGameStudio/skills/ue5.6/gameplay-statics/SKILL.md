@@ -30,6 +30,15 @@ api = unreal.GameplayStatics
 | Actor | `get_actor_of_class(world_context, actor_class)` | `AActor* GetActorOfClass(...)` | `Actor` 或 `None` |
 | Actor | `get_all_actors_of_class(world_context, actor_class)` | `void GetAllActorsOfClass(..., TArray<AActor*>& OutActors)` | `Array[Actor]` |
 | Actor | `get_all_actors_with_tag(world_context, tag)` | `void GetAllActorsWithTag(..., FName, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_class_with_tag(world_context, actor_class, tag)` | `void GetAllActorsOfClassWithTag(..., TSubclassOf<AActor>, FName, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_with_tags(world_context, tags)` | `void GetAllActorsWithTags(..., const TArray<FName>&, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_class_with_tags_1(world_context, actor_class, tags)` | `void GetAllActorsOfClassWithTags(..., TSubclassOf<AActor>, const TArray<FName>&, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_class_with_tags_2(world_context, actor_class, tag)` | `void GetAllActorsOfClassWithTags(..., TSubclassOf<AActor>, FName, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_actor_class_with_tag(world_context, parent_actor, tag)` | `void GetAllActorsOfActorClassWithTag(..., AActor*, FName, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_actor_class_with_tags(world_context, parent_actor, tags)` | `void GetAllActorsOfActorClassWithTags(..., AActor*, const TArray<FName>&, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_class_except(world_context, actor_class, except_actors)` | `void GetAllActorsOfClassExcept(..., TSubclassOf<AActor>, const TArray<AActor*>&, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_with_tag_except(world_context, tag, except_actors)` | `void GetAllActorsWithTagExcept(..., FName, const TArray<AActor*>&, TArray<AActor*>&)` | `Array[Actor]` |
+| Actor | `get_all_actors_of_class_with_tag_except(world_context, actor_class, tag, except_actors)` | `void GetAllActorsOfClassWithTagExcept(..., TSubclassOf<AActor>, FName, const TArray<AActor*>&, TArray<AActor*>&)` | `Array[Actor]` |
 | Actor | `find_nearest_actor(origin, actors_to_check)` | `AActor* FindNearestActor(..., float& Distance)` | `(Actor, float)` |
 | Player | `get_player_controller(world_context, player_index)` | `APlayerController* GetPlayerController(...)` | `PlayerController` 或 `None` |
 | Player | `get_player_pawn(world_context, player_index)` | `APawn* GetPlayerPawn(...)` | `Pawn` 或 `None` |
@@ -48,6 +57,7 @@ api = unreal.GameplayStatics
 | 音效 | `play_sound_2d(world_context, sound, volume_multiplier=1.0)` | `void PlaySound2D(...)` | `None` |
 | 音效 | `spawn_sound_at_location(world_context, sound, location, rotation=...)` | `UAudioComponent* SpawnSoundAtLocation(...)` | `AudioComponent` 或 `None` |
 | 特效 | `spawn_emitter_at_location(world_context, emitter_template, location, rotation=...)` | `UParticleSystemComponent* SpawnEmitterAtLocation(...)` | `ParticleSystemComponent` 或 `None` |
+| 特效 | `spawn_poly_line_emitter_at_location(world_context, emitter_template, location, rotation=...)` | `UParticleSystemComponent* SpawnPolyLineEmitterAtLocation(...)` | `ParticleSystemComponent` 或 `None` |
 | 视口 | `project_world_to_screen(player, world_position)` | `bool ProjectWorldToScreen(..., FVector2D& ScreenPosition)` | `(bool, Vector2D)` |
 | 视口 | `deproject_screen_to_world(player, screen_position)` | `bool DeprojectScreenToWorld(..., FVector&, FVector&)` | `(bool, Vector, Vector)` |
 | 弹道 | `blueprint_suggest_projectile_velocity(world_context, start_location, end_location, launch_speed, ...)` | `bool BlueprintSuggestProjectileVelocity(..., FVector& TossVelocity)` | `(bool, Vector)` |
@@ -81,6 +91,35 @@ def main():
     api.play_sound_2d(world_context, unreal.load_object(None, "/Game/Audio/SFX_Click"))
     print({"status": "OK", "nearest": nearest.get_actor_label() if nearest else None, "paused": ok})
 
+def example_tag_queries():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+
+    npc_class = unreal.load_class("/Game/Blueprints/BP_NPC")
+    enemies = api.get_all_actors_of_class_with_tag(world_context, npc_class, "Enemy")
+    tagged_actors = api.get_all_actors_with_tags(world_context, ["Loot", "Interactive"])
+    parent_actor = api.get_all_actors_of_class(world_context, unreal.load_class("/Game/Blueprints/BP_Parent"))[0] if api.get_all_actors_of_class(world_context, unreal.load_class("/Game/Blueprints/BP_Parent")) else None
+    children = api.get_all_actors_of_actor_class_with_tag(world_context, parent_actor, "ChildActor") if parent_actor else []
+
+def example_except_queries():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+
+    npc_class = unreal.load_class("/Game/Blueprints/BP_NPC")
+    all_npcs = api.get_all_actors_of_class(world_context, npc_class)
+    exclude_list = [all_npcs[0]] if len(all_npcs) > 0 else []
+    filtered = api.get_all_actors_of_class_except(world_context, npc_class, exclude_list)
+    tagged_filtered = api.get_all_actors_with_tag_except(world_context, "Enemy", exclude_list)
+    actor_class_filtered = api.get_all_actors_of_class_with_tag_except(world_context, npc_class, "Enemy", exclude_list) if len(all_npcs) > 0 else []
+
+def example_poly_line_emitter():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    emitter_template = unreal.load_object(None, "/Game/Particles/PT_PolyLine.PT_PolyLine")
+    loc = unreal.Vector(0.0, 0.0, 100.0)
+    rot = unreal.Rotator(0.0, 0.0, 0.0)
+    component = api.spawn_poly_line_emitter_at_location(world_context, emitter_template, loc, rot) if emitter_template else None
+
 if __name__ == "__main__":
     main()
 ```
@@ -90,7 +129,8 @@ if __name__ == "__main__":
 - 运行时方法只在 PIE / Play 会话中可用；编辑器非运行态调用返回空/假值，按 `BLOCKED_TOOLING` 处理并停止。
 - Actor/播放器查询返回 `None` 表示不存在；`apply_*` 伤害与 `create_player` 需权威端/相应运行时上下文。
 - 流送关卡与 Open Level 等会改变世界状态，实施后必须独立验收，不声明未实测的结果。
-- 缺世界上下文、类路径等必要输入时返回 `BLOCKED_INPUT`；编辑器/运行时上下文不可用时返回 `BLOCKED_TOOLING`。
+- Tag/Except 查询扩展（`get_all_actors_of_class_with_tag`、`get_all_actors_with_tags`、`get_all_actors_of_class_with_tags_*`、`get_all_actors_of_actor_class_with_tag`、`get_all_actors_of_actor_class_with_tags`、`get_all_actors_of_class_except`、`get_all_actors_with_tag_except`、`get_all_actors_of_class_with_tag_except`）在 UE 5.6 中为新增 API，未在真实 UE 5.6 Editor 中实测；调用前须在目标引擎中验证签名与参数类型。
+- 缺世界上下文、类路径、Tag 名称、Except 列表等必要输入时返回 `BLOCKED_INPUT`；编辑器/运行时上下文不可用时返回 `BLOCKED_TOOLING`。
 - 未在真实 UE 5.6 中实测的调用不做"已验证"断言。
 
 详细 API 与完整示例见 `docs/overview.md`。
