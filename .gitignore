@@ -16,3 +16,6 @@ Thumbs.db
 
 # Node (若后续引入 opencode 插件/脚本)
 node_modules/
+
+# opencode 本地配置与技能（保留在磁盘，不纳入版本控制）
+.opencode/

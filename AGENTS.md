@@ -45,6 +45,7 @@ E:\GitHub\UEGameStudio\
 5. **`.uasset` 安全**：二进制资产只能通过 UE Editor、Editor API、Editor Utility 或 Commandlet 修改，禁止文本/字节补丁；编辑器或 DCC 不可用时必须返回 `BLOCKED_TOOLING`，不得声称二进制资产已完成。
 6. **实际阵容为准**：作业前先读 `docs/session-handoff.md` 与 `docs/agent-roster-report.md`，并扫描 `agents/` 实际文件；不依据 git 删除记录或历史推测当前阵容，不恢复已删除的旧 Agent。
 7. **Git 安全**：不执行 `git reset --hard`、`git checkout --`，不把 git 历史中被删除的 Agent 重新纳入成品。
+8. **`.opencode/` 不入库**：`.opencode/`（本地配置与 skills）已被 `.gitignore` 忽略，只保留在磁盘，不加入版本控制、不 `git add`、不提交；不得用 `git add -f` 绕过忽略规则。`git rm -r --cached .opencode` 的暂存删除须与仓库其他改动分开处理，不要顺手提交。
 
 ## 常用入口
 
