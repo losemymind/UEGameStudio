@@ -123,13 +123,410 @@ def main():
     api.draw_debug_cylinder(world_context, unreal.Vector(0.0, 0.0, 0.0), unreal.Vector(0.0, 0.0, 100.0), 10.0, unreal.LinearColor(0.0, 1.0, 0.0, 1.0))
 
     # 边界获取
-    actor = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance().get_world().get_actors()[0]
+    actor = unreal.get_engine_subsystem(unreal.UnrealEditorSubsystem).get_game_instance().get_world().get_actors()[0]
     origin, box_ext = api.get_actor_bounds(actor)
     print({"origin": origin, "extent": box_ext})
 
 if __name__ == "__main__":
     main()
 ```
+
+## 综合实战示例
+
+### 网络状态判定与环境检测
+
+```python
+import unreal
+
+def network_detection_example():
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    is_standalone = api.is_standalone(world_context)
+    device_id = api.get_device_id()
+    engine_version = api.get_engine_version()
+    
+    print(f"Standalone: {is_standalone}, Device: {device_id}, Engine: {engine_version}")
+    
+    return {
+        "standalone": is_standalone,
+        "device_id": device_id,
+        "engine_version": engine_version
+    }
+
+def environment_sensor_check():
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 项目设置查询
+    project_settings = unreal.get_default_obj(unreal.ProjectSettings)
+    project_name = project_settings.get_project_name()
+    project_version = project_settings.get_project_version()
+    
+    print(f"Project: {project_name}, Version: {project_version}")
+    
+    return {
+        "project_name": project_name,
+        "project_version": project_version
+    }
+```
+
+### 属性访问与反射
+
+```python
+import unreal
+
+def actor_property_accessor(actor):
+    api = unreal.KismetSystemLibrary
+    
+    # 对象属性Name
+    name = api.get_object_name(actor)
+    display_name = api.get_display_name(actor)
+    path = api.get_path_name(actor)
+    sys_path = api.get_system_path(actor)
+    
+    return {
+        "name": name,
+        "display_name": display_name,
+        "path": path,
+        "system_path": sys_path
+    }
+
+def dynamic_object_creation(class_path, outer=None):
+    api = unreal.KismetSystemLibrary
+    
+    # 通过路径创建类实例
+    new_class = unreal.load_class(None, class_path)
+    if new_class is None:
+        return None
+    
+    # 动态创建对象
+    new_object = unreal.create_package(None, "/Game/NewObject")
+    instance = unreal.spawn_object(new_class, new_object)
+    
+    return instance
+```
+
+### 定时器系统管理
+
+```python
+import unreal
+
+class TimerManagerController:
+    def __init__(self):
+        self.timer_handles = {}
+    
+    def create_repeating_timer(self, actor, function_name, interval):
+        api = unreal.KismetSystemLibrary
+        handle = api.set_timer(
+            actor,
+            function_name,
+            interval,
+            True
+        )
+        self.timer_handles[function_name] = handle
+        return handle
+    
+    def create_one_shot_timer(self, actor, function_name, delay):
+        api = unreal.KismetSystemLibrary
+        handle = api.set_timer(
+            actor,
+            function_name,
+            delay,
+            False
+        )
+        self.timer_handles[function_name] = handle
+        return handle
+    
+    def clear_all_timers(self, actor):
+        api = unreal.KismetSystemLibrary
+        for func_name, handle in self.timer_handles.items():
+            api.clear_timer(actor, func_name)
+        self.timer_handles.clear()
+
+def scheduled_task_system():
+    controller = TimerManagerController()
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 创建定期任务
+    controller.create_repeating_timer(world_context, "OnTick", 0.1)
+    
+    # 创建延迟任务
+    controller.create_one_shot_timer(world_context, "OnDelayComplete", 5.0)
+    
+    return controller
+```
+
+### 碰撞与射线检测增强
+
+```python
+import unreal
+
+def advanced_line_trace_system():
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 多通道检测
+    channels = [
+        unreal.TraceTypeQuery.TRACE_TYPE_QUERY1,
+        unreal.TraceTypeQuery.TRACE_TYPE_QUERY2,
+        unreal.TraceTypeQuery.TRACE_TYPE_QUERY3
+    ]
+    
+    results = {}
+    for channel in channels:
+        start = unreal.Vector(0.0, 0.0, 100.0)
+        end = unreal.Vector(0.0, 0.0, -1000.0)
+        
+        hit_any, hit = api.line_trace_single(
+            world_context, start, end, channel,
+            False, [], unreal.DrawDebugTrace.NONE, True
+        )
+        
+        results[channel.name] = {
+            "hit": hit_any,
+            "actor": hit.get_actor().get_actor_label() if hit_any else None,
+            "point": hit.get_location() if hit_any else None
+        }
+    
+    return results
+
+def proximity_detector(origin, radius, object_types):
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    overlap_any, actors = api.sphere_overlap_actors(
+        world_context,
+        origin,
+        radius,
+        object_types,
+        None,
+        None,
+        unreal.DrawDebugTrace.NONE,
+        True,
+        unreal.LinearColor(1.0, 0.0, 0.0, 1.0)
+    )
+    
+    return {
+        "overlap": overlap_any,
+        "actor_count": len(actors) if actors else 0,
+        "actors": [a.get_actor_label() for a in actors] if actors else []
+    }
+```
+
+## 高级用法
+
+### 事务系统与批量操作
+
+```python
+import unreal
+
+def batch_transaction_controller():
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEditorSubsystem).get_game_instance()
+    
+    # 开始事务
+    transaction_id = api.begin_transaction(
+        world_context,
+        "Batch Actor Move",
+        None
+    )
+    
+    try:
+        # 执行批量操作
+        actors = unreal.EditorLevelLibrary.get_all_dirty_actors()
+        for actor in actors:
+            location = actor.get_actor_location()
+            new_location = unreal.Vector(
+                location.get_x() + 10.0,
+                location.get_y(),
+                location.get_z()
+            )
+            actor.set_actor_location(new_location, False, True)
+        
+        # 提交事务
+        api.end_transaction()
+        
+    except Exception as e:
+        # 回滚事务
+        api.abort_transaction(transaction_id)
+        raise e
+```
+
+### 资源与PrimaryAsset管理
+
+```python
+import unreal
+
+def primary_asset_loader(asset_id_string):
+    api = unreal.KismetSystemLibrary
+    
+    # 创建PrimaryAssetId
+    asset_id = unreal.create_primary_asset_id_from_string(asset_id_string)
+    
+    # 加载资源
+    asset = api.get_object_from_primary_asset_id(asset_id)
+    
+    # 获取PrimaryAssetId
+    returned_id = api.get_primary_asset_id_from_object(asset) if asset else None
+    
+    return {
+        "asset": asset,
+        "asset_id": returned_id.get_primary_asset_name() if returned_id else None
+    }
+
+def asset_loading_validator():
+    api = unreal.KismetSystemLibrary
+    
+    # 同步加载
+    asset_path = "/Game/Characters/BP_Character.BP_Character_C"
+    asset_class = unreal.load_class(None, asset_path)
+    
+    if asset_class:
+        soft_path = api.make_soft_object_path(asset_path)
+        print(f"Loaded class: {asset_class.get_name()}, SoftPath: {soft_path.to_string()}")
+    
+    return asset_class is not None
+```
+
+### 编辑器集成与调试
+
+```python
+import unreal
+
+def editor_debug_draw_system():
+    api = unreal.KismetSystemLibrary
+    world_context = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem).get_editor_world()
+    
+    # 绘制调试信息
+    for i in range(10):
+        start = unreal.Vector(float(i * 100), 0.0, 0.0)
+        end = unreal.Vector(float(i * 100), 1000.0, 0.0)
+        
+        color = unreal.LinearColor(
+            i / 10.0,
+            1.0 - (i / 10.0),
+            0.5,
+            1.0
+        )
+        
+        api.draw_debug_line(
+            world_context,
+            start,
+            end,
+            color,
+            5.0,
+            0.0,
+            1.0
+        )
+```
+
+## 常见问题与最佳实践
+
+### 平台差异处理
+
+1. **平台特定路径**：
+   - Windows: `/Game/Assets/Windows/`
+   - macOS: `/Game/Assets/macOS/`
+   - Linux: `/Game/Assets/Linux/`
+   
+   ```python
+   import unreal
+   
+   platform_name = unreal.PlatformInfo.get_platform_name()
+   asset_path = f"/Game/Assets/{platform_name}/BP_Character"
+   ```
+
+2. **设备能力检测**：
+   ```python
+   import unreal
+   
+   def get_device_capabilities():
+       api = unreal.KismetSystemLibrary
+       world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+       
+       is_standalone = api.is_standalone(world_context)
+       device_id = api.get_device_id()
+       
+       # 深度查询需要 PlatformInfo 模块
+       platform_info = unreal.PlatformInfo
+       render_caps = platform_info.get_render_device_capabilities()
+       
+       return {
+           "standalone": is_standalone,
+           "device_id": device_id,
+           "render_caps": render_caps
+       }
+   ```
+
+### 线程安全注意事项
+
+1. **主线程限制**：
+   - 绝大多数 `KismetSystemLibrary` 方法必须在游戏线程调用
+   - 编辑器脚本模式（Python 控制台）通常在主线程执行
+   - 异步任务中调用需通过 `AsyncTask` 调度
+
+2. **避免跨线程对象引用**：
+   ```python
+   import unreal
+   
+   def safe_async_actor_query():
+       actor_ref = None
+       
+       def capture_actor():
+           nonlocal actor_ref
+           actors = unreal.EditorLevelLibrary.get_all_dirty_actors()
+           actor_ref = actors[0] if actors else None
+       
+       unreal.AsyncTask(capture_actor).then(lambda _: print("Actor captured"))
+   ```
+
+### Trace 性能优化
+
+1. **碰撞通道管理**：
+   - 使用精确的 `TraceTypeQuery` 避免全场景检测
+   - 忽略不需要检测的 Actor：`ignore_actors` 参数
+   
+2. **调试绘制分离**：
+   ```python
+   def optimized_trace_without_debug():
+       api = unreal.KismetSystemLibrary
+       world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+       
+       hit_any, hit = api.line_trace_single(
+           world_context,
+           start,
+           end,
+           unreal.TraceTypeQuery.TRACE_TYPE_QUERY1,
+           False,  # bTraceComplex
+           [],     # ignore_actors
+           unreal.DrawDebugTrace.NONE,  # 关闭调试绘制
+           True    # draw_debug
+       )
+       
+       return hit_any, hit
+   ```
+
+### 内存管理技巧
+
+1. **临时对象清理**：
+   - `Spawn*` 函数创建的对象自动管理生命周期
+   - 手动创建的对象需及时清理或设置 `Outer`
+   
+2. **批量操作分帧**：
+   ```python
+   def batch_operation_frame_split(actors, operation_fn):
+       def process_batch(batch, remaining):
+           for actor in batch:
+               operation_fn(actor)
+           
+           if remaining:
+               next_batch = remaining[:10]
+               next_remaining = remaining[10:]
+               unreal.delay(0.0, lambda: process_batch(next_batch, next_remaining))
+       
+       process_batch(actors[:10], actors[10:])
+   ```
 
 ## 注意事项
 

@@ -143,6 +143,326 @@ for _ in range(5):
 t = unreal.KismetMathLibrary.lerp_to(v, unreal.Vector(0.0, 0.0, 100.0), 0.3)
 ```
 
+## 综合实战示例
+
+### 坐标转换与世界定位
+
+```python
+import unreal
+
+def spawn_actor_at_relative_location(base_actor, relative_offset):
+    base_loc = base_actor.get_actor_location()
+    base_rot = base_actor.get_actor_rotation()
+    
+    offset_local = unreal.KismetMathLibrary.transform_location(
+        unreal.KismetMathLibrary.transform(base_rot),
+        relative_offset
+    )
+    
+    world_loc = unreal.KismetMathLibrary.add(base_loc, offset_local)
+    
+    return unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.StaticMeshActor,
+        world_loc,
+        base_rot
+    )
+
+def align_actor_to_surface(normal,up_vector):
+    ref_up = unreal.Vector(0.0, 0.0, 1.0)
+    rotation_axis = unreal.KismetMathLibrary.cross(normal, ref_up)
+    rotation_angle = unreal.KismetMathLibrary.deg_cos(unreal.KismetMathLibrary.dot(normal, ref_up))
+    
+    if unreal.KismetMathLibrary.length_squared(rotation_axis) > 0.0001:
+        rotation_axis = unreal.KismetMathLibrary.normal(rotation_axis)
+        rotator = unreal.KismetMathLibrary.rotate_axis_angle_vector(
+            unreal.Vector(1.0, 0.0, 0.0),
+            rotation_angle,
+            rotation_axis
+        )
+        return unreal.KismetMathLibrary.rotator(rotator)
+    else:
+        return unreal.Rotator(0.0, 0.0, 0.0)
+```
+
+### 随机流与确定性采样
+
+```python
+import unreal
+
+def deterministic_loot_table(seed, probability_table):
+    stream = unreal.KismetMathLibrary.make_random_stream(seed)
+    total = sum(probability_table.values())
+    accumulated = 0.0
+    
+    for item, prob in probability_table.items():
+        accumulated += prob / total
+        rand_val = unreal.KismetMathLibrary.random_float(stream)
+        if rand_val <= accumulated:
+            return item
+    
+    return list(probability_table.keys())[-1]
+
+def generate_procedural_terrain(base_seed, size_x, size_y, noise_scale=0.1):
+    terrain_data = {}
+    stream = unreal.KismetMathLibrary.make_random_stream(base_seed)
+    
+    for x in range(size_x):
+        for y in range(size_y):
+            noise_seed = unreal.KismetMathLibrary.add_int_int(
+                x, 
+                unreal.KismetMathLibrary.multiply_int_int(y, size_x)
+            )
+            noise_stream = unreal.KismetMathLibrary.make_random_stream(noise_seed)
+            height = unreal.KismetMathLibrary.f_clamp(
+                unreal.KismetMathLibrary.random_float(noise_stream) * noise_scale,
+                0.0,
+                1.0
+            )
+            terrain_data[(x, y)] = height
+    
+    return terrain_data
+```
+
+### 插值与平滑动画
+
+```python
+import unreal
+
+def smooth_camera_transition(start_loc, end_loc, duration, delta_time):
+    current_time = 0.0
+    interp_state = unreal.FFloatSpringState()
+    
+    while current_time < duration:
+        alpha = current_time / duration
+        
+        lerp_pos = unreal.KismetMathLibrary.lerp_to(
+            start_loc, end_loc, alpha
+        )
+        
+        spring_pos = unreal.KismetMathLibrary.float_spring_interp(
+            current_time,
+            duration,
+            interp_state,
+            10.0,  # stiffness
+            1.0,   # mass
+            0.1    # damping
+        )
+        
+        yield unreal.Vector(
+            lerp_pos.get_x() * (1.0 - spring_pos) + spring_pos * end_loc.get_x(),
+            lerp_pos.get_y() * (1.0 - spring_pos) + spring_pos * end_loc.get_y(),
+            lerp_pos.get_z() * (1.0 - spring_pos) + spring_pos * end_loc.get_z()
+        )
+        
+        current_time += delta_time
+
+def smooth_value_interpolation(initial_value, target_value, delta_time, speed):
+    return unreal.KismetMathLibrary.f_interp_to(
+        initial_value,
+        target_value,
+        delta_time,
+        speed
+    )
+```
+
+## 高级用法
+
+### 确定性随机流管理
+
+```python
+import unreal
+
+class DeterministicRandomManager:
+    def __init__(self):
+        self.global_seed = 0
+        self.streams = {}
+    
+    def get_stream(self, name):
+        if name not in self.streams:
+            stream = unreal.KismetMathLibrary.make_random_stream(
+                self.global_seed + hash(name) % 10000
+            )
+            self.streams[name] = stream
+        return self.streams[name]
+    
+    def seed_all(self, seed):
+        self.global_seed = seed
+        self.streams.clear()
+
+def reproducible_simulation(seed, steps):
+    manager = DeterministicRandomManager()
+    manager.seed_all(seed)
+    
+    results = []
+    for i in range(steps):
+        stream = manager.get_stream(f"step_{i}")
+        value = unreal.KismetMathLibrary.random_float(stream)
+        results.append(value)
+    
+    return results
+```
+
+### 向量几何与碰撞检测
+
+```python
+import unreal
+
+def closest_point_on_line(start, end, point):
+    line_vec = unreal.KismetMathLibrary.subtract(end, start)
+    point_vec = unreal.KismetMathLibrary.subtract(point, start)
+    
+    line_len_sq = unreal.KismetMathLibrary.length_squared(line_vec)
+    if line_len_sq < 0.0001:
+        return start
+    
+    projection = unreal.KismetMathLibrary.dot(point_vec, line_vec) / line_len_sq
+    t = unreal.KismetMathLibrary.f_clamp(projection, 0.0, 1.0)
+    
+    return unreal.KismetMathLibrary.lerp_to(start, end, t)
+
+def point_in_frustum(point, frustum_planes):
+    for plane in frustum_planes:
+        distance = unreal.KismetMathLibrary.dot(point, plane.get_normal()) + plane.get_w()
+        if distance < 0.0:
+            return False
+    return True
+```
+
+### 矩阵变换与空间映射
+
+```python
+import unreal
+
+def world_to_screen_with_aspect(world_point, view_info, aspect_ratio):
+    world_to_mesh = view_info.get_view_transform_matrix()
+    mesh_to_screen = unreal.KismetMathLibrary.make_matrix(
+        unreal.Vector(aspect_ratio, 0.0, 0.0),
+        unreal.Vector(0.0, 1.0, 0.0),
+        unreal.Vector(0.0, 0.0, 1.0),
+        unreal.Vector(0.0, 0.0, 0.0)
+    )
+    
+    screen_point = unreal.KismetMathLibrary.transform_position(
+        mesh_to_screen,
+        unreal.KismetMathLibrary.transform_position(world_to_mesh, world_point)
+    )
+    
+    return screen_point
+```
+
+### 时间与帧率计算
+
+```python
+import unreal
+
+def calculate_frame_duration(frame_rate, frame_number=1):
+    rate = unreal.KismetMathLibrary.make_frame_rate(
+        frame_rate.get_numerator(),
+        frame_rate.get_denominator()
+    )
+    time = unreal.KismetMathLibrary.make_qualified_frame_time(
+        frame_number,
+        rate
+    )
+    return unreal.KismetMathLibrary.from_seconds(
+        unreal.KismetMathLibrary.get_total_seconds(
+            unreal.KismetMathLibrary.from_seconds(1.0)
+        )
+    )
+
+def sync_to_framerate(base_time, frame_rate, target_frame):
+    rate = unreal.KismetMathLibrary.make_frame_rate(
+        frame_rate.get_numerator(),
+        frame_rate.get_denominator()
+    )
+    target_time = unreal.KismetMathLibrary.make_qualified_frame_time(
+        target_frame,
+        rate
+    )
+    return unreal.KismetMathLibrary.to_unix_timestamp(target_time)
+```
+
+## 常见问题与最佳实践
+
+### 精度与边界条件
+
+1. **浮点精度问题**：
+   - 使用 `f_clamp` 替代手动边界检查，避免 `min(max(x, min), max)` 链式调用
+   - 向量除零检测：除法前检查 `length_squared > 0.0001`
+   - 比较浮点数时使用容差：`abs(a - b) < 0.0001`
+
+2. **向量归一化安全**：
+   ```python
+   v = unreal.KismetMathLibrary.make_vector(x, y, z)
+   len_sq = unreal.KismetMathLibrary.length_squared(v)
+   if len_sq > 0.0001:
+       normal = unreal.KismetMathLibrary.normal(v)
+   else:
+       normal = unreal.Vector(0.0, 0.0, 1.0)
+   ```
+
+3. **角度归一化**：
+   ```python
+   normalized_angle = unreal.KismetMathLibrary.clamp_axis(angle_deg)
+   ```
+
+### 性能优化技巧
+
+1. **避免重复计算**：
+   - 缓存 `length_squared` 替代 `length`（避免开方）
+   - 预计算 `normal` 结果重复使用
+   - 使用 `interpolate_to` 替代手写插值公式
+
+2. **随机流管理**：
+   - 需确定性序列时使用 `FRandomStream`，避免 `RandomFloat` 非确定性
+   - 长时间运行的模拟按逻辑模块分隔随机流，便于调试
+
+3. **变换组合优化**：
+   - 多次变换前先组合 `Transform` 再应用，减少矩阵乘法
+   - 向量变换优先使用 `TransformLocation` / `TransformRotation` 而非完整矩阵
+
+### 典型陷阱
+
+1. **旋转顺序混淆**：
+   - UE 使用 Yaw-Pitch-Roll 顺序，组合旋转时注意非交换性
+   - 使用 `Combine` / `Delta` 函数而非手动分量操作
+
+2. **四元数插值**：
+   - 短弧插值使用 `SlerpQuat`，长弧插值需手动处理
+   - 四元数乘法顺序：`q_result = Multiply(q1, q2)` 表示 q2 后跟 q1
+
+3. **时间单位混淆**：
+   - 三角函数：`Sin/Cos/Tan` 接收弧度，`DegSin/DegCos/DegTan` 接收角度
+   - 插值速度参数单位：`FInterpTo` 中 speed 是每秒接近率
+
+### 调试技巧
+
+```python
+import unreal
+
+def debug_vector_operations():
+    v1 = unreal.Vector(1.0, 0.0, 0.0)
+    v2 = unreal.Vector(0.0, 1.0, 0.0)
+    
+    dot = unreal.KismetMathLibrary.dot(v1, v2)
+    cross = unreal.KismetMathLibrary.cross(v1, v2)
+    angle_rad = unreal.KismetMathLibrary.de_degrees_to_radians(
+        unreal.KismetMathLibrary.deg_cos(dot)
+    )
+    
+    print(f"Dot: {dot}, Cross: ({cross.get_x()}, {cross.get_y()}, {cross.get_z()})")
+    print(f"Angle: {unreal.KismetMathLibrary.degrees_to_radians(angle_rad)}")
+
+def validate_transform_chain(transform_list):
+    result = unreal.Transform()
+    result.set_identity()
+    
+    for transform in transform_list:
+        result = unreal.KismetMathLibrary.multiply(result, transform)
+    
+    return result
+```
+
 ## 注意事项
 
 - 全部为 `BlueprintPure`/`BlueprintCallable` 静态方法；算术、比较、转换与结构体运算符家族按同模式调用（如 `add`/`subtract`/`multiply`/`divide`、`less`/`greater`/`equal_equal_*`、`conv_*` 族对应各自类型），完整逐方法清单见 `docs/overview.md`。

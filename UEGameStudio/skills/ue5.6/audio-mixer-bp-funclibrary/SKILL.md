@@ -94,6 +94,346 @@ ok, names = aml.get_available_audio_mixer_submix_output_names(world)
 print("output devices:", names if ok else [])
 ```
 
+## 综合实战示例
+
+### Submix效果链管理系统
+
+```python
+import unreal
+
+class SubmixEffectChainManager:
+    def __init__(self):
+        self.aml = unreal.AudioMixerBlueprintLibrary
+        self.world = None
+    
+    def initialize(self):
+        self.world = unreal.EditorLevelLibrary.get_editor_world()
+        return self.world is not None
+    
+    def add_effect_to_chain(self, submix, effect_preset):
+        if self.world:
+            self.aml.add_submix_effect(self.world, submix, effect_preset)
+            return True
+        return False
+    
+    def remove_effect_from_chain(self, submix, effect_preset):
+        if self.world:
+            self.aml.remove_submix_effect(self.world, submix, effect_preset)
+            return True
+        return False
+    
+    def get_effect_chain(self, submix):
+        if self.world:
+            effect_chain = []
+            self.aml.get_submix_effect_chain(self.world, submix, effect_chain)
+            return effect_chain
+        return []
+    
+    def set_chain_override(self, submix, effects_chain, fade_time=0.5):
+        if self.world:
+            self.aml.set_submix_effect_chain_override(self.world, submix, effects_chain, fade_time)
+            return True
+        return False
+
+def manage_submix_effects():
+    manager = SubmixEffectChainManager()
+    
+    if not manager.initialize():
+        print("Failed to initialize")
+        return
+    
+    master_submix = unreal.load_asset("/Game/Audio/SM_Master")
+    if not master_submix:
+        print("Master submix not found")
+        return
+    
+    # 添加压缩器效果
+    compressor_preset = unreal.load_asset("/Game/Audio/Presets/PE_Compressor.PE_Compressor")
+    manager.add_effect_to_chain(master_submix, compressor_preset)
+    
+    # 添加限制器效果
+    limiter_preset = unreal.load_asset("/Game/Audio/Presets/PE_Limiter.PE_Limiter")
+    manager.add_effect_to_chain(master_submix, limiter_preset)
+    
+    # 查询效果链
+    chain = manager.get_effect_chain(master_submix)
+    print(f"Effect chain length: {len(chain)}")
+```
+
+### 频谱分析系统
+
+```python
+import unreal
+
+class SpectrumAnalyzer:
+    def __init__(self):
+        self.aml = unreal.AudioMixerBlueprintLibrary
+        self.world = None
+        self.analyzing = False
+    
+    def initialize(self):
+        self.world = unreal.EditorLevelLibrary.get_editor_world()
+        return self.world is not None
+    
+    def start_analysis(self, submix, spectrum_type="Magnitude", fft_size=2048):
+        if not self.world:
+            return False
+        
+        ok = self.aml.start_spectrum_analysis(
+            self.world,
+            submix,
+            spectrum_type,
+            fft_size,
+            unreal.EFFT PeakInterpolationMethod.Quadratic,
+            unreal.EFFTWindowType.Hann,
+            0.5,
+            unreal.EAudioSpectrumBandPreset.FullSpectrum,
+            True
+        )
+        self.analyzing = ok
+        return ok
+    
+    def stop_analysis(self, submix):
+        if self.world and self.analyzing:
+            self.aml.stop_spectrum_analysis(self.world, submix)
+            self.analyzing = False
+            return True
+        return False
+    
+    def get_magnitude_for_frequency(self, submix, frequency):
+        if self.world and self.analyzing:
+            magnitudes = []
+            self.aml.get_magnitude_for_frequencies(self.world, submix, [frequency], magnitudes)
+            return magnitudes[0] if magnitudes else 0.0
+        return 0.0
+
+def audio_spectrum_monitor():
+    analyzer = SpectrumAnalyzer()
+    
+    if not analyzer.initialize():
+        print("Failed to initialize")
+        return
+    
+    music_submix = unreal.load_asset("/Game/Audio/SM_Music")
+    if not music_submix:
+        print("Music submix not found")
+        return
+    
+    # 开始频谱分析
+    if analyzer.start_analysis(music_submix):
+        print("Spectrum analysis started")
+        
+        # 查询特定频率幅度
+        for freq in [100.0, 500.0, 1000.0, 5000.0]:
+            magnitude = analyzer.get_magnitude_for_frequency(music_submix, freq)
+            print(f"{freq}Hz: {magnitude:.4f}")
+        
+        # 停止分析
+        analyzer.stop_analysis(music_submix)
+        print("Spectrum analysis stopped")
+```
+
+### 录音输出系统
+
+```python
+import unreal
+
+class AudioRecorder:
+    def __init__(self):
+        self.aml = unreal.AudioMixerBlueprintLibrary
+        self.world = None
+        self.recording = False
+    
+    def initialize(self):
+        self.world = unreal.EditorLevelLibrary.get_editor_world()
+        return self.world is not None
+    
+    def start_recording(self, submix=None, duration=60.0):
+        if not self.world:
+            return False
+        
+        self.aml.start_recording_output(self.world, duration, submix)
+        self.recording = True
+        return True
+    
+    def finish_recording(self, submix=None):
+        if self.world and self.recording:
+            sound_wave = self.aml.finish_recording_output(self.world, submix)
+            self.recording = False
+            
+            # 保存到包
+            if sound_wave:
+                asset_path = "/Game/Audio/Recorded/SavedRecording"
+                unreal.EditorAssetLibrary.save_asset(asset_path, sound_wave)
+                return sound_wave
+        return None
+
+def audio_recording_example():
+    recorder = AudioRecorder()
+    
+    if not recorder.initialize():
+        print("Failed to initialize")
+        return
+    
+    # 开始录音
+    master_submix = unreal.load_asset("/Game/Audio/SM_Master")
+    recorder.start_recording(master_submix, duration=10.0)
+    
+    print("Recording started for 10 seconds...")
+    
+    # 延迟10秒后停止
+    # unreal.delay(10.0, lambda: finish_recording(master_submix))
+```
+
+## 高级用法
+
+### AudioBus控制
+
+```python
+import unreal
+
+class AudioBusManager:
+    def __init__(self):
+        self.aml = unreal.AudioMixerBlueprintLibrary
+        self.world = None
+    
+    def initialize(self):
+        self.world = unreal.EditorLevelLibrary.get_editor_world()
+        return self.world is not None
+    
+    def start_audio_bus(self, audio_bus):
+        if self.world:
+            self.aml.start_audio_bus(self.world, audio_bus)
+            return True
+        return False
+    
+    def stop_audio_bus(self, audio_bus):
+        if self.world:
+            self.aml.stop_audio_bus(self.world, audio_bus)
+            return True
+        return False
+    
+    def is_bus_active(self, audio_bus):
+        if self.world:
+            return self.aml.is_audio_bus_active(self.world, audio_bus)
+        return False
+
+def audio_bus_example():
+    manager = AudioBusManager()
+    
+    if not manager.initialize():
+        print("Failed to initialize")
+        return
+    
+    # 启动 AudioBus
+    bus = unreal.load_asset("/Game/Audio/Buses/BUS_Music")
+    manager.start_audio_bus(bus)
+    
+    # 查询状态
+    is_active = manager.is_bus_active(bus)
+    print(f"AudioBus active: {is_active}")
+```
+
+### 延迟统计与性能分析
+
+```python
+import unreal
+
+class AudioLatencyAnalyzer:
+    def __init__(self):
+        self.aml = unreal.AudioMixerBlueprintLibrary
+        self.world = None
+        self.latency_samples = []
+    
+    def initialize(self):
+        self.world = unreal.EditorLevelLibrary.get_editor_world()
+        return self.world is not None
+    
+    def sample_game_to_audio_latency(self):
+        if not self.world:
+            return None
+        
+        avg = self.aml.get_game_thread_to_audio_render_thread_average_latency(self.world)
+        min_lat = self.aml.get_game_thread_to_audio_render_thread_min_latency(self.world)
+        max_lat = self.aml.get_game_thread_to_audio_render_thread_max_latency(self.world)
+        
+        self.latency_samples.append({
+            "avg": avg,
+            "min": min_lat,
+            "max": max_lat
+        })
+        
+        return {
+            "avg": avg,
+            "min": min_lat,
+            "max": max_lat
+        }
+    
+    def get_statistics(self):
+        if not self.latency_samples:
+            return None
+        
+        avg_avg = sum(s["avg"] for s in self.latency_samples) / len(self.latency_samples)
+        min_min = min(s["min"] for s in self.latency_samples)
+        max_max = max(s["max"] for s in self.latency_samples)
+        
+        return {
+            "avg_avg": avg_avg,
+            "min_min": min_min,
+            "max_max": max_max,
+            "sample_count": len(self.latency_samples)
+        }
+
+def analyze_audio_latency():
+    analyzer = AudioLatencyAnalyzer()
+    
+    if not analyzer.initialize():
+        print("Failed to initialize")
+        return
+    
+    # 多次采样
+    for _ in range(10):
+        latency = analyzer.sample_game_to_audio_latency()
+        print(f"Latency: avg={latency['avg']:.2f}ms")
+    
+    # 统计
+    stats = analyzer.get_statistics()
+    if stats:
+        print(f"Statistics: avg={stats['avg_avg']:.2f}ms, min={stats['min_min']:.2f}ms, max={stats['max_max']:.2f}ms")
+```
+
+## 常见问题与最佳实践
+
+### 音频设备兼容性
+
+1. **NullAudio 设备**：
+   - `-NullAudio` 启动时音频 API 返回失败
+   - 应先检测 `get_available_audio_mixer_submix_output_names` 是否成功
+   
+2. **设备切换**：
+   - 运行时支持设备切换
+   - 使用 `set_audio_mixer_submix_output_device` 更改输出设备
+
+### 性能优化
+
+1. **频谱分析优化**：
+   - 减小 FFT Size 降低计算开销
+   - 关闭 `auto_update` 时手动控制更新频率
+   
+2. **效果链管理**：
+   - 避免过长的效果链
+   - 使用 `SetSubmixEffectChainOverride` 批量替换
+
+### 常见陷阱
+
+1. **输出设备检测**：
+   - `get_available_audio_mixer_submix_output_names` 失败返回 `(False, [])`
+   - 应检查返回的 `ok` 标志
+   
+2. **录音缓冲区**：
+   - `start_recording_output` 使用固定时间缓冲
+   - 必须用 `finish_recording_output` 取回结果
+
 ## 注意事项
 
 - 大多数函数依赖音频引擎与真实输出设备；`-NullAudio` / 无设备环境应返回 `BLOCKED_TOOLING`，不得声称已执行。

@@ -124,6 +124,394 @@ if __name__ == "__main__":
     main()
 ```
 
+## 综合实战示例
+
+### 网络状态与Player管理
+
+```python
+import unreal
+
+def player_controller_manager():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    player_count = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance().get_local_player_count()
+    
+    player_dict = {}
+    for i in range(player_count):
+        controller = api.get_player_controller(world_context, i)
+        pawn = api.get_player_pawn(world_context, i)
+        character = api.get_player_character(world_context, i)
+        
+        if controller and pawn:
+            player_dict[i] = {
+                "controller": controller.get_name(),
+                "pawn": pawn.get_name(),
+                "character": character.get_name() if character else None,
+                "location": pawn.get_actor_location()
+            }
+    
+    return player_dict
+
+def create_player_with_settings(player_index, spawn_controller=True):
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    controller = api.create_player(
+        world_context,
+        controller_id=player_index,
+        b_spawn_player_controller=spawn_controller
+    )
+    
+    if controller:
+        print(f"Player {player_index} created: {controller.get_name()}")
+    
+    return controller
+```
+
+### 关卡流送与场景管理
+
+```python
+import unreal
+
+def level_streaming_controller():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 动态加载关卡
+    api.load_stream_level(
+        world_context,
+        "City_02",
+        unreal.TSoftObjectPtr(unreal.Level),
+        unreal.LoadLevelTransform(),
+        True,
+        unreal.StreamLevelPriority.AutoHigh
+    )
+    
+    # 查询当前关卡
+    current_level = api.get_current_level_name(world_context)
+    print(f"Current level: {current_level}")
+    
+    # 切换关卡
+    api.open_level(world_context, "Main_Map")
+```
+
+### 全局游戏状态管理
+
+```python
+import unreal
+
+def global_state_manager():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    game_mode = api.get_game_mode(world_context)
+    game_state = api.get_game_state(world_context)
+    
+    # 暂停控制
+    api.set_game_paused(world_context, True)
+    api.set_game_paused(world_context, False)
+    
+    # 时间缩放（慢动作/快进）
+    api.set_global_time_dilation(world_context, 0.5)  # 慢动作
+    api.set_global_time_dilation(world_context, 2.0)  # 快进
+    api.set_global_time_dilation(world_context, 1.0)  # 正常速度
+    
+    # 查询游戏时间
+    world_delta = api.get_world_delta_seconds(world_context)
+    game_time = api.get_time_seconds(world_context)
+    
+    return {
+        "paused": game_state.is_paused() if game_state else False,
+        "time_dilation": api.get_global_time_dilation(world_context) if hasattr(api, 'get_global_time_dilation') else 1.0,
+        "world_delta": world_delta,
+        "game_time": game_time
+    }
+```
+
+### 伤害与伤害传播系统
+
+```python
+import unreal
+
+def damage_system():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 单点伤害
+    def apply_point_damage_to_actor(damaged_actor, damage, damage_type_class, hit_info, instigated_by, damage_causer):
+        return api.apply_point_damage(
+            damaged_actor,
+            damage,
+            hit_info.get_impact_point(),
+            hit_info,
+            instigated_by,
+            damage_causer,
+            damage_type_class
+        )
+    
+    # 范围伤害
+    def apply_radial_damage_to_targets(origin, radius, damage, damage_type, instigated_by, damage_causer, ignored_actors):
+        return api.apply_radial_damage(
+            world_context,
+            damage,
+            origin,
+            radius,
+            damage_type,
+            ignored_actors,
+            damage_causer,
+            True
+        )
+    
+    # 伤害衰减计算
+    def calculate_falloff_damage(origin, target, max_radius, min_damage, max_damage):
+        distance = unreal.KismetMathLibrary.length(
+            unreal.KismetMathLibrary.subtract(target, origin)
+        )
+        
+        if distance >= max_radius:
+            return min_damage
+        
+        falloff = 1.0 - (distance / max_radius)
+        return min_damage + (max_damage - min_damage) * falloff
+```
+
+### 弹道预测与瞄准辅助
+
+```python
+import unreal
+
+def projectile_trajectory_system():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 推荐弹道速度（抛物线）
+    def suggest_projectile_launch_velocity(start, end, launch_speed, gravity_scale=1.0):
+        success, velocity = api.blueprint_suggest_projectile_velocity(
+            world_context,
+            start,
+            end,
+            launch_speed,
+            0.0,
+            gravity_scale,
+            0.0,
+            unreal.DrawDebugTrace.NONE,
+            unreal.LinearColor(1.0, 0.0, 0.0, 1.0),
+            True
+        )
+        
+        return velocity if success else None
+    
+    # 预测弹道路径
+    def predict_projectile_path(start, launch_velocity, projectile_radius=0.0):
+        success, hit_result, path_points, end_point = api.blueprint_predict_projectile_path_by_object_type(
+            world_context,
+            start,
+            launch_velocity,
+            projectile_radius,
+            unreal.TraceTypeQuery.TRACE_TYPE_QUERY1,
+            False,
+            [],
+            unreal.DrawDebugTrace.NONE,
+            unreal.LinearColor(0.0, 1.0, 0.0, 1.0),
+            10.0,
+            1.0,
+            True
+        )
+        
+        return {
+            "success": success,
+            "path": path_points,
+            "end": end_point
+        }
+```
+
+## 高级用法
+
+### 存档系统与数据持久化
+
+```python
+import unreal
+
+class SaveGameController:
+    def __init__(self, slot_name, user_index=0):
+        self.slot_name = slot_name
+        self.user_index = user_index
+        self.api = unreal.GameplayStatics
+    
+    def save_data(self, save_game_object):
+        return self.api.save_game_to_slot(
+            save_game_object,
+            self.slot_name,
+            self.user_index
+        )
+    
+    def load_data(self):
+        return self.api.load_game_from_slot(
+            self.slot_name,
+            self.user_index
+        )
+    
+    def create_save_game(self, save_game_class):
+        return self.api.create_save_game_object(save_game_class)
+
+def high_score_system():
+    controller = SaveGameController("HighScores", 0)
+    
+    # 创建存档对象
+    save_obj = controller.create_save_game(unreal.load_class(None, "/Game/SaveGames/SG_HighScores.SG_HighScores_C"))
+    
+    # 读取分数
+    existing_save = controller.load_data()
+    if existing_save:
+        high_scores = existing_save.get_high_scores()
+    else:
+        high_scores = []
+    
+    # 更新最高分
+    new_score = 10000
+    high_scores.append(new_score)
+    high_scores.sort(reverse=True)
+    high_scores = high_scores[:5]  # 保持前5名
+    
+    existing_save.set_high_scores(high_scores)
+    controller.save_data(existing_save)
+```
+
+### 音效管理与空间音频
+
+```python
+import unreal
+
+def sound_manager():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    # 2D音效
+    def play_2d_sound(sound, volume=1.0, pitch=1.0):
+        api.play_sound_2d(world_context, sound)
+    
+    # 3D空间音效
+    def play_3d_sound_at_location(sound, location, volume=1.0, pitch=1.0, attenuation=None):
+        component = api.spawn_sound_at_location(
+            world_context,
+            sound,
+            location,
+            unreal.Rotator(0.0, 0.0, 0.0),
+            unreal.ComponentScale(1.0, 1.0, 1.0),
+            False,
+            volume,
+            pitch,
+            0.0,
+            None,
+            None
+        )
+        return component
+    
+    # 音效淡入淡出
+    def fade Sound(component, target_volume, fade_time):
+        if component:
+            component.set_volume_multiplier(0.0)
+            start_volume = 0.0
+            end_volume = target_volume
+            duration = fade_time
+            # 需要自定义插值逻辑
+```
+
+### 视口与屏幕空间转换
+
+```python
+import unreal
+
+def viewport_projection_system():
+    api = unreal.GameplayStatics
+    world_context = unreal.get_engine_subsystem(unreal.UnrealEngineSubsystem).get_game_instance()
+    
+    player = api.get_player_controller(world_context, 0)
+    
+    # 世界坐标→屏幕坐标
+    def world_to_screen(world_position):
+        success, screen_pos = api.project_world_to_screen(
+            player,
+            world_position
+        )
+        return screen_pos if success else None
+    
+    # 屏幕坐标→世界坐标（射线）
+    def screen_to_world(screen_position):
+        success, world_direction, world_position = api.deproject_screen_to_world(
+            player,
+            screen_position
+        )
+        return {
+            "direction": world_direction,
+            "origin": world_position
+        } if success else None
+```
+
+## 常见问题与最佳实践
+
+### 异步操作与阻塞调用
+
+1. **阻塞式加载 vs 异步加载**：
+   - `LoadAsset_Blocking`：同步加载，阻塞线程直到完成
+   - `AsyncLoadAsset`：异步加载，需配合 delegate 处理
+   
+2. **Actor生成时机**：
+   ```python
+   # 编辑器模式：可直接生成
+   actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+       target_class,
+       location,
+       rotation
+   )
+   
+   # 运行时模式：需要用 SpawnActor
+   # api.spawn_object() 更适合动态对象
+   ```
+
+### 内存管理与对象生命周期
+
+1. **临时对象清理**：
+   - `SpawnObject` 创建的对象由 Outer 管理
+   - 设置适当的 Outer 避免内存泄漏
+   - 使用 `DestroyActor` 清理 Actor
+   
+2. **AudioComponent 管理**：
+   ```python
+   component = api.spawn_sound_at_location(...)
+   if component:
+       component.on_audio_component_finished_delegate.add_callable(
+           lambda c: c.destroy_component()
+       )
+   ```
+
+### 热重载与脚本安全性
+
+1. **类引用动态化**：
+   ```python
+   # 避免硬编码类路径
+   def safe_load_class(path):
+       try:
+           return unreal.load_class(None, path)
+       except Exception:
+           return None
+   
+   # 使用 TSoftObjectPtr
+   soft_class = unreal.TSoftObjectPtr(unreal.Actor)
+   soft_class.set_asset(path)
+   ```
+
+2. **异常处理**：
+   ```python
+   try:
+       result = api.get_player_controller(world_context, 0)
+       if result is None:
+           print("Player controller not ready")
+   except Exception as e:
+       print(f"Error: {e}")
+   ```
+
 ## 注意事项
 
 - 运行时方法只在 PIE / Play 会话中可用；编辑器非运行态调用返回空/假值，按 `BLOCKED_TOOLING` 处理并停止。

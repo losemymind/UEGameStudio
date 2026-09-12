@@ -126,6 +126,350 @@ else:
         user_settings.apply_settings(True)
 ```
 
+## 综合实战示例
+
+### 用户设置与画质管理
+
+```python
+import unreal
+
+class UserSettingsManager:
+    def __init__(self):
+        self.api = None
+        self.user_settings = None
+    
+    def initialize(self):
+        gi = unreal.get_game_instance()
+        if gi is None:
+            return False
+        
+        self.user_settings = gi.get_subsystem(unreal.GameUserSettingsSubsystem)
+        return self.user_settings is not None
+    
+    def get_quality_level(self):
+        if self.user_settings:
+            return self.user_settings.get_graphics_level()
+        return None
+    
+    def set_quality_level(self, level):
+        if self.user_settings:
+            self.user_settings.set_graphics_level(level)
+            self.user_settings.apply_settings(True)
+            return True
+        return False
+    
+    def get_resolution(self):
+        if self.user_settings:
+            res = self.user_settings.get_resolution_size()
+            return f"{res.get_x()}x{res.get_y()}"
+        return None
+    
+    def set_resolution(self, width, height):
+        if self.user_settings:
+            res = unreal.IntPoint(width, height)
+            self.user_settings.set_resolution_size(res)
+            self.user_settings.apply_settings(True)
+            return True
+        return False
+    
+    def toggle_windowed(self):
+        if self.user_settings:
+            is_windowed = self.user_settings.is_windowed()
+            self.user_settings.set_windowed(not is_windowed)
+            self.user_settings.apply_settings(True)
+            return True
+        return False
+
+def manage_user_quality_settings():
+    manager = UserSettingsManager()
+    
+    if not manager.initialize():
+        print("Failed to initialize GameUserSettingsSubsystem")
+        return
+    
+    current_level = manager.get_quality_level()
+    print(f"Current quality level: {current_level}")
+    
+    # 尝试提升画质
+    if current_level == unreal.GraphicsQualityLevel.Epic:
+        print("Already at highest quality")
+    else:
+        if manager.set_quality_level(unreal.GraphicsQualityLevel.High):
+            print("Quality set to High")
+        else:
+            print("Failed to set quality")
+    
+    # 查询分辨率
+    resolution = manager.get_resolution()
+    print(f"Current resolution: {resolution}")
+    
+    # 切换窗口模式
+    manager.toggle_windowed()
+```
+
+### 输入系统管理
+
+```python
+import unreal
+
+class InputModeController:
+    def __init__(self):
+        self.api = None
+        self.input_subsystem = None
+    
+    def initialize(self):
+        gi = unreal.get_game_instance()
+        if gi is None:
+            return False
+        
+        self.input_subsystem = gi.get_subsystem(unreal.InputSubsystem)
+        return self.input_subsystem is not None
+    
+    def set_game_mode(self):
+        if self.input_subsystem:
+            self.input_subsystem.set_game_mode_only()
+            return True
+        return False
+    
+    def set_ui_mode(self):
+        if self.input_subsystem:
+            self.input_subsystem.set_ui_mode_only()
+            return True
+        return False
+    
+    def set_game_and_ui(self):
+        if self.input_subsystem:
+            game_mode = unreal.FInputModeGameOnly()
+            ui_mode = unreal.FInputModeUIOnly()
+            game_mode.set_hide_cursor_during_capture(True)
+            ui_mode.set_lock_cursor_to_viewport(True)
+            
+            self.input_subsystem.set_input_mode(game_mode)
+            return True
+        return False
+
+def manage_input_modes():
+    controller = InputModeController()
+    
+    if not controller.initialize():
+        print("Failed to initialize InputSubsystem")
+        return
+    
+    # 创建游戏模式
+    controller.set_game_mode()
+    
+    # 打开菜单时切换到 UI 模式
+    # controller.set_ui_mode()
+    
+    # 恢复游戏输入
+    # controller.set_game_mode()
+```
+
+### 相机系统控制
+
+```python
+import unreal
+
+class CameraController:
+    def __init__(self):
+        self.api = None
+        self.camera_subsystem = None
+    
+    def initialize(self):
+        gi = unreal.get_game_instance()
+        if gi is None:
+            return False
+        
+        self.camera_subsystem = gi.get_subsystem(unreal.CameraSubsystem)
+        return self.camera_subsystem is not None
+    
+    def start_camera_shake(self, shake_class, scale=1.0):
+        if self.camera_subsystem:
+            player = self.get_local_player()
+            if player:
+                self.camera_subsystem.start_camera_shake(player, shake_class, scale)
+                return True
+        return False
+    
+    def start_camera_fade(self, color, alpha, fade_time):
+        if self.camera_subsystem:
+            player = self.get_local_player()
+            if player:
+                self.camera_subsystem.start_camera_fade(player, color, alpha, fade_time)
+                return True
+        return False
+    
+    def stop_camera_fade(self):
+        if self.camera_subsystem:
+            player = self.get_local_player()
+            if player:
+                self.camera_subsystem.stop_camera_fade(player)
+                return True
+        return False
+    
+    def get_local_player(self):
+        gi = unreal.get_game_instance()
+        if gi:
+            players = gi.get_local_players()
+            return players[0] if players else None
+        return None
+
+def camera_system_example():
+    controller = CameraController()
+    
+    if not controller.initialize():
+        print("Failed to initialize CameraSubsystem")
+        return
+    
+    # 开始镜头震动
+    shake_class = unreal.load_class(None, "/Game/Camera/Shake_Small.Shake_Small_C")
+    controller.start_camera_shake(shake_class, 1.0)
+    
+    # 开始淡入淡出
+    controller.start_camera_fade(
+        unreal.LinearColor(0.0, 0.0, 0.0, 1.0),
+        1.0,
+        2.0
+    )
+```
+
+## 高级用法
+
+### 子系统单例模式管理
+
+```python
+import unreal
+
+class GlobalSubsystemManager:
+    _instances = {}
+    
+    @classmethod
+    def get_subsystem(cls, subsystem_class, force_refresh=False):
+        if subsystem_class not in cls._instances or force_refresh:
+            gi = unreal.get_game_instance()
+            if gi is None:
+                return None
+            
+            instance = gi.get_subsystem(subsystem_class)
+            if instance:
+                cls._instances[subsystem_class] = instance
+            else:
+                # 实例化
+                instance = gi.add_subsystem(subsystem_class)
+                if instance:
+                    cls._instances[subsystem_class] = instance
+        
+        return cls._instances[subsystem_class]
+    
+    @classmethod
+    def cleanup(cls):
+        gi = unreal.get_game_instance()
+        if gi:
+            for subsystem_class, instance in cls._instances.items():
+                gi.remove_subsystem(instance)
+        cls._instances.clear()
+
+def global_subsystem_manager_example():
+    # 获取或创建子系统
+    user_settings = GlobalSubsystemManager.get_subsystem(unreal.GameUserSettingsSubsystem)
+    
+    if user_settings:
+        print(f"Resolution: {user_settings.get_resolution_size()}")
+    
+    # 清理（PIE 结束时）
+    # GlobalSubsystemManager.cleanup()
+```
+
+### GameInstance生命周期钩子
+
+```python
+import unreal
+
+def game_instance_lifecycle_hooks():
+    gi = unreal.get_game_instance()
+    if gi is None:
+        return
+    
+    # 检查运行模式
+    is_preview = gi.is_running_preview()
+    is_pie = gi.is_running_pie()
+    
+    print(f"Running preview: {is_preview}")
+    print(f"Running PIE: {is_pie}")
+    
+    # 会话控制
+    # gi.start_session()
+    # gi.stop_session()
+    # gi.destroy_session()
+```
+
+### 输入事件绑定
+
+```python
+import unreal
+
+def input_event_binding_example():
+    gi = unreal.get_game_instance()
+    if gi is None:
+        return
+    
+    input_subsystem = gi.get_subsystem(unreal.InputSubsystem)
+    if not input_subsystem:
+        return
+    
+    player = input_subsystem.get_player(0)
+    if not player:
+        return
+    
+    # 绑定输入轴
+    # player.get_input_axis_delegate("MoveForward").add_callable(on_move_forward)
+    
+    # 绑定输入动作
+    # player.get_input_action_delegate("Jump").add_callable(on_jump)
+```
+
+## 常见问题与最佳实践
+
+### 子系统生命周期管理
+
+1. **PIE vs Editor 模式**：
+   - PIE/运行时：子系统随 GameInstance 生命周期
+   - Editor 模式：GameInstance 不可用，子系统无法获取
+   
+2. **跨关卡持久化**：
+   - GameInstanceSubsystem 会跨越关卡加载保持
+   - 数据在 PIE 结束时销毁
+
+3. **单例模式**：
+   - GameInstance 至多一个子系统实例
+   - 使用 `has_subsystem` 检查实例是否存在
+
+### 性能优化技巧
+
+1. **缓存引用**：
+   - GameInstance 在会话期间稳定，可缓存引用
+   - 避免重复调用 `get_game_instance()`
+   
+2. **延迟初始化**：
+   ```python
+   def lazy_init_subsystem():
+       if not hasattr(lazy_init_subsystem, "_instance"):
+           gi = unreal.get_game_instance()
+           if gi:
+               lazy_init_subsystem._instance = gi.get_subsystem(unreal.GameUserSettingsSubsystem)
+       return lazy_init_subsystem._instance
+   ```
+
+### 常见陷阱
+
+1. **Editor 模式限制**：
+   - Editor 静态脚本模式下 GameInstance 可能不可用
+   - 需切换到 PIE 模式才能使用
+   
+2. **实例未初始化**：
+   - 某些子系统需要项目配置才能实例化
+   - 调用前 Always check `instance is not None`
+
 ## 注意事项
 
 - GameInstanceSubsystem 基类本身不暴露 `UFUNCTION`；所有业务方法由游戏项目子类实现。本 skill 所列 UFUNCTION 来自 UE 5.6 引擎标准子类（`UGameInstance`、`UGameUserSettingsSubsystem`、`UCameraSubsystem` 等），具体项目子类以目标 Editor 实测为准。
