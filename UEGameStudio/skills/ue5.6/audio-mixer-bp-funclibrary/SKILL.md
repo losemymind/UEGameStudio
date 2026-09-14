@@ -1,10 +1,17 @@
 ---
 name: audio-mixer-bp-funclibrary
 description: UAudioMixerBlueprintLibrary（UE 5.6）音频混音器函数库 - Submix 效果链覆盖/叠加、源效果预设链、录音输出、频谱分析（Magnitude/Phase）、AudioBus 与输出设备名称管理；Agent 需要通过 unreal Python 做运行时音频混音器控制时使用
+risk: safe
+category: development
 tags: [ue5.6, audio, submix, python, blueprint-function-library]
 ---
 
 # AudioMixerBlueprintLibrary - 音频混音器函数库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 做运行时音频混音器控制时使用本 skill（description 触发场景）。
+- 本 skill 只在与 audio-mixer-bp-funclibrary 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 `UAudioMixerBlueprintLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法名与签名依据 `Engine/Source/Runtime/AudioMixer/Classes/AudioMixerBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 的 static 成员整理；Python 方法名按反射 snake_case 约定。
 
@@ -77,7 +84,7 @@ aml = unreal.AudioMixerBlueprintLibrary
 | `set_audio_mixer_submix_output_device(world_context, submix, device_id)` | `bool SetAudioMixerSubmixOutputDevice(UObject*, USoundSubmix*, const FString&)` | `bool` |
 | `get_submix_output_device(world_context, submix)` | `bool GetSubmixOutputDevice(UObject*, USoundSubmix*, FString&)` | `(bool, str)` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -434,7 +441,7 @@ def analyze_audio_latency():
    - `start_recording_output` 使用固定时间缓冲
    - 必须用 `finish_recording_output` 取回结果
 
-## 注意事项
+## 限制和注意事项
 
 - 大多数函数依赖音频引擎与真实输出设备；`-NullAudio` / 无设备环境应返回 `BLOCKED_TOOLING`，不得声称已执行。
 - `start_recording_output` 调用后音频持续写入内存缓冲，必须用 `finish_recording_output` 取回 `SoundWave` 并 SavePackage 固化，否则结果丢失。

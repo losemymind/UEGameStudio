@@ -1,10 +1,17 @@
 ---
 name: kismet-guid-library
 description: UKismetGuidLibrary（UE 5.6）GUID 蓝图函数库 - 相等/不等判定、有效性检查、失效、新建 GUID、GUID 转字符串与字符串解析；在 Agent 需要通过 unreal Python 生成或解析 GUID、校验 GUID 有效性时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, guid, python, blueprint-function-library]
 ---
 
 # KismetGuidLibrary - GUID 工具（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 生成或解析 GUID、校验 GUID 有效性时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-guid-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetGuidLibrary` 暴露给 Python 的 GUID 静态工具函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetGuidLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。
 
@@ -34,7 +41,7 @@ api = unreal.KismetGuidLibrary
 | 转换 | `conv_guid_to_string(in_guid)` | `FString Conv_GuidToString(const FGuid&)` | `str` |
 | 解析 | `parse_string_to_guid(guid_string)` | `void Parse_StringToGuid(const FString&, FGuid& OutGuid, bool& Success)` | `Tuple[Guid, bool]` = `(out_guid, success)` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -57,7 +64,7 @@ unreal.KismetGuidLibrary.invalidate_guid(g2)
 print("equal after invalidate:", unreal.KismetGuidLibrary.equal_equal_guid_guid(g, g2))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 返回值约定：`void` + 单 Out 直接返回具体值；返回值 + Out 按元组返回（返回值在首位）；无 Out 返回 `None`。
 - `invalidate_guid` 的入参是 `UPARAM(ref)`，失效发生在传入的 GUID 对象上：修改为 `guid(0,0,0,0)`；实际就地修改行为需在真实 Editor 实测确认。

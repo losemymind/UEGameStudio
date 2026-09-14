@@ -1,10 +1,17 @@
 ---
 name: blueprint-user-access-library
 description: UBlueprintUserAccessLibrary（UE 5.6）用户访问控制函数库 - 运行时权限查询与用户类型识别；在 Agent 需要通过 unreal Python 识别运行时用户角色或检查访问权限时使用
+risk: safe
+category: development
 tags: [ue5.6, user-access, blueprint, python, function-library]
 ---
 
 # BlueprintUserAccessLibrary - User Access Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 识别运行时用户角色或检查访问权限时使用本 skill（description 触发场景）。
+- 本 skill 只在与 blueprint-user-access-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UBlueprintUserAccessLibrary` 暴露给 Python 的用户访问控制与角色识别功能。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/BlueprintUserAccessLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -33,7 +40,7 @@ print("user type:", user_type)
 | 用户识别 | `is_editor(local_player)` | `bool IsEditor(const ULocalPlayer*)` | `bool` |
 | 用户识别 | `is_script(local_player)` | `bool IsScript(const ULocalPlayer*)` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -52,7 +59,7 @@ for lp in local_players:
     })
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 全部为 static 函数，类方法调用，无实例化与状态持有。
 - `local_player` 为 `unreal.LocalPlayer`；空/失效指针返回默认枚举值，建议先用 `unreal.get_engine_subsystem(unreal.LocalPlayerSubsystem).get_local_players()` 获取有效列表。

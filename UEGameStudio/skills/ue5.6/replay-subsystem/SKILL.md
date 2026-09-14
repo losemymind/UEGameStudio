@@ -1,10 +1,17 @@
 ---
 name: replay-subsystem
 description: UReplaySubsystem（UE 5.6）Replay 回放子系统 - 录制/回放名称与时间查询、录制状态判断、请求检查点写入；在 Agent 需要通过 unreal Python 查询回放状态或请求检查点时使用
+risk: safe
+category: development
 tags: [ue5.6, replay, network, python, subsystem]
 ---
 
 # ReplaySubsystem - Replay 回放（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询回放状态或请求检查点时使用本 skill（description 触发场景）。
+- 本 skill 只在与 replay-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UReplaySubsystem` 暴露给 Python 的回放操作方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Public/ReplaySubsystem.h` 中带 `UFUNCTION(BlueprintCallable)` 标记的成员整理。
 
@@ -33,7 +40,7 @@ api = unreal.get_game_instance().get_subsystem(unreal.ReplaySubsystem)
 | 状态 | `is_playing()` | `bool IsPlaying() const` | `bool` |
 | 控制 | `request_checkpoint()` | `void RequestCheckpoint()` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -50,7 +57,7 @@ else:
         api.request_checkpoint()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 录制/回放为运行时多人/回放能力：监听服务器、专用服务器或回放会话存在时才可用；运行时环境不可用 → `BLOCKED_TOOLING`，缺少回放输入（回放名、会话等）→ `BLOCKED_INPUT`。
 - Python 方法名按 C++ 函数名转 snake_case；本类成员的精确 Python 暴露名需实测确认。

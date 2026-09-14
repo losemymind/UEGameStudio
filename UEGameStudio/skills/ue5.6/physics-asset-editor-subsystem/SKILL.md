@@ -1,10 +1,17 @@
 ---
 name: physics-asset-editor-subsystem
 description: UPhysicsAssetEditorSubsystem（UE 5.6）物理资产编辑器子系统 - 物理资产（PhysicsAsset）编辑、碰撞体管理、约束设置、模拟控制；在 Agent 需要通过 unreal Python 对物理资产进行编辑时使用
+risk: critical
+category: development
 tags: [ue5.6, physics-asset, physics-engine, python, subsystem]
 ---
 
 # PhysicsAssetEditorSubsystem - 物理资产编辑器子系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对物理资产进行编辑时使用本 skill（description 触发场景）。
+- 本 skill 只在与 physics-asset-editor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UPhysicsAssetEditorSubsystem`（`UEditorSubsystem` 派生）通过 Python 可调用的子系统方法。方法名与签名依据引擎头文件中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -75,7 +82,7 @@ selected = phys_subsystem.get_selected_physics_assets()
 | 辅助 | `is_valid_physics_asset(physics_asset)` | `bool IsValidPhysicsAsset(UPhysicsAsset*)` | `bool` |
 | 辅助 | `get_physics_asset_path(physics_asset)` | `FString GetPhysicsAssetPath(UPhysicsAsset*)` | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -123,7 +130,7 @@ if __name__ == "__main__":
     edit_physics_asset()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **全部方法仅编辑器 Python 可用**（`WITH_EDITOR`），运行时环境调用返回 `BLOCKED_TOOLING`。
 - `GetSelectedPhysicsAssets` / `SelectPhysicsAssets` 仅影响编辑器当前选中状态；不影响物理资产数据本身。

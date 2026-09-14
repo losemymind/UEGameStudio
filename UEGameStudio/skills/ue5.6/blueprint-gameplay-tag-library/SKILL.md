@@ -1,10 +1,17 @@
 ---
 name: blueprint-gameplay-tag-library
 description: UBlueprintGameplayTagLibrary（UE 5.6）GameplayTag 查询库 - 标签匹配、容器增删查改、TagQuery 构造与判定、GameplayTagAssetInterface 读取、按 Tag Query 检索 Actor；在 Agent 需要通过 unreal Python 使用 GameplayTag/GameplayTagContainer/GameplayTagQuery API 时使用
+risk: safe
+category: development
 tags: [ue5.6, gameplaytags, python, blueprint-function-library]
 ---
 
 # BlueprintGameplayTagLibrary - GameplayTag 操作（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 使用 GameplayTag/GameplayTagContainer/GameplayTagQuery API时使用本 skill（description 触发场景）。
+- 本 skill 只在与 blueprint-gameplay-tag-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UBlueprintGameplayTagLibrary` 暴露给 Python 的静态方法，依据 `Engine/Source/Runtime/GameplayTags/Classes/BlueprintGameplayTagLibrary.h` 中带 `UFUNCTION(BlueprintCallable/BlueprintPure)` 标记的成员整理。覆盖标签匹配、容器查询与编辑、TagQuery 构造与判定、GameplayTagAssetInterface 读取和按 Tag Query 检索 Actor。GameplayTag 是 Gameplay 系统（GAS、AI 感知、任务条件）的基础，`game-ai-engineer` / `ue-gameplay-engineer` 均依赖本库。
 
@@ -62,7 +69,7 @@ lib = unreal.BlueprintGameplayTagLibrary
 | 调试 | `get_debug_string_from_gameplay_tag_container(tag_container)` | `FString GetDebugStringFromGameplayTagContainer(const FGameplayTagContainer&)` | `str` |
 | 调试 | `get_debug_string_from_gameplay_tag(gameplay_tag)` | `FString GetDebugStringFromGameplayTag(FGameplayTag)` | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -94,7 +101,7 @@ actors = lib.get_all_actors_of_class_matching_tag_query(world, unreal.Actor, que
 print("matched actors:", len(actors))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 容器类是值类型：`add/remove` 的 `UPARAM(ref)` 参数按 Out 约定从返回值接收，不要忽略返回结果。
 - `b_exact_match=True` 要求完全一致的显式标签；`False` 时父级标签参与匹配（`Gameplay.Cooking` 匹配 `Gameplay` 与自身）。

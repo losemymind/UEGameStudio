@@ -1,10 +1,17 @@
 ---
 name: media-blueprint-function-library
 description: UMediaBlueprintFunctionLibrary（UE 5.6）媒体查询函数库 - 枚举音频/视频/网络摄像头采集设备；在 Agent 需要通过 unreal Python 查询媒体采集设备（音视频输入源）时使用
+risk: safe
+category: development
 tags: [ue5.6, media, python, blueprint-function-library, capture-device]
 ---
 
 # MediaBlueprintFunctionLibrary - 媒体采集设备查询（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询媒体采集设备（音视频输入源）时使用本 skill（description 触发场景）。
+- 本 skill 只在与 media-blueprint-function-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UMediaBlueprintFunctionLibrary` 暴露给 Python 的静态方法，依据 `Engine/Source/Runtime/MediaAssets/Public/Misc/MediaBlueprintFunctionLibrary.h` 中带 `UFUNCTION(BlueprintCallable)` 标记的成员整理。本库只提供媒体采集设备（音频输入、视频输入、网络摄像头）枚举查询，属于媒体职责的 Python API 入口，视频能力归 `ue-ui-engineer`，音频能力归 `game-audio-technical-specialist`。
 
@@ -29,7 +36,7 @@ lib = unreal.MediaBlueprintFunctionLibrary
 | 采集设备 | `enumerate_video_capture_devices(filter=-1)` | `void EnumerateVideoCaptureDevices(TArray<FMediaCaptureDevice>& OutDevices, int32 Filter=-1)` | `Array[MediaCaptureDevice]`（单 Out 直接返回） |
 | 采集设备 | `enumerate_webcam_capture_devices(filter=-1)` | `void EnumerateWebcamCaptureDevices(TArray<FMediaCaptureDevice>& OutDevices, int32 Filter=-1)` | `Array[MediaCaptureDevice]`（单 Out 直接返回） |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -52,7 +59,7 @@ for cam in webcams:
     assert cam.url.startswith("webcam://")
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 三个枚举方法均为运行时查询，返回空数组表示当前平台无符合条件的采集设备，不等于调用失败。
 - `filter` 为位掩码整数，`-1`（默认）返回全部类型；Python 枚举值可作位掩码传入，组合筛选按 BitFlags 语义进行。

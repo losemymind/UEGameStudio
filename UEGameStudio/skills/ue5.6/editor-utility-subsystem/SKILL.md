@@ -1,10 +1,17 @@
 ---
 name: editor-utility-subsystem
 description: UEditorUtilitySubsystem（UE 5.6）编辑器工具（Editor Utility Widget Blueprint）注册、执行、工具 Tab 与任务状态；在 Agent 需要通过 unreal Python 调度编辑器工具并管理工具 Tab 时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, tooling, python, subsystem]
 ---
 
 # EditorUtilitySubsystem - Tool Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 调度编辑器工具并管理工具 Tab时使用本 skill（description 触发场景）。
+- 本 skill 只在与 editor-utility-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UEditorUtilitySubsystem` 暴露给 Python 的编辑器工具操作方法。方法名与签名依据 `Engine/Source/Editor/Blutility/Public/EditorUtilitySubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。
 
@@ -45,7 +52,7 @@ api = unreal.get_editor_subsystem(unreal.EditorUtilitySubsystem)
 | Tab 管理 | `find_utility_widget_from_blueprint(in_blueprint)` | `UEditorUtilityWidget* FindUtilityWidgetFromBlueprint(UEditorUtilityWidgetBlueprint*)` | `EditorUtilityWidget` 或 `None` |
 | 工具任务 | `register_and_execute_task(new_task, optional_parent_task=None)` | `void RegisterAndExecuteTask(UEditorUtilityTask*, UEditorUtilityTask*)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -62,7 +69,7 @@ else:
     api.unregister_tab_by_id(tab_id)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 运行编辑器工具（Editor Utility Widget / Blueprint / Task）属工具管线，`ue-tools-pipeline-engineer` 为主责；本 skill 只负责通过 `UEditorUtilitySubsystem` 调度与查询状态。
 - 工具运行可能产生外部副作用（改资产、执行批处理、触发出包等）：未列入白名单的工具不得直接运行，须先经总控/工具管线主责确认。

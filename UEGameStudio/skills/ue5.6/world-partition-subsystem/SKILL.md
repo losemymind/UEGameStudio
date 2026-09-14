@@ -1,10 +1,17 @@
 ---
 name: world-partition-subsystem
 description: UWorldPartitionSubsystem（UE 5.6）世界分区运行时子系统 - World Partition 流送与运行状态查询（全量完成、按单元格状态与查询源）；在 Agent 需要从 unreal Python 获取/调用世界分区流送运行状态查询时使用，是大型开放世界流送的高频入口
+risk: safe
+category: development
 tags: [ue5.6, world-partition, streaming, subsystem, python]
 ---
 
 # WorldPartitionSubsystem - 世界分区流送子系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要从 unreal Python 获取/调用世界分区流送运行状态查询时使用本 skill（description 触发场景）。
+- 本 skill 只在与 world-partition-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UWorldPartitionSubsystem` 暴露给 Python 的运行时能力。头文件 `Engine/Source/Runtime/Engine/Public/WorldPartition/WorldPartitionSubsystem.h`。该类派生自 `UTickableWorldSubsystem`（继承自 `UWorldSubsystem`）并实现 `IStreamingWorldSubsystemInterface`，负责大世界 World Partition 的流送推进与状态查询；Agent 在开放世界项目中进行流送完成度/单元格状态轮询时以此为高频入口。
 
@@ -36,7 +43,7 @@ api = world.get_subsystem(unreal.WorldPartitionSubsystem)
 - `exact_state`：是否要求与 `query_state` 严格精确匹配（`False` 时允许已达到或越过该状态的单元格）。
 - 本类不含任何带 Out/ByRef 参数的方法，均为直接返回值。
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -57,7 +64,7 @@ else:
         print("query completed:", done)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本 skill 只记录 Python 可调用的 API：World Partition 流送推进由 `UWorldPartition` 数据（LoadingRange、流送策略）驱动，本子系统提供的是流送运行状态查询入口。
 - 按世界隔离：每个 `UWorld` 独立持有实例；编辑器主世界、PIE 世界与各加载世界分别独立查询。

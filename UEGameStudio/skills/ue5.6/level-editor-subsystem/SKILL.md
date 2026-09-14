@@ -1,10 +1,17 @@
 ---
 name: level-editor-subsystem
 description: ULevelEditorSubsystem（UE 5.6）关卡编辑子系统 - load_level/new_level/save_current_level 等关卡加载、创建、保存与当前关卡信息，以及视图/PIE 控制；在 Agent 需要通过 unreal Python 自动化编辑器关卡加载与编辑器状态时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, level, python, subsystem]
 ---
 
 # LevelEditorSubsystem - 关卡编辑与视口控制（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 自动化编辑器关卡加载与编辑器状态时使用本 skill（description 触发场景）。
+- 本 skill 只在与 level-editor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `ULevelEditorSubsystem` 暴露给 Python 的关卡编辑方法。方法名与签名依据 `Engine/Source/Editor/LevelEditor/Public/LevelEditorSubsystem.h` 中带 `UFUNCTION(BlueprintCallable)` 标记的成员整理；只记录 Python 可调用的 API。
 
@@ -53,7 +60,7 @@ api = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 | 编辑模拟 | `editor_request_end_play()` | `void EditorRequestEndPlay()` | `None` |
 | 编辑模拟 | `is_in_play_in_editor()` | `bool IsInPlayInEditor()` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -75,7 +82,7 @@ if not api.save_current_level():
     print({"status": "BLOCKED_TOOLING", "reason": "当前关卡保存失败"})
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 关卡加载、新建与保存会变更编辑器世界与资产状态，属世界构建边界（`ue-world-builder` 主责）；本 skill 只提供 LevelEditorSubsystem 的 Python 调用 API，不替代世界构建流程、审核与独立验收。
 - `load_level` / `new_level` / `new_level_from_template` 会关闭当前 Persistent Level（不保存），执行前按治理规范确认目标关卡与备份。

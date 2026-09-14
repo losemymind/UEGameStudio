@@ -1,10 +1,17 @@
 ---
 name: material-utilities-blueprint-library
 description: UMaterialUtilitiesBlueprintLibrary（UE 5.6）材质工具函数库 - 材质实例查询与参数设置、纹理通道混合；在 Agent 需要通过 unreal Python 操作材质实例或查询材质属性时使用
+risk: safe
+category: development
 tags: [ue5.6, material, materials, blueprint-library, python]
 ---
 
 # MaterialUtilitiesBlueprintLibrary - Material Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 操作材质实例或查询材质属性时使用本 skill（description 触发场景）。
+- 本 skill 只在与 material-utilities-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UMaterialUtilitiesBlueprintLibrary` 暴露给 Python 的材质工具方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/MaterialUtilitiesBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -49,7 +56,7 @@ print("opacity:", param)
 | 名称 | `get_texture_parameter_names(material)` | `TArray<FName> GetTextureParameterNames(const UMaterialInterface*)` | `Array[Name]` |
 | 名称 | `get_static_switch_parameter_names(material)` | `TArray<FName> GetStaticSwitchParameterNames(const UMaterialInterface*)` | `Array[Name]` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -82,7 +89,7 @@ print("base texture:", base_texture.get_name() if base_texture else None)
 # unreal.EditorAssetLibrary.save_asset(material.get_path_name())
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `get_*_parameter_value` 适用于任何 `UMaterialInterface`；`set_*_parameter_value` 仅适用于 `UMaterialInstance`（`MaterialInstanceConstant` / `Dynamic`）。
 - Editor Only 方法（带 `EditorOnly` 后缀）只在编辑器 Python 可用；运行时环境调用返回 `None` 或失败。

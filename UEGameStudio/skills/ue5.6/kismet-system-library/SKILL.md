@@ -1,10 +1,17 @@
 ---
 name: kismet-system-library
 description: UKismetSystemLibrary（UE 5.6）系统级静态工具库 - 通用对象/类/路径工具、时间与定时器、日志打印、控制台、碰撞与射线检测、调试绘制、平台与服务、属性访问、事务、资产管理；在 Agent 需要通过 unreal Python 使用 UE 系统级通用函数库时使用
+risk: critical
+category: development
 tags: [ue5.6, kismet, system, trace, collision, python]
 ---
 
 # KismetSystemLibrary - 系统通用工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 使用 UE 系统级通用函数库时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-system-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetSystemLibrary` 暴露给 Python 的静态工具方法。签名与成员依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无则按 C++ 函数名转 snake_case。
 
@@ -75,7 +82,7 @@ api = unreal.KismetSystemLibrary
 | 其他 | `get_actor_bounds(actor)` | `void GetActorBounds(..., FVector&, FVector&)` | `(Vector, Vector)` |
 | 其他 | `get_engine_version()` | `FString GetEngineVersion()` | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -528,7 +535,7 @@ def editor_debug_draw_system():
        process_batch(actors[:10], actors[10:])
    ```
 
-## 注意事项
+## 限制和注意事项
 
 - 大多数纯查询方法可在编辑器与运行时使用；运行时会话相关（时间、定时器、延迟、Trace 命中世界等）只在 PIE / 运行时语义下有效。
 - 以 `conv_` 开头的方法为类型转换节点对应；`equal_equal_` / `not_equal_` 为比较运算对应。

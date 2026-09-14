@@ -1,10 +1,17 @@
 ---
 name: level-editor-blueprint-library
 description: ULevelEditorBlueprintLibrary（UE 5.6）关卡编辑器蓝图库 - 关卡选择/设置查询、编辑器视口控制、PIE 控制、关卡加载/保存；在 Agent 需要通过 unreal Python 控制编辑器关卡状态与视口时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, level, blueprint-library, python]
 ---
 
 # LevelEditorBlueprintLibrary - Level Editor Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 控制编辑器关卡状态与视口时使用本 skill（description 触发场景）。
+- 本 skill 只在与 level-editor-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `ULevelEditorBlueprintLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法与签名依据 `Engine/Source/Editor/LevelEditor/Public/LevelEditorBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 的 static 成员整理；Python 方法名按 `meta=(ScriptName=...)` / 反射 snake_case 约定。
 
@@ -97,7 +104,7 @@ world = api.get_editor_world()
 | 关卡 | `get_level_from_package(world, package_path)` | `ULevel* GetLevelFromPackage(UWorld*, const FString&)` | `Level` 或 `None` |
 | 关卡 | `get_levels(world)` | `TArray<ULevel*> GetLevels(UWorld*)` | `Array[Level]` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -126,7 +133,7 @@ if not ok:
     print({"status": "BLOCKED_INPUT", "reason": "Level not found or load failed"})
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `get_editor_world()` 返回编辑器世界；PIE/运行时上下文为空时返回 `None`。
 - `is_in_editor_mode()` / `is_in_game_mode()` / `is_in_play_in_editor()` 返回当前编辑器模式；多视口/PIE 预览时状态可能重叠。

@@ -1,10 +1,17 @@
 ---
 name: editor-asset-subsystem
 description: UEditorAssetSubsystem（UE 5.6）资产编辑器原语 - 加载/查找/复制/重命名/移动/删除/合并/另存/修订控制/目录/元数据标签；在 Agent 需要通过 unreal Python 自动化编辑器资产管线操作时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, asset, python, subsystem]
 ---
 
 # EditorAssetSubsystem - Asset Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 自动化编辑器资产管线操作时使用本 skill（description 触发场景）。
+- 本 skill 只在与 editor-asset-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UEditorAssetSubsystem` 暴露给 Python 的资产编辑器操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Subsystems/EditorAssetSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无 `ScriptMethod` 时按 C++ 函数名转 snake_case。精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认。
 
@@ -69,7 +76,7 @@ api = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
 | 事件挂钩 | `add_on_extract_asset_from_file(delegate)` | `void AddOnExtractAssetFromFile(FOnExtractAssetFromFileDynamic)` | `None` |
 | 事件挂钩 | `remove_on_extract_asset_from_file(delegate)` | `void RemoveOnExtractAssetFromFile(FOnExtractAssetFromFileDynamic)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -95,7 +102,7 @@ for a in assets:
     api.remove_metadata_tag(a, "SourceScan")
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 全部删除/合并操作都是 Force Delete：不检查其他关卡或 Actor 的引用，会关闭资产编辑器并可能清空 Undo 历史。
 - `consolidate_assets` 会删除 `AssetsToConsolidate` 并留下指向目标资产的 Redirector，成功后自动保存被修改对象。

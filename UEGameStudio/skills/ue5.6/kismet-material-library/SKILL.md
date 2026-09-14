@@ -1,10 +1,17 @@
 ---
 name: kismet-material-library
 description: UKismetMaterialLibrary（UE 5.6，unreal.KismetMaterialLibrary）材质参数公共函数库 - 读写 UMaterialParameterCollection（MPC）标量/向量参数、创建动态材质实例（MID）；在 Agent 需要通过 unreal Python 读取或修改材质全局参数、生成运行时材质实例时使用
+risk: safe
+category: development
 tags: [ue5.6, material, blueprint, python, library]
 ---
 
 # KismetMaterialLibrary - Material Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 读取或修改材质全局参数、生成运行时材质实例时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-material-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetMaterialLibrary`（`UBlueprintFunctionLibrary` 派生）暴露给 Python 的材质参数函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetMaterialLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -36,7 +43,7 @@ api.set_scalar_parameter_value(world, mpc, "GlobalTimeScale", 1.5)
 | 读取 | `get_vector_parameter_value(world_context_object, collection, parameter_name)` | `FLinearColor GetVectorParameterValue(UObject* WorldContextObject, UMaterialParameterCollection* Collection, FName ParameterName)` | `LinearColor` |
 | 实例 | `create_dynamic_material_instance(world_context_object, parent, optional_name="None", creation_flags=unreal.MIDCreationFlags.NONE)` | `UMaterialInstanceDynamic* CreateDynamicMaterialInstance(UObject* WorldContextObject, UMaterialInterface* Parent, FName OptionalName, EMIDCreationFlags CreationFlags)` | `MaterialInstanceDynamic` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -64,7 +71,7 @@ mid = api.create_dynamic_material_instance(world, base_mat, "M_Character_Dyn")
 mid.set_scalar_parameter_value("EmissiveStrength", 3.0)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本库读写的是 `UMaterialParameterCollection`（MPC 全局参数实例），不是单个材质实例资产；`parameter_name` 必须与 MPC 资产内定义的参数名一致，无效参数名引擎记录日志、读取返回默认值，先按 `BLOCKED_INPUT` 补齐。
 - `create_dynamic_material_instance` 在运行时生成可修改的 `UMaterialInstanceDynamic`；`optional_name` 传 `"None"` 即 `NAME_None`；`creation_flags` 为位域枚举 `unreal.MIDCreationFlags`（`NONE`/`TRANSIENT`），默认 `NONE`。精确枚举暴露名需实测确认。

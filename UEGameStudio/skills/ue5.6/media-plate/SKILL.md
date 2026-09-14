@@ -1,10 +1,17 @@
 ---
 name: media-plate
 description: "U MediaPlate插件（媒体板） - 视频/图像序列媒体板生成、播放控制与媒体资产管理；需在UE中启用MediaPlate插件"
+risk: safe
+category: development
 tags: [ue5.6, media-plate, video, python, plugin]
 ---
 
 # MediaPlate - 媒体板系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要在UE中启用 MediaPlate 插件后处理对应功能时使用本 skill（description 触发场景）。
+- 本 skill 只在与 media-plate 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `MediaPlate` 插件（需在UE编辑器中启用）通过 Python 可调用的类与函数。方法名与签名依据 `MediaPlate/Source/MediaPlate/Classes/MediaPlate.h` 中带 `UFUNCTION()` 标记的成员整理；Python 方法名按反射约定转 snake_case。
 
@@ -76,7 +83,7 @@ if not media_plate_plugin:
 | 获取静态类 | `get_media_plate_class()` | `UClass* GetMediaPlateClass()` | `Class` |
 | 获取媒体纹理类 | `get_media_texture_class()` | `UClass* GetMediaTextureClass()` | `Class` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -120,7 +127,7 @@ if unreal.CoreEditor.is_asset_dirty(media_plate):
     unreal.EditorAssetLibrary.save_asset(path)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **阻塞处理：**
   - 缺资产路径、无效 asset 类型等返回 `BLOCKED_INPUT`

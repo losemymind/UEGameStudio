@@ -1,10 +1,17 @@
 ---
 name: kismet-text-library
 description: UKismetTextLibrary（UE 5.6）BP 文本工具库 Python 可调用子集 - 文本转换/大小写/修剪/比较/数字与货币/日期时间与时长/本地化字符串表/编辑 Text 属性；在 Agent 需要通过 unreal Python 处理 FText 时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, text, python, blueprint]
 ---
 
 # KismetTextLibrary - Text Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 处理 FText时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-text-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetTextLibrary` 中可由 Python 调用的静态成员，签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetTextLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。本 skill 只记录可由 Python 调用的成员。
 
@@ -77,7 +84,7 @@ ktext = unreal.KismetTextLibrary
 | 本地化 | `polyglot_data_to_text(polyglot_data)` | 多语言文本数据 → Text |
 | 编辑 | `edit_text_property_source_string(text_owner, property_name, source_string, ...)` | 编辑 Text 属性源串 |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -97,7 +104,7 @@ currency = ktext.as_currency_base(650, "EUR")
 print(ktext.conv_text_to_string(currency))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 返回 `Text` 的转换方法需要时用 `conv_text_to_string` 取得可打印字符串。
 - `conv_double_to_text` 与货币/百分比方法的 `rounding_mode` 使用 `unreal.RoundingMode`；日期样式使用 `unreal.DateTimeStyle`；内存单位使用 `unreal.MemoryUnitStandard`。

@@ -1,10 +1,17 @@
 ---
 name: layers-subsystem
 description: ULayersSubsystem（UE 5.6）关卡层（Layers）组织数据 - 创建/删除/重命名层、Actor 加入/移出层、按层查询与层可见性；在 Agent 需要通过 unreal Python 管理关卡分层组织时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, layers, world, python, subsystem]
 ---
 
 # LayersSubsystem - Layer Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 管理关卡分层组织时使用本 skill（description 触发场景）。
+- 本 skill 只在与 layers-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `ULayersSubsystem` 暴露给 Python 的关卡层（Layers）操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Layers/LayersSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。
 
@@ -74,7 +81,7 @@ api = unreal.get_editor_subsystem(unreal.LayersSubsystem)
 | 刷新钩子 | `editor_map_change()` | `void EditorMapChange()` | `None` |
 | 刷新钩子 | `editor_refresh_layer_browser()` | `void EditorRefreshLayerBrowser()` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -382,7 +389,7 @@ def layer_conflict_resolver():
    - Actor 可同时属于多个层
    - `remove_*` 系列方法只移除单次关联
 
-## 注意事项
+## 限制和注意事项
 
 - 层（Layer）是关卡组织数据，配合世界构建流程使用；创建/删除/重命名层与可见性修改会改变关卡组织，写入后必须经编辑器接口保存（`unreal.EditorLoadingAndSavingUtils.save_dirty_packages` 等）并由审计/QA 独立验收。
 - `add_actor_to_layer` 等加入方法：Actor 已属于该层时返回 `False`；`remove_*` 在 Actor 原本不属于层时返回 `False`。

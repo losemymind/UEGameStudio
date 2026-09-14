@@ -1,10 +1,17 @@
 ---
 name: kismet-internationalization-library
 description: UE 5.6 本地化与国际化运行时 API（UKismetInternationalizationLibrary） - 读取与设置当前语言/区域/文化、文化显示名、原生文化、本地化文化列表、文化读写方向排序；在 Agent 需要通过 unreal Python 查询或切换游戏运行时本地化配置时使用
+risk: safe
+category: development
 tags: [ue5.6, internationalization, localization, culture, python]
 ---
 
 # KismetInternationalizationLibrary - 本地化与国际化（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询或切换游戏运行时本地化配置时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-internationalization-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetInternationalizationLibrary` 暴露给 Python 的本地化（Localization）与国际化（Internationalization）运行时接口。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetInternationalizationLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理。
 
@@ -41,7 +48,7 @@ api = unreal.KismetInternationalizationLibrary
 | 查询 | `get_culture_display_name(culture, localized=True)` | `FString GetCultureDisplayName(const FString&, bool)` | `str` |
 | 查询 | `is_culture_right_to_left(culture)` | `bool IsCultureRightToLeft(const FString&)` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -61,7 +68,7 @@ if not ok:
 print("display name:", api.get_culture_display_name("zh-Hans-CN"))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `SetCurrentCulture` 是"大锤"接口：同时设置语言与区域并清除已设置的 asset group 文化；需要独立控制时使用 `set_current_language` / `set_current_locale` / `set_current_language_and_locale`。
 - `SaveToConfig=True` 会把新设置写入 `GameUserSettings` 配置并持久化；未经确认不得在正式项目中开启持久化设置。

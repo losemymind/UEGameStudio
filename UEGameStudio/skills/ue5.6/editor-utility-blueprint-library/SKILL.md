@@ -1,10 +1,17 @@
 ---
 name: editor-utility-blueprint-library
 description: UEditorUtilityBlueprintLibrary（UE 5.6）编辑器工具函数库 - 资产选择、编辑器UI交互、执行编辑器命令；在 Agent 需要通过 unreal Python 调用编辑器级工具功能时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, utility, blueprint-library, python]
 ---
 
 # EditorUtilityBlueprintLibrary - Editor Utility Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 调用编辑器级工具功能时使用本 skill（description 触发场景）。
+- 本 skill 只在与 editor-utility-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UEditorUtilityBlueprintLibrary` 暴露给 Python 的编辑器工具方法。方法名与签名依据 `Engine/Source/Editor/EditorUtilityBlueprintLibrary/Public/EditorUtilityBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -50,7 +57,7 @@ api.select_asset(asset)
 | 执行 | `compile_blueprint(bp_class)` | `void CompileBlueprint(UClass*)` | `None` |
 | 执行 | `save_blueprint(bp_class)` | `void SaveBlueprint(UClass*)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -80,7 +87,7 @@ else:
     print("user cancelled")
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **Editor Only**：本库所有方法仅编辑器 Python 可用；PIE/运行时环境调用返回 `BLOCKED_TOOLING`。
 - **UI 阻塞**：`prompt_*` / `open_*_dialog` 等方法会打开模态对话框；自动化脚本需避免调用或处理用户交互。

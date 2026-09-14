@@ -25,6 +25,11 @@
 
 ## 当前技能完成情况
 
+### 2026-09-14 标准化整改（贴合 agent-creator / skill-creator 规范）
+- ✅ 30 个 Agent 按 agent-creator 规范重排：frontmatter 增 `name`（= 文件名，kebab-case）；正文统一为七段结构（角色定位 / 职责范围〔必须做·拒绝做〕 / 工作方式 / 工具与权限 / 协作协议〔含升级路径〕 / 完成标准 / 限制与边界）。原有职责边界、权限矩阵（`"*": deny` + 逐键显式）、门禁 ID、`BLOCKED_*`/`DRAFT_ONLY` 协议、三权分离与委派契约均逐字保留。`validate_agents.py --strict` = 30/30 通过。
+- ✅ 57 个 skill 按 skill-creator 规范补齐：frontmatter 增 `risk`（`safe` 39 / `critical` 18）与 `category: development`；新增 `## 何时使用此技能`；`## 快速示例` → `## 示例`、`## 注意事项` → `## 限制和注意事项`。正文内容与 `tags`、`docs/overview.md` 未改动。`validate_skills.py --strict` = 57/57 通过（仅余「未随附 evals.json」建议项，非阻断）。
+- ✅ 门禁复跑：`verify-registry.ps1` = `REGISTRY_VERIFY: PASS (30 agents)`；`test-install.ps1` = 通过（30 Agent / 57 skill / 幂等）。
+
 ### 2026-09-12 漂移修正
 - ✅ 删除孤儿 Agent 文件 `agents/orchestration/batch-g3-coordinator.md`（`794873a` 声称删除但实际残留，且未登记注册表），经用户确认后移除
 - ✅ 移除 `skills/ue5.6/` 下 4 个遗留空目录，目录数 61 → 57

@@ -1,10 +1,17 @@
 ---
 name: blueprint-platform-library
 description: UBlueprintPlatformLibrary（UE 5.6）平台与本地通知 Function Library - 设备屏幕方向查询与设置、本地通知调度/取消/启动通知查询；在 Agent 需要从 Python 处理移动平台屏幕方向与本地通知调度时使用
+risk: safe
+category: development
 tags: [ue5.6, python, platform, mobile, notification, function-library]
 ---
 
 # BlueprintPlatformLibrary - Platform Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要从 Python 处理移动平台屏幕方向与本地通知调度时使用本 skill（description 触发场景）。
+- 本 skill 只在与 blueprint-platform-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UBlueprintPlatformLibrary` 暴露给 Python 的平台与本地通知方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/BlueprintPlatformLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理。
 
@@ -39,7 +46,7 @@ print(api.get_device_orientation())
 | 屏幕方向 | `get_allowed_device_orientation()` | `EScreenOrientation::Type GetAllowedDeviceOrientation()` | `unreal.EScreenOrientation` |
 | 屏幕方向 | `set_allowed_device_orientation(new_allowed_device_orientation)` | `void SetAllowedDeviceOrientation(EScreenOrientation::Type NewAllowedDeviceOrientation)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -66,7 +73,7 @@ launched, activation_event, fire_date = api.get_launch_notification()
 print("launched by notification:", launched)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本地通知与屏幕方向多为移动平台能力；在桌面编辑器中行为有限（如通知无实际表现、方向查询受限），不得以桌面空返回断言移动端成功。
 - 通知调度/取消与屏幕方向设置属设备副作用，执行后必须在目标平台实测确认；未实测不声称已验证。

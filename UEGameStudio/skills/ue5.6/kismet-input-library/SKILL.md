@@ -1,10 +1,17 @@
 ---
 name: kismet-input-library
 description: UKismetInputLibrary（UE 5.6）输入蓝图函数库 - Key/键盘/鼠标/按键轴判定、KeyEvent 与 PointerEvent 读取、修饰键状态、模拟事件导航；在 Agent 需要通过 unreal Python 判断输入键类型或读取键/输入事件信息时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, input, key, python, blueprint-function-library]
 ---
 
 # KismetInputLibrary - 输入工具（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 判断输入键类型或读取键/输入事件信息时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-input-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetInputLibrary` 暴露给 Python 的输入静态工具函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetInputLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case（该库头部无 `meta=(ScriptMethod=...)` 成员）。
 
@@ -92,7 +99,7 @@ api = unreal.KismetInputLibrary
 | PointerEvent 读取 | `pointer_event_get_gesture_delta(input)` | `FVector2D PointerEvent_GetGestureDelta(const FPointerEvent&)` | `Vector2D` |
 | 动作 | `calibrate_tilt()` | `void CalibrateTilt()` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -114,7 +121,7 @@ chord = unreal.InputChord([unreal.Key("Ctrl")], unreal.Key("G"))
 print("chord:", api.input_chord_get_display_name(chord))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 返回值约定：带返回值的函数直接返回结果；无返回值（`void`）返回 `None`。本库不含返回值 + Out 组合与单个 Out 参数。
 - `key_get_navigation_action` 已标注 `DeprecatedFunction`，应改用 `key_get_navigation_action_from_key`。

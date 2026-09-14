@@ -1,10 +1,17 @@
 ---
 name: game-viewport-subsystem
 description: UGameViewportSubsystem（UE 5.6）UMG 视口 widget 管理 - 添加/移除/查询/定位视口 Widget（AddWidget / AddWidgetForPlayer / SetWidgetSlotPosition / SetWidgetSlotDesiredSize）；在 Agent 需要通过 unreal Python 向游戏视口添加或管理 UMG Widget 时使用
+risk: safe
+category: development
 tags: [ue5.6, umg, viewport, widget, python, subsystem]
 ---
 
 # GameViewportSubsystem - UMG 视口 Widget 管理（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 向游戏视口添加或管理 UMG Widget时使用本 skill（description 触发场景）。
+- 本 skill 只在与 game-viewport-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UGameViewportSubsystem` 暴露给 Python 的 UMG 视口 Widget 管理方法。方法名与签名依据 `Engine/Source/Runtime/UMG/Public/Blueprint/GameViewportSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理。C++ 函数未声明 `ScriptMethod` meta，Python 方法名按 C++ 函数名转 snake_case；精确 Python 暴露名需实测确认。
 
@@ -34,7 +41,7 @@ api = unreal.get_engine_subsystem(unreal.GameViewportSubsystem)
 | 定位 | `set_widget_slot_position(slot, widget, position, b_remove_dpi_scale)` | `FGameViewportWidgetSlot SetWidgetSlotPosition(FGameViewportWidgetSlot, const UWidget*, FVector2D, bool)`（静态） | `GameViewportWidgetSlot` |
 | 设置尺寸 | `set_widget_slot_desired_size(slot, size)` | `FGameViewportWidgetSlot SetWidgetSlotDesiredSize(FGameViewportWidgetSlot, FVector2D)`（静态） | `GameViewportWidgetSlot` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -63,7 +70,7 @@ if api.is_widget_added(widget):
     api.set_widget_slot(widget, slot)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本 skill 只提供 API 调用，不拥有 UMG 资产；Widget 蓝图的创建、编辑与资产所有权归属 ue-ui-engineer，本 skill 不越过该边界。
 - `add_widget` 的 widget 必须是已构造的 UMG Widget 实例；未构造或资产加载失败返回 `False`。

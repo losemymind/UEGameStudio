@@ -1,10 +1,17 @@
 ---
 name: virtual-camera-subsystem
 description: UVirtualCameraSubsystem（UE 5.6）编辑器虚拟相机子系统 - 相机切换、镜头控制、录制相关；在 Agent 需要通过 unreal Python 控制编辑器虚拟相机（Editor Viewport Camera）时使用
+risk: safe
+category: development
 tags: [ue5.6, editor, camera, python, subsystem]
 ---
 
 # VirtualCameraSubsystem - 编辑器虚拟相机子系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 控制编辑器虚拟相机（Editor Viewport Camera）时使用本 skill（description 触发场景）。
+- 本 skill 只在与 virtual-camera-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UVirtualCameraSubsystem`（`UEditorSubsystem` 派生）通过 Python 可调用的子系统方法。方法名与签名依据 `EditorViewport/Classes/Subsystems/EditorVirtualCameraSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -54,7 +61,7 @@ vcam_subsystem.activate_camera(...)
 | 辅助 | `camera_set_aspect_ratio(camera_actor, aspect_ratio)` | `void Camera_SetAspectRatio(const AActor*, float)` | `None` |
 | 辅助 | `camera_get_aspect_ratio(camera_actor)` | `float Camera_GetAspectRatio(const AActor*)` | `float` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -92,7 +99,7 @@ if __name__ == "__main__":
     control_vcamera()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **全部方法仅编辑器 Python 可用**（`WITH_EDITOR`），运行时环境调用返回 `BLOCKED_TOOLING`。
 - `ActivateCamera` / `SwitchToCamera` 仅切换编辑器视口的相机视角；不影响游戏运行时相机。

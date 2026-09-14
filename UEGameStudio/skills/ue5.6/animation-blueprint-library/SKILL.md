@@ -1,10 +1,17 @@
 ---
 name: animation-blueprint-library
 description: UAnimationBlueprintLibrary（UE 5.6）动画Blueprint函数库 - 动画混合/评估、骨骼操作、物理模拟、动画实例控制；在 Agent 需要通过 unreal Python 对动画系统做通用操作时使用
+risk: safe
+category: development
 tags: [ue5.6, animation, blueprint-library, python]
 ---
 
 # AnimationBlueprintLibrary - 动画系统工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对动画系统做通用操作时使用本 skill（description 触发场景）。
+- 本 skill 只在与 animation-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UAnimationBlueprintLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Animation/AnimationBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -85,7 +92,7 @@ transform = unreal.AnimationBlueprintLibrary.get_bone_transform(
 | 通用 | `up_vector(anim_instance, transform, space, bone_name)` | `FVector UpVector(const UAnimInstance*, const FTransform&, EBoneSpaces::Type, const FName&)` | `Vector` |
 | 通用 | `right_vector(anim_instance, transform, space, bone_name)` | `FVector RightVector(const UAnimInstance*, const FTransform&, EBoneSpaces::Type, const FName&)` | `Vector` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -118,7 +125,7 @@ if __name__ == "__main__":
     animate_bone()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 动画相关方法通常需要有效的 `AnimInstance` 实例（PIE/运行时或编辑器预览），编辑器非 animate 状态下调用会失败或返回无效值。
 - `get_bone_*` / `set_bone_*` 系列方法的 `space` 参数指定空间类型：`BONE_SPACE_LOCAL`（局部空间）、`BONE_SPACE_WORLD`（世界空间）等。

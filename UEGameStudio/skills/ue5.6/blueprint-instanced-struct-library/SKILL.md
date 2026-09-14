@@ -1,10 +1,17 @@
 ---
 name: blueprint-instanced-struct-library
 description: UBlueprintInstancedStructLibrary（UE 5.6）Instanced Struct 原语 - 重置/校验/比较 InstancedStruct；在 Agent 需要通过 unreal Python 创建、检查或比较 Instanced Struct 时使用
+risk: safe
+category: development
 tags: [ue5.6, blueprint, instanced-struct, python]
 ---
 
 # BlueprintInstancedStructLibrary - Instanced Struct Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 创建、检查或比较 Instanced Struct时使用本 skill（description 触发场景）。
+- 本 skill 只在与 blueprint-instanced-struct-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UBlueprintInstancedStructLibrary` 暴露给 Python 的 Instanced Struct 操作方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/BlueprintInstancedStructLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的普通成员整理。
 
@@ -31,7 +38,7 @@ api = unreal.BlueprintInstancedStructLibrary
 | 比较 | `not_equal_instanced_struct(a, b)` | `bool NotEqual_InstancedStruct(const FInstancedStruct&, const FInstancedStruct&)` | `bool` |
 | 校验 | `is_valid_instanced_struct(instanced_struct)` | `bool IsValid_InstancedStruct(const FInstancedStruct&)` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -51,7 +58,7 @@ else:
     print("equal:", api.equal_equal_instanced_struct(config, reset_config))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 只操作 `unreal.InstancedStruct` 对象；`void` + 单 ByRef 参数的方法直接返回该参数的新值。
 - `is_instanced_struct_valid` 返回 `unreal.EStructUtilsResult`，具体取值按目标编辑器实测确认。

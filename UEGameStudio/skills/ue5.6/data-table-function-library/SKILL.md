@@ -1,10 +1,17 @@
 ---
 name: data-table-function-library
 description: UDataTableFunctionLibrary（UE 5.6）DataTable 函数库 - 行/列探测、CSV/JSON 导入导出与行删除；在 Agent 需要通过 unreal Python 对数据表做读取/导入/导出/删除行时使用
+risk: critical
+category: development
 tags: [ue5.6, data-table, python, blueprint-function-library]
 ---
 
 # DataTableFunctionLibrary - DataTable Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对数据表做读取/导入/导出/删除行时使用本 skill（description 触发场景）。
+- 本 skill 只在与 data-table-function-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UDataTableFunctionLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/DataTableFunctionLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -44,7 +51,7 @@ row_names = unreal.UDataTableFunctionLibrary.get_row_names(table)
 | 导出 | `export_to_json_file(table, json_file_path)` | `bool ExportDataTableToJSONFile(const UDataTable*, const FString&)`（WITH_EDITOR） | `bool` |
 | 曲线表 | `evaluate_curve_table_row(curve_table, row_name, in_xy, context_string)` | `void EvaluateCurveTableRow(UCurveTable*, FName, float, TEnumAsByte<EEvaluateCurveTableResult::Type>&, float&, const FString&)` | `(int, float)` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -66,7 +73,7 @@ ok, csv_text = unreal.UDataTableFunctionLibrary.export_to_csv_string(table)
 print("csv export:", ok)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `get_*` 探测方法为只读；`fill_*` 会先清空再填充数据表资产内容，`export_to_*_file`、`remove_data_table_row`、`fill_*` 均属写入操作，完成后必须经编辑器 API 固化（`unreal.EditorAssetLibrary.save_asset`）并由审计/QA 独立验收。
 - `WITH_EDITOR` 限定的方法只在编辑器 Python 可用；非编辑器环境调用会失败，应输出 `BLOCKED_TOOLING`。

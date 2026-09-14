@@ -1,10 +1,17 @@
 ---
 name: physics-constraint-statics
 description: UPhysicsConstraintStatics（UE 5.6）物理约束静态工具库 - 约束实例创建/访问、约束break/损伤/断裂；在 Agent 需要通过 unreal Python 对物理约束系统做查询与控制时使用
+risk: safe
+category: development
 tags: [ue5.6, physics, constraint, python, statics]
 ---
 
 # PhysicsConstraintStatics - 物理约束工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对物理约束系统做查询与控制时使用本 skill（description 触发场景）。
+- 本 skill 只在与 physics-constraint-statics 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UPhysicsConstraintStatics`（`UObject` 派生，**静态类**）通过 Python 可调用的类方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Physics Engine/PhysicsConstraintStatics.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -66,7 +73,7 @@ unreal.PhysicsConstraintStatics.get_constraint_instance(actor, 0)
 | 辅助 | `get_constraint_tag(actor, constraint_index)` | `FString GetConstraintTag(const AActor*, int32)` | `str` |
 | 辅助 | `set_constraint_tag(actor, constraint_index, tag)` | `void SetConstraintTag(const AActor*, int32, const FString&)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -99,7 +106,7 @@ if __name__ == "__main__":
     control_constraint()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 大部分约束控制方法需要物理Actor与有效索引（`constraint_index`），无效索引返回空或假值。
 - BREAK 相关方法修改的是 `FConstraintInstance` 的 `BreakForce` / `BreakTorque` 字段；当力或力矩超过阈值时约束断裂。

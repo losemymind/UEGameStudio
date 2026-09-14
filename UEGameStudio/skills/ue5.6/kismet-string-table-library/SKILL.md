@@ -1,10 +1,17 @@
 ---
 name: kismet-string-table-library
 description: UE 5.6 字符串表（String Table）运行时 API（UKismetStringTableLibrary） - 注册表校验、表命名空间与条目源字符串/元数据读取、注册字符串表与条目键枚举；在 Agent 需要通过 unreal Python 查询游戏字符串表注册状态或读取/校验条目时使用
+risk: safe
+category: development
 tags: [ue5.6, string-table, localization, python]
 ---
 
 # KismetStringTableLibrary - 字符串表（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询游戏字符串表注册状态或读取/校验条目时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-string-table-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetStringTableLibrary` 暴露给 Python 的字符串表（String Table）运行时接口。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetStringTableLibrary.h` 中带 `UFUNCTION(BlueprintPure)` 标记的成员整理，全部方法只读、无副作用。
 
@@ -34,7 +41,7 @@ api = unreal.KismetStringTableLibrary
 | 列举 | `get_keys_from_string_table(table_id)` | `TArray<FString> GetKeysFromStringTable(FName)` | `Array[str]` |
 | 列举 | `get_meta_data_ids_from_string_table_entry(table_id, key)` | `TArray<FName> GetMetaDataIdsFromStringTableEntry(FName, const FString&)` | `Array[Name]` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -54,7 +61,7 @@ if keys:
     print("namespace:", api.get_table_namespace(table_id))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本类全部为 `BlueprintPure` 只读查询，不改动运行时状态；可安全用于校验本地化资产引用与定位缺失条目。
 - `get_table_entry_source_string` / `get_table_entry_meta_data` 对未注册条目返回空字符串，不区分"空条目"与"条目不存在"，需先用 `is_registered_table_entry` 校验。

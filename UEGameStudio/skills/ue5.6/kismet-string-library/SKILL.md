@@ -1,10 +1,17 @@
 ---
 name: kismet-string-library
 description: UKismetStringLibrary（UE 5.6）字符串函数库 - 字符串转换/构造/连接/比较/搜索/截取/大小写/填充/替换/拆分/正则通配/拆分与时间格式化；在 Agent 需要通过 unreal Python 处理字符串的转换、解析、查找、替换与格式化时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, string, python, blueprint-function-library]
 ---
 
 # KismetStringLibrary - String Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 处理字符串的转换、解析、查找、替换与格式化时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-string-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetStringLibrary`（`UBlueprintFunctionLibrary` 派生）暴露给 Python 的字符串静态函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetStringLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 77 个 static 成员整理。
 
@@ -80,7 +87,7 @@ join = unreal.KismetStringLibrary.join_string_array(["a", "b"], ",")
 | 时间 | `time_seconds_to_string(in_seconds)` | `FString TimeSecondsToString(float)`（`分钟:秒.毫秒`） | `str` |
 | 编辑器 | `diff_string(first, second)` | `FString DiffString(const FString&, const FString&)`（WITH_EDITOR，LCS 差异文本） | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -101,7 +108,7 @@ count = lib.replace_inline(line, "Item", "Armor")
 print(count, line)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本库全部为纯转换/Pure 函数，不修改资产；`replace_inline`、`cull_array` 只就地修改传入的 Python 字符串/数组对象本身，不触碰任何资产或关卡数据。
 - 无 Python/引擎运行时上下文时按 `BLOCKED_TOOLING` 处理；缺必要输入（空引用、索引越界等）按 `BLOCKED_INPUT` 处理。

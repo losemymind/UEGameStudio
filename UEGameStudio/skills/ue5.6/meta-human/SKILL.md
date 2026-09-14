@@ -1,10 +1,17 @@
 ---
 name: meta-human
 description: "MetaHuman插件（数字人资产） - MetaHuman创建、参数调整、动画绑定；需在UE中启用MetaHuman插件"
+risk: critical
+category: development
 tags: [ue5.6, meta-human, digital-human, python, plugin]
 ---
 
 # MetaHuman - 数字人资产系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要在UE中启用 MetaHuman 插件后处理对应功能时使用本 skill（description 触发场景）。
+- 本 skill 只在与 meta-human 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `MetaHuman` 插件（需在UE编辑器中启用）通过 Python 可调用的类与函数。方法名与签名依据 `MetaHuman/Source/MetaHuman/Classes/MetaHuman.h` 中带 `UFUNCTION()` 标记的成员整理；Python 方法名按反射约定转 snake_case。
 
@@ -80,7 +87,7 @@ if not meta_human_plugin:
 | 获取支持种族 | `get_supported_races()` | `TArray<EMetaHumanRace::Type> GetSupportedRaces()` | `Array[int]` |
 | 获取参数集版本 | `get_parameters_version()` | `int32 GetParametersVersion()` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -147,7 +154,7 @@ for p in preset_list:
         print(f"Failed: {p} - {create_result.get_error_message()}")
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **阻塞处理：**
   - 缺少 Preset 路径、文件不存在等返回 `BLOCKED_INPUT`

@@ -1,10 +1,17 @@
 ---
 name: kismet-rendering-library
 description: UKismetRenderingLibrary（UE 5.6，unreal.KismetRenderingLibrary）渲染公共函数库 - RenderTarget 2D/Array/Volume 创建/清理/缩放/释放/导出/读取、Canvas 绘制（Begin/EndDrawCanvasToRenderTarget、DrawMaterialToRenderTarget）、编辑器静态纹理创建与转换、纹理导入导出、路径追踪开关、PSO 预编译查询；在 Agent 需要通过 unreal Python 操作渲染目标或渲染原语时使用
+risk: safe
+category: development
 tags: [ue5.6, rendering, blueprint, python, library]
 ---
 
 # KismetRenderingLibrary - Rendering Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 操作渲染目标或渲染原语时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-rendering-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetRenderingLibrary`（`UBlueprintFunctionLibrary` 派生）暴露给 Python 的渲染公共函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetRenderingLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -68,7 +75,7 @@ rt = api.create_render_target2_d(world, width=512, height=512)
 | 路径追踪 | `refresh_path_tracing_output()` | `void RefreshPathTracingOutput()` | `None` |
 | 管线缓存 | `num_precompiling_psos_remaining()` | `int32 NumPrecompilingPSOsRemaining()` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -94,7 +101,7 @@ ok, samples = api.read_render_target(world, rt)
 api.export_render_target(world, rt, "E:/Exports", "probe.png")
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `begin_draw_canvas_to_render_target` 返回 `(Canvas, Size, Context)` 三元组；`Context` 必须原样回传给成对的 `end_draw_canvas_to_render_target`，未成对闭合会造成渲染目标状态悬空。
 - 单象限快速填满用 `draw_material_to_render_target`；一次绘制多个原语到同一目标用 Begin/End Canvas 成对流程（引擎注释明确前者每次重新设置渲染目标，开销更高）。

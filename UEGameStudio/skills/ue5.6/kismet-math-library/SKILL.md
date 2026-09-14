@@ -1,10 +1,17 @@
 ---
 name: kismet-math-library
 description: UKismetMathLibrary（UE 5.6）数学与转换函数库 - 基础算术/三角/类型转换/向量·旋转器·四元数·矩阵·变换/确定性随机流/插值与平滑；在 Agent 需要通过 unreal Python 执行数值计算、类型/坐标转换、向量几何运算、随机采样或平滑插值时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, math, python, blueprint-function-library]
 ---
 
 # KismetMathLibrary - Math Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 执行数值计算、类型/坐标转换、向量几何运算、随机采样或平滑插值时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-math-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetMathLibrary`（`UBlueprintFunctionLibrary` 派生）暴露给 Python 的数学与转换静态函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetMathLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 737 个 static 成员整理；这是引擎最大的一支蓝图函数库。
 
@@ -115,7 +122,7 @@ normal = unreal.KismetMathLibrary.normal(unreal.Vector(3.0, 4.0, 0.0))
 | 帧时间 | `make_frame_rate(numerator, denominator=1)` / `break_frame_rate(rate)` | `FFrameRate MakeFrameRate(...)` / `void BreakFrameRate(...)` | `FrameRate` / `(int, int)` |
 | 帧时间 | `make_qualified_frame_time(frame, frame_rate, sub_frame=0)` | `FQualifiedFrameTime MakeQualifiedFrameTime(...)` | `QualifiedFrameTime` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -463,7 +470,7 @@ def validate_transform_chain(transform_list):
     return result
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 全部为 `BlueprintPure`/`BlueprintCallable` 静态方法；算术、比较、转换与结构体运算符家族按同模式调用（如 `add`/`subtract`/`multiply`/`divide`、`less`/`greater`/`equal_equal_*`、`conv_*` 族对应各自类型），完整逐方法清单见 `docs/overview.md`。
 - 头文件中 `meta=(DeprecatedFunction)` 的成员（如 `Conv_DoubleToFloat`、`Conv_FloatToDouble`、`LinearColor_Quantize`）已过时，新脚本不要使用；`meta=(BlueprintInternalUseOnly)` 的 Ease 家族（`Ease`/`VEase`/`REase`/`TEase`）能否被 Python 直接调用需实测。

@@ -1,10 +1,17 @@
 ---
 name: gameplay-statics
 description: UGameplayStatics（UE 5.6）游戏运行时静态工具库 - Actor / Player / 关卡流送、视口与全局控制、音效特效与伤害、瞄准弹道与投影、存档与选项解析；在 Agent 需要通过 unreal Python 在 PIE / 运行时游戏世界执行通用游戏逻辑时使用
+risk: critical
+category: development
 tags: [ue5.6, gameplay, statics, runtime, python]
 ---
 
 # GameplayStatics - 游戏运行时工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 在 PIE / 运行时游戏世界执行通用游戏逻辑时使用本 skill（description 触发场景）。
+- 本 skill 只在与 gameplay-statics 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UGameplayStatics` 暴露给 Python 的静态工具方法。签名与成员依据 `Engine/Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无则按 C++ 函数名转 snake_case。
 
@@ -68,7 +75,7 @@ api = unreal.GameplayStatics
 | 时间 | `get_world_delta_seconds(world_context)` | `double GetWorldDeltaSeconds(...)` | `float` |
 | 时间 | `get_time_seconds(world_context)` | `double GetTimeSeconds(...)` | `float` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -512,7 +519,7 @@ def viewport_projection_system():
        print(f"Error: {e}")
    ```
 
-## 注意事项
+## 限制和注意事项
 
 - 运行时方法只在 PIE / Play 会话中可用；编辑器非运行态调用返回空/假值，按 `BLOCKED_TOOLING` 处理并停止。
 - Actor/播放器查询返回 `None` 表示不存在；`apply_*` 伤害与 `create_player` 需权威端/相应运行时上下文。

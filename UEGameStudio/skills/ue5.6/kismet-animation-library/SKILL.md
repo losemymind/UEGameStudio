@@ -1,10 +1,17 @@
 ---
 name: kismet-animation-library
 description: UKismetAnimationLibrary（UE 5.6，unreal.KismetAnimationLibrary）动画蓝图公共函数库 - 两骨 IK、LookAt、骨骼/插槽间距离与方向、Perlin 噪声向量与标量重映射、位置历史与插槽速度计算、剖析计时、朝向运动方向角度；在 Agent 需要通过 unreal Python 调用这些动画计算函数时使用
+risk: safe
+category: development
 tags: [ue5.6, animation, blueprint, python, library]
 ---
 
 # KismetAnimationLibrary - Anim Utilities（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 调用这些动画计算函数时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-animation-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetAnimationLibrary`（`UBlueprintFunctionLibrary` 派生）暴露给 Python 的动画公共函数。方法名与签名依据 `Engine/Source/Runtime/AnimGraphRuntime/Public/KismetAnimationLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -45,7 +52,7 @@ joint_pos, end_pos = unreal.KismetAnimationLibrary.two_bone_ik(
 | 剖析 | `k2_end_profiling_timer(b_log=True, log_prefix="")` | `float K2_EndProfilingTimer(bool bLog, const FString& LogPrefix)` | `float` |
 | 方向 | `calculate_direction(velocity, base_rotation)` | `float CalculateDirection(const FVector&, const FRotator&)` | `float`（[-180, 180]） |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -79,7 +86,7 @@ angle = unreal.KismetAnimationLibrary.calculate_direction(
 print("move angle:", angle)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 全部为 static 函数，类方法调用，无实例化与状态持有（除 `FPositionHistory` 由调用方跨帧持有）。
 - `calculate_velocity_from_position_history` 与 `calculate_velocity_from_sockets` 的 `history` 为 `UPARAM(ref)` 修改型结构体参数：原对象被就地更新，返回值仍为速度标量；未初始化样本数/区间会按 BP 面板默认（16 / 0 / 128）处理，精确参数暴露与默认值需实测确认。

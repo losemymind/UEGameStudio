@@ -1,10 +1,17 @@
 ---
 name: niagara-function-library
 description: UNiagaraFunctionLibrary（UE 5.6）Niagara特效函数库 - 系统创建/发射/查询、数据接口、特效控制；在 Agent 需要通过 unreal Python 控制 Niagara 特效时使用
+risk: safe
+category: development
 tags: [ue5.6, niagara, particles, python, statics]
 ---
 
 # NiagaraFunctionLibrary - Niagara特效工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 控制 Niagara 特效时使用本 skill（description 触发场景）。
+- 本 skill 只在与 niagara-function-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UNiagaraFunctionLibrary`（`UObject` 派生，**静态类**）通过 Python 可调用的类方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Engine/NIagaraFunctionLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -56,7 +63,7 @@ unreal.NiagaraFunctionLibrary.spawn_system_at_location(
 | 辅助 | `get_scatter_samples(world_context, system, sample_count, out_samples)` | `bool GetScatterSamples(...)` | `(bool, Array[Transform])` |
 | 辅助 | `get_emitter_sample_count(world_context, system, emitter_index)` | `int GetEmitterSampleCount(...)` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -466,7 +473,7 @@ def monitor_effect_performance():
    - 创建系统管理器类统一处理特效
    - 使用枚举或常量管理参数名
 
-## 注意事项
+## 限制和注意事项
 
 - 大部分 Niagara 控制方法需要有效的 `WorldContextObject` 与 Niagara 系统组件引用；非运行时调用返回 `BLOCKED_TOOLING`。
 - `SpawnSystemAtLocation` 系列方法创建的组件默认自动销毁；设置 `b_auto_destroy=False` 可手动管理生命周期。

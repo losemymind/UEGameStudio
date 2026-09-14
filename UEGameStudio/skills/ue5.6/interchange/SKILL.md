@@ -1,10 +1,17 @@
 ---
 name: interchange
 description: "UE Interchange插件（资产导入导出） - 多格式导入管道、资产转换与格式支持；支持FBX、DAE、USD等；需在UE中启用Interchange插件"
+risk: critical
+category: development
 tags: [ue5.6, interchange, import, export, fbx, usd, python, plugin]
 ---
 
 # Interchange - 资产导入导出系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要在UE中启用 Interchange 插件后处理对应功能时使用本 skill（description 触发场景）。
+- 本 skill 只在与 interchange 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `Interchange` 插件（需在UE编辑器中启用）通过 Python 可调用的类与函数。方法名与签名依据 `Interchange/Source/Interchange/Classes/Interchange.h` 中带 `UFUNCTION()` 标记的成员整理；Python 方法名按反射约定转 snake_case。
 
@@ -85,7 +92,7 @@ if not interchange_plugin:
 | 获取 FBX 导出器 | `get_fbx_exporter(export_pipeline)` | `UInterchangeFbxExporter* GetFbxExporter(UInterchangeBaseExporterPipeline*)`（WITH_EDITOR） | `Exporter` 或 `None` |
 | 获取 USD 导出器 | `get_usd_exporter(export_pipeline)` | `UInterchangeUsdExporter* GetUsdExporter(UInterchangeBaseExporterPipeline*)`（WITH_EDITOR） | `Exporter` 或 `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -138,7 +145,7 @@ supported_formats = unreal.InterchangeUtilityLibrary.get_supported_import_format
 print("Supported formats:", supported_formats)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **阻塞处理：**
   - 缺少文件路径、管道创建失败等返回 `BLOCKED_INPUT`

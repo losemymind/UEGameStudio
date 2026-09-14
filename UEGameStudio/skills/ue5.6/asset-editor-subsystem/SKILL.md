@@ -1,10 +1,17 @@
 ---
 name: asset-editor-subsystem
 description: UAssetEditorSubsystem（UE 5.6）资产编辑器子系统 - 打开/关闭资产编辑器；在 Agent 需要通过 unreal Python 打开或关闭资产编辑器时使用
+risk: safe
+category: development
 tags: [ue5.6, editor, asset, python, subsystem]
 ---
 
 # AssetEditorSubsystem - Asset Editor Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 打开或关闭资产编辑器时使用本 skill（description 触发场景）。
+- 本 skill 只在与 asset-editor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UAssetEditorSubsystem` 暴露给 Python 的资产编辑器操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Subsystems/AssetEditorSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case，精确 Python 暴露名需实测确认。
 
@@ -27,7 +34,7 @@ api = unreal.get_editor_subsystem(unreal.AssetEditorSubsystem)
 | 打开 | `open_editor_for_assets(assets, opened_method=...)` | `bool OpenEditorForAssets(const TArray<UObject*>&, EAssetTypeActivationOpenedMethod)` | `bool` |
 | 关闭 | `close_all_editors_for_asset(asset)` | `int32 CloseAllEditorsForAsset(UObject*)` | `int`（关闭的编辑器数量） |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -45,7 +52,7 @@ closed = api.close_all_editors_for_asset(asset)
 print("closed editors:", closed)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `open_editor_for_assets` 的 `assets` 是已加载资产对象数组；未加载的资产请先经 `unreal.EditorAssetLibrary` 加载。
 - `opened_method` 取 `unreal.AssetTypeActivationOpenedMethod` 的 `EDIT` / `VIEW`，缺省为 `EDIT`。

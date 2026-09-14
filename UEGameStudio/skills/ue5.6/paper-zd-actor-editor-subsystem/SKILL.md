@@ -1,10 +1,17 @@
 ---
 name: paper-zd-actor-editor-subsystem
 description: UPaperZDActorEditorSubsystem（UE 5.6）Paper 2D 动画 Actor 编辑器子系统 - 2D 动画蓝图编辑、图层管理、关键帧操作、序列化；在 Agent 需要通过 unreal Python 对 Paper ZD 动画资产进行编辑时使用
+risk: critical
+category: development
 tags: [ue5.6, paper-zd, 2d-animation, python, subsystem]
 ---
 
 # PaperZDActorEditorSubsystem - Paper 2D 动画编辑器子系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对 Paper ZD 动画资产进行编辑时使用本 skill（description 触发场景）。
+- 本 skill 只在与 paper-zd-actor-editor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UPaperZDActorEditorSubsystem`（`UEditorSubsystem` 派生）通过 Python 可调用的子系统方法。方法名与签名依据引擎头文件中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -64,7 +71,7 @@ selected_actors = paper_zd_subsystem.get_selected_actors()
 | 辅助 | `get_all_properties(paper_zd_comp, layer_index)` | `TArray<FString> GetAllProperties(UPaperZDActorComponent*, int)` | `Array[str]` |
 | 辅助 | `get_property_default_value(paper_zd_comp, property_name)` | `FString GetPropertyDefaultValue(UPaperZDActorComponent*, const FString&)` | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -125,7 +132,7 @@ if __name__ == "__main__":
     edit_paperzd_animation()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **全部方法仅编辑器 Python 可用**（`WITH_EDITOR`），运行时环境调用返回 `BLOCKED_TOOLING`。
 - `GetSelectedActors` / `SelectActors` 仅影响编辑器当前选中状态；不影响动画数据本身。

@@ -1,10 +1,17 @@
 ---
 name: kismet-array-library
 description: UKismetArrayLibrary（UE 5.6）BP 数组工具库 Python 可调用子集 - 按类过滤 Actor 数组与字符串/名称/字节/int/int64/double 数组排序；在 Agent 需要通过 unreal Python 调用数组工具库时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, array, python, blueprint]
 ---
 
 # KismetArrayLibrary - Array Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 调用数组工具库时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-array-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetArrayLibrary` 中可由 Python 调用的静态成员，签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetArrayLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。本 skill 只记录可由 Python 调用的成员。
 
@@ -36,7 +43,7 @@ karray = unreal.KismetArrayLibrary
 - `sort_order` 枚举 `unreal.EArraySortOrder`：`ASCENDING` / `DESCENDING`。
 - `filter_class` 使用 `unreal.load_class(...)` 加载的类对象。
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -62,7 +69,7 @@ karray.sort_string_array(labels)
 print("labels sorted:", labels)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `filter_array` 不修改原数组，返回过滤后的新数组；结果类型随 `FilterClass` 动态指定。
 - 排序函数就地修改传入数组（Ref 参数），返回 `None`，结果从原变量读取。

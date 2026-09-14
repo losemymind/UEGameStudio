@@ -1,10 +1,17 @@
 ---
 name: world-subsystem
 description: UWorldSubsystem（UE 5.6）World 子系统基类 - 共享 UWorld 生命周期、按世界隔离的数据与服务；在 Agent 需要通过 unreal Python 获取/调用 World 子系统时使用
+risk: safe
+category: development
 tags: [ue5.6, subsystem, world, python, base-class]
 ---
 
 # WorldSubsystem - API 参考（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 获取/调用 World 子系统时使用本 skill（description 触发场景）。
+- 本 skill 只在与 world-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UWorldSubsystem` 暴露给 Python 的全部 `UFUNCTION(BlueprintCallable / BlueprintPure)` 成员。方法名与签名依据 `Engine/Source/Runtime/Engine/Public/Subsystems/WorldSubsystem.h` 及相关子类头文件整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无 `ScriptMethod` 时按 C++ 函数名转 snake_case。精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认。
 
@@ -100,7 +107,7 @@ WorldSubsystem 基类本身不暴露 `UFUNCTION`，所有业务能力由子类�
 | 分析控制 | `stop_analysis()` | `void StopAnalysis()` | `None` |
 | 分析查询 | `is_analysis_active()` | `bool IsAnalysisActive() const` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -121,14 +128,14 @@ else:
         print("visible levels:", len(visible))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - WorldSubsystem 基类本身不暴露 `UFUNCTION`；所有业务方法由游戏项目子类实现。本 skill 所列 UFUNCTION 来自 UE 5.6 引擎标准子类（`ULevelSequencePlayer`、`ULevelVisibilitySubsystem` 等），具体项目子类以目标 Editor 实测为准。
 - 按世界隔离：每个 `UWorld` 独立持有子系统实例，改世界/换关卡需重新获取；PIE 世界与编辑器主世界不是同一个实例源。
 - 缺少世界 / 目标子系统上下文时分别返回 `BLOCKED_TOOLING` / `BLOCKED_INPUT`。
 - 未在真实 UE 5.6 Editor 中实测的调用不做"已验证"断言。
 
-## 快速示例
+## 示例
 
 ```python
 import unreal

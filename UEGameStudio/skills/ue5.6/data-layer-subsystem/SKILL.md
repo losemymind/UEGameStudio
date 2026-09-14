@@ -1,10 +1,17 @@
 ---
 name: data-layer-subsystem
 description: UDataLayerSubsystem（UE 5.6）Data Layer 运行时子系统 - 按资产/标签/名称设置与查询 DataLayer 运行时状态、查询活动与已加载 DataLayer 名称；在 Agent 需要通过 unreal Python 获取/调用 DataLayer 运行时状态时使用；该类在 5.6 已弃用，新实现优先用 DataLayerManager 等价 API
+risk: safe
+category: development
 tags: [ue5.6, data-layer, world-partition, runtime, python, subsystem]
 ---
 
 # DataLayerSubsystem - Data Layer 运行时子系统（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 获取/调用 DataLayer 运行时状态时使用本 skill（description 触发场景）。
+- 本 skill 只在与 data-layer-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UDataLayerSubsystem` 暴露给 Python 的 Data Layer 运行时能力。头文件 `Engine/Source/Runtime/Engine/Public/WorldPartition/DataLayer/DataLayerSubsystem.h`。该类派生自 `UWorldSubsystem`，负责按资产/标签/名称设置与查询 Data Layer（Data Layer Instance）的运行时状态。头文件在类声明处注明该类已被 DataLayerManager 取代：本 skill 记录的是该类保留的遗留 Python 暴露面，可用但已弃用，新代码应优先使用 DataLayerManager 等价 API。
 
@@ -53,7 +60,7 @@ api = world.get_subsystem(unreal.DataLayerSubsystem)
 - 全部 `Set` 方法带 `BlueprintAuthorityOnly`，仅权威端（服务器/PIE 中具有权威的客户端）可生效。
 - `get_active_data_layer_names()` / `get_loaded_data_layer_names()` 在 5.6 头文件中为已停用实现，返回固定空集合，不应作为真值来源。
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -406,7 +413,7 @@ def data_layer_resource_linkage():
            set_layer_state(layer, state)
    ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本 skill 记录的是该类保留的 Python 调用面；全部成员在头文件中均已标记弃用（`DEPRECATED`，并注明由 DataLayerManager 接管）。新实现优先改为使用 `UDataLayerManager` 等价 API，仅在迁移尚未完成时使用本遗留入口。
 - 按世界隔离：每个 `UWorld` 独立持有实例；Data Layer 状态归属当前世界，改世界/换关卡需重新获取并按新世界重新查询。

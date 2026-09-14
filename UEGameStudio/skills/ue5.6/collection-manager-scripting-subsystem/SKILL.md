@@ -1,10 +1,17 @@
 ---
 name: collection-manager-scripting-subsystem
 description: UCollectionManagerScriptingSubsystem（UE 5.6）资产集合管理子系统 - 创建/删除/重命名/重挂集合、添加/移除/查询集合内资产与资产所属集合；在 Agent 需要通过 unreal Python 管理资产集合时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, collection, python, subsystem]
 ---
 
 # CollectionManagerScriptingSubsystem - Collection Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 管理资产集合时使用本 skill（description 触发场景）。
+- 本 skill 只在与 collection-manager-scripting-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UCollectionManagerScriptingSubsystem` 暴露给 Python 的资产集合（Collection）管理操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Subsystems/CollectionManagerScriptingSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case（该头文件成员未声明 `ScriptMethod` 覆盖），精确 Python 暴露名需实测确认。
 
@@ -55,7 +62,7 @@ api = unreal.get_editor_subsystem(unreal.CollectionManagerSubsystem)
 | 查询资产 | `get_collections_containing_asset_data(container, asset_data)` | `bool GetCollectionsContainingAssetData(const FCollectionScriptingContainerSource, FAssetData, TArray<FCollectionScriptingRef>&)` | `Tuple[bool, Array[Collection]]` |
 | 查询资产 | `get_collections_containing_asset_ptr(container, asset_ptr)` | `bool GetCollectionsContainingAssetPtr(const FCollectionScriptingContainerSource, const UObject*, TArray<FCollectionScriptingRef>&)` | `Tuple[bool, Array[Collection]]` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -79,7 +86,7 @@ api.remove_asset_from_collection(collection, path)
 api.destroy_collection(collection)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 容器与集合名使用 `unreal.Name` 语义（Python 直接传字符串）；"None" 容器缺省为基类游戏容器。
 - 添加/移除/查询的资产变体对应三种引用形式：路径（`unreal.SoftObjectPath`）、`unreal.AssetData`、资产对象（`unreal.Object` / `unreal.ObjectPtr`）。

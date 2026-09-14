@@ -1,10 +1,17 @@
 ---
 name: blueprint-paths-library
 description: UBlueprintPathsLibrary（UE 5.6）路径查询与规范化 Function Library - 引擎/项目/用户/沙盒等目录获取、路径组合与拆分、文件名操作、规范化与相对/绝对转换；在 Agent 需要从 Python 定位或清洗引擎与磁盘路径（日志、Saved、Content、工程文件）时使用
+risk: safe
+category: development
 tags: [ue5.6, python, paths, filesystem, function-library]
 ---
 
 # BlueprintPathsLibrary - Paths Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要从 Python 定位或清洗引擎与磁盘路径（日志、Saved、Content、工程文件）时使用本 skill（description 触发场景）。
+- 本 skill 只在与 blueprint-paths-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UBlueprintPathsLibrary` 暴露给 Python 的路径查询与规范化方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/BlueprintPathsLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理。
 
@@ -110,7 +117,7 @@ print(paths.get_project_saved_dir())
 | 拆分 | `split(in_path)` | `void Split(const FString& InPath, FString& PathPart, FString& FilenamePart, FString& ExtensionPart)` | `Tuple[str, str, str]` |
 | 组合 | `combine(in_paths)` | `FString Combine(const TArray<FString>& InPaths)` | `str` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -133,7 +140,7 @@ exists = paths.file_exists(paths.get_project_file_path())
 print("project file exists:", exists)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本类查询依赖实际运行环境（编辑器安装与命令行参数、`FApp::GetProjectName()` 是否已设置、打包二进制上下文）；结果以当前引擎与项目实际状态为准，不得与磁盘猜测或硬编码路径混用。
 - 缺必要输入（空/非法路径串、文件不存在等）返回 `BLOCKED_INPUT`；运行环境不可用（无法确定项目、不在有效引擎上下文）返回 `BLOCKED_TOOLING`。

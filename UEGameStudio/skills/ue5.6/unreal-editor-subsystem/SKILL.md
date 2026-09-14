@@ -1,10 +1,17 @@
 ---
 name: unreal-editor-subsystem
 description: UUnrealEditorSubsystem（UE 5.6）编辑器主世界与视口原语 - 获取编辑器/游戏主世界、读写主关卡视口相机位姿；在 Agent 需要通过 unreal Python 获取编辑器世界上下文或控制主视口时使用
+risk: safe
+category: development
 tags: [ue5.6, editor, world, viewport, python, subsystem]
 ---
 
 # UnrealEditorSubsystem - Editor World & Viewport Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 获取编辑器世界上下文或控制主视口时使用本 skill（description 触发场景）。
+- 本 skill 只在与 unreal-editor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UUnrealEditorSubsystem` 暴露给 Python 的编辑器主世界与视口操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Subsystems/UnrealEditorSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无 `ScriptMethod` 时按 C++ 函数名转 snake_case。精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认。
 
@@ -30,7 +37,7 @@ api = unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
 | 视口相机 | `get_level_viewport_camera_info()` | `bool GetLevelViewportCameraInfo(FVector&, FRotator&)` | `(bool, Vector, Rotator)` |
 | 视口相机 | `set_level_viewport_camera_info(camera_location, camera_rotation)` | `void SetLevelViewportCameraInfo(FVector, FRotator)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -57,7 +64,7 @@ api.set_level_viewport_camera_info(
 )
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `get_editor_world` / `get_game_world` 是只读查询，不修改资产；视口相机读写不改关卡内容。
 - `get_level_viewport_camera_info` 的 Out 参数按返回值+Out 约定以元组 `(bool, Vector, Rotator)` 返回；`bool` 表示是否能取得主关卡编辑器视口相机。

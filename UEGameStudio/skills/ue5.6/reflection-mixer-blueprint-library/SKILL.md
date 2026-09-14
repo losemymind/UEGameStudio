@@ -1,10 +1,17 @@
 ---
 name: reflection-mixer-blueprint-library
 description: UReflectionMixerBlueprintLibrary（UE 5.6）反射混音器函数库 - 音频反射路径查询与混音设置；在 Agent 需要通过 unreal Python 查询或控制音频反射混音时使用
+risk: safe
+category: development
 tags: [ue5.6, audio, reflection, blueprint-library, python]
 ---
 
 # ReflectionMixerBlueprintLibrary - Reflection Mixer Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询或控制音频反射混音时使用本 skill（description 触发场景）。
+- 本 skill 只在与 reflection-mixer-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UReflectionMixerBlueprintLibrary` 暴露给 Python 的反射混音器工具方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/ReflectionMixerBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -39,7 +46,7 @@ if reflection_mixer:
 | 运行时 | `get_reflection_mixer_distance()` | `float GetReflectionMixerDistance()` | `float` |
 | 运行时 | `get_reflection_mixer_order()` | `int32 GetReflectionMixerOrder()` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -63,7 +70,7 @@ order = api.get_reflection_mixer_order()
 print({"distance_cm": distance, "order": order})
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本库方法主要在 PIE/运行时上下文可用；编辑器静态脚本调用时返回 `None` 或失败，按 `BLOCKED_TOOLING` 处理。
 - `get_reflection_mixer()` 获取当前音频世界中的反射混音器实例；音频系统未初始化时返回 `None`。

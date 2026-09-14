@@ -1,10 +1,17 @@
 ---
 name: geometry-script-library
 description: UGeometryScriptLibrary（UE 5.6）几何脚本函数库 - 网格布尔/采样/变形/优化；在 Agent 需要通过 unreal Python 对静态网格或动态网格做几何处理时使用
+risk: safe
+category: development
 tags: [ue5.6, geometry, mesh, python, blueprint-function-library]
 ---
 
 # GeometryScriptLibrary - 几何处理工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对静态网格或动态网格做几何处理时使用本 skill（description 触发场景）。
+- 本 skill 只在与 geometry-script-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UGeometryScriptLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/GeometryScripting/GeometryScriptLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -73,7 +80,7 @@ unreal.GeometryScriptLibrary.mesh_boolean(...)
 | 计数 | `mesh_get_num_triangles(mesh)` | `int MeshGetNumTriangles(...)` | `int` |
 | 计数 | `mesh_get_num.edges(mesh)` | `int MeshGetNumEdges(...)` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -106,7 +113,7 @@ if __name__ == "__main__":
     process_mesh()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 大多数几何处理方法仅编辑器 Python 可用（`WITH_EDITOR`），运行时调用会失败，应输出 `BLOCKED_TOOLING`。
 - 处理后的网格需通过 `unreal.EditorStaticMeshLibrary` 或类似 API 保存到 `.uasset` 资产；直接修改内存对象不会持久化。

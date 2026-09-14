@@ -1,10 +1,17 @@
 ---
 name: level-utils-blueprint-library
 description: ULevelUtilsBlueprintLibrary（UE 5.6）关卡工具函数库 - 关卡设置查询、编辑器/运行时世界获取、关卡加载/卸载；在 Agent 需要通过 unreal Python 查询关卡设置或控制关卡加载时使用
+risk: critical
+category: development
 tags: [ue5.6, level, blueprint-library, python]
 ---
 
 # LevelUtilsBlueprintLibrary - Level Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询关卡设置或控制关卡加载时使用本 skill（description 触发场景）。
+- 本 skill 只在与 level-utils-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `ULevelUtilsBlueprintLibrary` 暴露给 Python 的关卡工具方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/LevelUtilsBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理。
 
@@ -40,7 +47,7 @@ print("current world:", world.get_name() if world else None)
 | 设置 | `set_editor_world_real_time_mode(world, b_real_time)` | `void SetEditorWorldRealTimeMode(UWorld*, bool)` | `None`（仅编辑器） |
 | 设置 | `set_editor_world_pause(world, b_pause)` | `void SetEditorWorldPause(UWorld*, bool)` | `None`（仅编辑器） |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -63,7 +70,7 @@ if editor_world and is_editor:
     api.set_editor_world_real_time_mode(editor_world, True)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `get_current_world()` 返回当前上下文世界；编辑器静态脚本无可用世界时返回 `None`。
 - `get_editor_world()` 与 `get_game_world()` 分别返回编辑器世界与游戏世界；无对应上下文时返回 `None`。

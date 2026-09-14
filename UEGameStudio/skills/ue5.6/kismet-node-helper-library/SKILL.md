@@ -1,10 +1,17 @@
 ---
 name: kismet-node-helper-library
 description: UKismetNodeHelperLibrary（UE 5.6）状态位/枚举辅助原语 - int32 位掩码的标记/清除/查找与状态枚举名称查询；在 Agent 需要通过 unreal Python 处理位掩码或查询枚举信息时使用
+risk: safe
+category: development
 tags: [ue5.6, kismet, enum, bitmask, python]
 ---
 
 # KismetNodeHelperLibrary - 位掩码与枚举辅助 Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 处理位掩码或查询枚举信息时使用本 skill（description 触发场景）。
+- 本 skill 只在与 kismet-node-helper-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UKismetNodeHelperLibrary` 暴露给 Python 的位掩码与状态枚举辅助方法。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/Kismet/KismetNodeHelperLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理。全部成员为 static 函数且类声明为 BlueprintThreadSafe。
 
@@ -39,7 +46,7 @@ api = unreal.KismetNodeHelperLibrary
 | 枚举 | `get_valid_value(enum, enumerator_value)` | `uint8 GetValidValue(const UEnum*, uint8 EnumeratorValue)` | `int` |
 | 枚举 | `get_enumerator_value_from_index(enum, enumerator_index)` | `uint8 GetEnumeratorValueFromIndex(const UEnum*, uint8 EnumeratorIndex)` | `int` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -58,7 +65,7 @@ if enum_obj is not None:
     print("name:", api.get_enumerator_name(enum_obj, 1))
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `mark_bit` / `clear_bit` / `clear_all_bits` 修改掩码值，`void` + 单 ByRef 参数直接返回更新后的 int32，需用返回值继续后续运算。
 - 查找类方法在无未标记位可用时返回 `INDEX_NONE`（-1）；`get_enumerator_name` 对无效枚举值返回 `NAME_None`。

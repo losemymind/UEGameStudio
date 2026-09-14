@@ -1,10 +1,17 @@
 ---
 name: widget-blueprint-library
 description: UWidgetBlueprintLibrary（UE 5.6）UMG 全局函数库 - 运行时创建 UserWidget、输入模式切换、Canvas 绘制原语、Brush 资源转换、DragDrop 与 HardwareCursor 操作；Agent 需要通过 unreal Python 在运行时或编辑器对 UMG 控件与视口做全局操作时使用
+risk: safe
+category: development
 tags: [ue5.6, umg, widget, python, blueprint-function-library]
 ---
 
 # WidgetBlueprintLibrary - UMG 全局函数库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 在运行时或编辑器对 UMG 控件与视口做全局操作时使用本 skill（description 触发场景）。
+- 本 skill 只在与 widget-blueprint-library 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UWidgetBlueprintLibrary`（`UBlueprintFunctionLibrary` 派生）通过 Python 可调用的静态函数。方法与签名依据 `Engine/Source/Runtime/UMG/Public/Blueprint/WidgetBlueprintLibrary.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 的 static 成员整理；Python 方法名按 `meta=(ScriptName=...)` / 反射 snake_case 约定。
 
@@ -82,7 +89,7 @@ wl = unreal.WidgetBlueprintLibrary
 | `is_gamepad_attached()` | `bool IsGamepadAttached()` | `bool` |
 | `get_focus_widget()` | `UWidget* GetFocusWidget()` | `Widget` 或 `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -99,7 +106,7 @@ widget = wl.create(world, bp)
 print("created:", widget is not None)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - `create` 用蓝图生成类（`BlueprintGeneratedClass` 资产）作为 `widget_class`；运行时创建绑定 GameInstance/PlayerController 的场景需传 `owning_player`。
 - `set_input_mode_*` 需有效 `PlayerController`（PIE 或运行中游戏世界）；编辑器纯预览模式无玩家控制器时返回 `BLOCKED_TOOLING`。

@@ -1,10 +1,17 @@
 ---
 name: editor-actor-subsystem
 description: UEditorActorSubsystem（UE 5.6）Actor 编辑器原语 - 列举/查询/生成/复制/销毁/选择/转换/设置 Transform；在 Agent 需要通过 unreal Python 自动化编辑器关卡中的 Actor 操作时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, actor, python, subsystem]
 ---
 
 # EditorActorSubsystem - Actor Ops（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 自动化编辑器关卡中的 Actor 操作时使用本 skill（description 触发场景）。
+- 本 skill 只在与 editor-actor-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UEditorActorSubsystem` 暴露给 Python 的 Actor 编辑器操作方法。方法名与签名依据 `Engine/Source/Editor/UnrealEd/Public/Subsystems/EditorActorSubsystem.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的成员整理；Python 方法名由 C++ 函数名按反射约定转 snake_case。
 
@@ -48,7 +55,7 @@ api = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 | 变换 | `set_actor_transform(actor, world_transform)` | `bool SetActorTransform(AActor*, const FTransform&)` | `bool` |
 | 变换 | `set_component_transform(scene_component, world_transform)` | `bool SetComponentTransform(USceneComponent*, const FTransform&)` | `bool` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -79,7 +86,7 @@ if not ok:
 api.destroy_actor(prop)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 只操作已加载关卡中的 Actor；`GetAllLevelActors` 不包含 PendingKill、PIE、PreviewEditor 中的对象。
 - `get_actor_reference` 的路径形如 `PersistentLevel.PlayerStart`，未找到返回 `None`。

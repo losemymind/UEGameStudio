@@ -1,10 +1,17 @@
 ---
 name: game-instance-subsystem
 description: UGameInstanceSubsystem（UE 5.6）GameInstance 子系统基类 - 共享 GameInstance 生命周期、跨关卡持久数据与常驻服务；在 Agent 需要通过 unreal Python 获取/调用 GameInstance 子系统时使用
+risk: safe
+category: development
 tags: [ue5.6, subsystem, game-instance, python, base-class]
 ---
 
 # GameInstanceSubsystem - API 参考（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 获取/调用 GameInstance 子系统时使用本 skill（description 触发场景）。
+- 本 skill 只在与 game-instance-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UGameInstanceSubsystem` 暴露给 Python 的全部 `UFUNCTION(BlueprintCallable / BlueprintPure)` 成员。方法名与签名依据 `Engine/Source/Runtime/Engine/Public/Subsystems/GameInstanceSubsystem.h` 及相关子类头文件整理；Python 方法名取 `meta=(ScriptMethod=...)` 值转 snake_case，无 `ScriptMethod` 时按 C++ 函数名转 snake_case。精确 Python 暴露名需在目标 UE 5.6 Editor 实测确认。
 
@@ -104,7 +111,7 @@ GameInstanceSubsystem 基类本身不暴露 `UFUNCTION`，所有业务能力由�
 | 验证设置 | `confirm_settings()` | `void ConfirmSettings()` | `None` |
 | 验证设置 | `revert_settings()` | `void RevertSettings()` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -470,7 +477,7 @@ def input_event_binding_example():
    - 某些子系统需要项目配置才能实例化
    - 调用前 Always check `instance is not None`
 
-## 注意事项
+## 限制和注意事项
 
 - GameInstanceSubsystem 基类本身不暴露 `UFUNCTION`；所有业务方法由游戏项目子类实现。本 skill 所列 UFUNCTION 来自 UE 5.6 引擎标准子类（`UGameInstance`、`UGameUserSettingsSubsystem`、`UCameraSubsystem` 等），具体项目子类以目标 Editor 实测为准。
 - PIE/运行时会话结束即销毁；Editor 静态脚本模式下不一定存在可用 GameInstance。

@@ -1,10 +1,17 @@
 ---
 name: editor-scripting-utilities
 description: UEditorScriptingUtilities（UE 5.6）编辑器脚本工具库 - Actor/ActorLabel管理、命名冲突检测、批量重命名、资产路径操作；在 Agent 需要通过 unreal Python 对编辑器执行脚本化资产操作时使用
+risk: critical
+category: development
 tags: [ue5.6, editor, scripting, python, statics]
 ---
 
 # EditorScriptingUtilities - 编辑器脚本工具库（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 对编辑器执行脚本化资产操作时使用本 skill（description 触发场景）。
+- 本 skill 只在与 editor-scripting-utilities 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UEditorScriptingUtilities`（`UObject` 派生，**静态类**）通过 Python 可调用的类方法。方法名与签名依据 `EditorScriptingUtilities/Classes/EditorScriptingUtilities.h` 中带 `UFUNCTION(BlueprintCallable / BlueprintPure)` 标记的 static 成员整理；Python 方法名取 `meta=(ScriptMethod=...)` 值并按反射约定转 snake_case。
 
@@ -52,7 +59,7 @@ unreal.EditorScriptingUtilities.rename_actor(actor, "NewName")
 | 辅助 | `get_all_actors_with_tag(world_context, tag, level_name)` | `void GetAllActorsWithTag(..., const FName&, const FString&, TArray<AActor*>&)` | `Array[Actor]` |
 | 辅助 | `find_actor_by_label(world_context, label, b_include_descendants)` | `AActor* FindActorByLabel(..., const FString&, bool)` | `Actor` 或 `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -82,7 +89,7 @@ if __name__ == "__main__":
     script_editor()
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - **全部方法仅编辑器 Python 可用**（`WITH_EDITOR`），运行时环境调用返回 `BLOCKED_TOOLING`。
 - `RenameSelectedActors` 的 `b_force` 参数决定是否强制重命名（覆盖已有名称）；`false` 时保留原始名称。

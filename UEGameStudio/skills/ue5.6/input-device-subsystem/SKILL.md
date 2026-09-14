@@ -1,10 +1,17 @@
 ---
 name: input-device-subsystem
 description: UInputDeviceSubsystem（UE 5.6）输入设备属性与设备查询 - 激活/查询/移除输入设备属性、查询用户最近使用的硬件设备与其标识；在 Agent 需要通过 unreal Python 查询输入设备状态或激活设备属性（力反馈/触觉等）时使用
+risk: safe
+category: development
 tags: [ue5.6, input, device, haptics, python, subsystem]
 ---
 
 # InputDeviceSubsystem - 输入设备属性与设备查询（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 查询输入设备状态或激活设备属性（力反馈/触觉等）时使用本 skill（description 触发场景）。
+- 本 skill 只在与 input-device-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UInputDeviceSubsystem` 暴露给 Python 的运行时输入设备能力。方法名与签名依据 `Engine/Source/Runtime/Engine/Classes/GameFramework/InputDeviceSubsystem.h` 中带 `UFUNCTION(BlueprintCallable)` 标记的成员整理。C++ 函数未声明 `ScriptMethod` meta，Python 方法名按 C++ 函数名转 snake_case；精确 Python 暴露名需实测确认。
 
@@ -34,7 +41,7 @@ api = unreal.get_engine_subsystem(unreal.InputDeviceSubsystem)
 | 设备查询 | `get_most_recently_used_input_device_id(in_user_id, of_type=...)` | `FInputDeviceId GetMostRecentlyUsedInputDeviceId(const FPlatformUserId, const EHardwareDevicePrimaryType)` | `InputDeviceId` |
 | 设备查询 | `get_input_device_hardware_identifier(input_device)` | `FHardwareDeviceIdentifier GetInputDeviceHardwareIdentifier(const FInputDeviceId) const` | `HardwareDeviceIdentifier` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -59,7 +66,7 @@ if api.is_property_active(handle):
     api.remove_device_property_by_handle(handle)
 ```
 
-## 注意事项
+## 限制和注意事项
 
 - 本 skill 只提供 Python 调用 API；输入能力归属与具体 Gameplay 输入层所有权在 ue-gameplay-engineer，本 skill 不越界实现输入逻辑。
 - 激活/移除属于运行时设备交互，不修改任何项目资产。

@@ -1,10 +1,17 @@
 ---
 name: quartz-subsystem
 description: UQuartzSubsystem（UE 5.6）Quartz 世界子系统 - 时钟创建/查询/删除与音频延迟统计；在 Agent 需要通过 unreal Python 调用 Quartz 时钟调度接口时使用，音频职责归 game-audio-technical-specialist
+risk: safe
+category: development
 tags: [ue5.6, audio, quartz, clock, python, subsystem]
 ---
 
 # QuartzSubsystem - Quartz 时钟调度（UE 5.6）
+
+## 何时使用此技能
+
+- 当 Agent 需要通过 unreal Python 调用 Quartz 时钟调度接口时使用本 skill（description 触发场景）。
+- 本 skill 只在与 quartz-subsystem 相关的模块/插件/API 操作时加载，不用于无关通用任务。
 
 本 skill 描述 UE 5.6 引擎 `UQuartzSubsystem` 暴露给 Python 的 Quartz 时钟操作与延迟统计方法。方法名与签名依据 `Engine/Source/Runtime/AudioMixer/Public/Quartz/QuartzSubsystem.h` 中带 `UFUNCTION(BlueprintCallable)` 标记的成员整理；无 `ScriptMethod` 元数据时按 C++ 函数名转 snake_case，精确 Python 暴露名需实测确认。
 
@@ -48,7 +55,7 @@ api = world.get_subsystem(unreal.QuartzSubsystem)
 | 延迟指标 | `get_round_trip_max_latency(world_context_object)` | `float GetRoundTripMaxLatency(const UObject*)` | `float` |
 | 配置 | `set_quartz_subsystem_tickable_when_paused(b_in_tickable_when_paused)` | `void SetQuartzSubsystemTickableWhenPaused(const bool)` | `None` |
 
-## 快速示例
+## 示例
 
 ```python
 import unreal
@@ -406,7 +413,7 @@ def scheduled_beat_events():
    - 确保 `Quantization` 参数匹配预期节奏
    - 不同量化类型影响时间计算
 
-## 注意事项
+## 限制和注意事项
 
 - Quartz 时钟大量为 BP 调用 + 回调委托：本 skill 只提供 `UQuartzSubsystem` 的 Python 调用 API；实际调度（起停、量化、BPM 变更）大多在 `UQuartzClockHandle` 上，精确 Python 暴露名需实测确认。
 - 音频职责归 `game-audio-technical-specialist`；本 skill 不替代其专业判断，也不做音频内容写入。
