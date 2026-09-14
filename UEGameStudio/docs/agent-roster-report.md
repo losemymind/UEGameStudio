@@ -6,10 +6,10 @@
 | --- | --- |
 | 盘点日期 | 2026-09-12 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
-| 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 `_template.md` 和 Git 中已删除的旧 Agent |
+| 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 Git 中已删除的旧 Agent |
 | 机器可读注册表 | `docs/agent-registry.json`（30 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
 | UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 57 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
-| 当前数量 | 30 Agent（不含 `_template.md`）+ 57 SKILL.md + 58 docs/overview.md |
+| 当前数量 | 30 Agent + 57 SKILL.md + 58 docs/overview.md |
 | 运行模式 | 全部为 `mode: subagent` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
 
@@ -29,6 +29,7 @@
 - ✅ 删除孤儿 Agent 文件 `agents/orchestration/batch-g3-coordinator.md`（`794873a` 声称删除但实际残留，且未登记注册表），经用户确认后移除
 - ✅ 移除 `skills/ue5.6/` 下 4 个遗留空目录，目录数 61 → 57
 - ✅ 门禁复跑：`verify-registry.ps1` = `REGISTRY_VERIFY: PASS (30 agents)`；`test-install.ps1` = 通过（30 Agent / 57 skill）
+- ✅ 模板文件裁决：`agents/_template.md`、`skills/_skill-template.md`、`skills/_skill-anatomy.md` 均由 `cb84600` 连带删除；经用户 2026-09-12 裁决**全部不恢复**，仅清理引用（根 `AGENTS.md`、`INSTALL.md`、`agent-registry.json` 与本报告）。安装/校验脚本中的 `_template.md` 排除守卫作为防御性逻辑保留。
 
 ### Batch-G+ 完成（2026-09-09）
 - ✅ `kismet-animation-library` - 11 个函数（已有完整文档）
@@ -75,7 +76,7 @@
 
 2026-09-09 Batch-G+ 完成 3 个 Kismet 库的 `docs/overview.md` 高级文档补充；技能库完整度达到 100%（57 SKILL.md + 58 docs/overview.md，21 个 Kismet 库蒸馏，累计约 3400+ 个函数）。
 
-2026-09-12 会话交接时修正阵容与文档漂移：删除未随提交实际移除的孤儿文件 `batch-g3-coordinator.md`，清理 4 个遗留空 skill 目录，并将注册表、交接文件与本报告同步为磁盘真实现状；`verify-registry.ps1` 与 `test-install.ps1` 均通过（30 Agent / 57 skill）。`.opencode/` 已移出版本控制并加入 `.gitignore`。
+2026-09-12 会话交接时修正阵容与文档漂移：删除未随提交实际移除的孤儿文件 `batch-g3-coordinator.md`，清理 4 个遗留空 skill 目录，并将注册表、交接文件与本报告同步为磁盘真实现状；`verify-registry.ps1` 与 `test-install.ps1` 均通过（30 Agent / 57 skill）。`.opencode/` 已移出版本控制并加入 `.gitignore`。同日经用户裁决，`cb84600` 连带删除的三个模板文件（`agents/_template.md`、`skills/_skill-template.md`、`skills/_skill-anatomy.md`）全部不恢复，仅清理其文档引用。
 
 ## 当前阵容总览
 
@@ -231,7 +232,7 @@ QA 测试专家：验证实际功能和构建包行为
 
 ### 当前权限结论
 
-排除 `_template.md` 后，30 个 Agent（含本轮新增的 `localization-lqa-specialist` 与 `security-engineer`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。
+30 个 Agent（含本轮新增的 `localization-lqa-specialist` 与 `security-engineer`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。
 
 ## 主要协作链路
 

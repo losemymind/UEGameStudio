@@ -3,7 +3,7 @@
   "registryType": "uegamestudio-agent-roster",
   "generatedAt": "2026-08-31T00:00:00+08:00",
   "agentCount": 30,
-  "notes": "机器可读权威注册表。实际存在校验以 UEGameStudio/docs/agent-registry.json 与实际 agents/**/*.md frontmatter 双向比对为准；排除 _template.md。除 permission 白名单字段外全部默认 deny。",
+  "notes": "机器可读权威注册表。实际存在校验以 UEGameStudio/docs/agent-registry.json 与实际 agents/**/*.md frontmatter 双向比对为准。除 permission 白名单字段外全部默认 deny。",
   "agents": [
     {
       "id": "academic-anthropologist",

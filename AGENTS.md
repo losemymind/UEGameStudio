@@ -9,15 +9,14 @@
 ```
 E:\GitHub\UEGameStudio\
 ├── UEGameStudio\          ← 成品目录（自包含，可独立安装）
-│   ├── agents\            ← 28 个 opencode subagent（按 7 个分层子目录组织）
+│   ├── agents\            ← 30 个 opencode subagent（按 7 个分层子目录组织）
 │   │   ├── orchestration\   总控编排专家（工作流引擎，建议入口）
 │   │   ├── directors\       游戏总设计师、技术总监、游戏制作人、视听总监
 │   │   ├── academic\        人类学家、地理学家、历史学家、叙事学家、心理学家
 │   │   ├── design\          数值、经济、关卡与任务设计
 │   │   ├── technical\       UE 核心系统、Gameplay、AI、世界构建、动画、UI、技术美术、音频、工具管线、性能、构建
-│   │   ├── production\      资产生产管理、视觉资产制作
-│   │   ├── qa\              资产合规审计、QA 测试
-│   │   └── _template.md     新 Agent 编写模板（不安装）
+│   │   ├── production\      资产生产管理、视觉资产制作、本地化与 LQA
+│   │   └── qa\              资产合规审计、安全专业评审、QA 测试
 │   ├── docs\               治理文档（不随安装部署，仅作参考）
 │   │   ├── session-handoff.md
 │   │   └── agent-roster-report.md
@@ -52,4 +51,3 @@ E:\GitHub\UEGameStudio\
 - 会话交接 / 下个会话启动要求：`UEGameStudio/docs/session-handoff.md`
 - 阵容与权限报告：`UEGameStudio/docs/agent-roster-report.md`
 - 成品安装到目标项目：`UEGameStudio/INSTALL.md`
-- 新 Agent 编写模板：`UEGameStudio/agents/_template.md`
