@@ -2,12 +2,12 @@
 
 ## 1. 成品内容
 
-本目录包含 30 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
+本目录包含 31 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
 
 | 路径 | 说明 |
 | --- | --- |
 | `AGENTS.md` | 安装后由目标项目 `opencode.json` 加载的 UEGameStudio 统一规则 |
-| `agents/` | 30 个 `mode: subagent` 专业 Agent |
+| `agents/` | 31 个 `mode: subagent` 专业 Agent |
 | `skills/` | 按 UE 版本组织的 skill（`skills/<ue-版本>/<skill>/SKILL.md`），部署到目标项目 `.opencode/skills/`；只安装目标引擎版本 |
 | `docs/formal-project-validation.md` | 正式 UE 项目中的完整实测、故障注入和自动修复方法 |
 | `scripts/install.ps1` | 幂等安装/升级脚本，复制 Agent 并安全合并 `opencode.json` |
@@ -40,7 +40,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 
 安装器会：
 
-1. 将 30 个 Agent 复制到 `<目标项目>/.opencode/agent/`。
+1. 将 31 个 Agent 复制到 `<目标项目>/.opencode/agent/`。
 2. 将 `-SkillsVersion` 指定版本的 skills 复制到 `<目标项目>/.opencode/skills/<版本>/`。
 3. 复制 `AGENTS.md` 到 `<目标项目>/UEGameStudio/AGENTS.md`。
 4. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
@@ -98,7 +98,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 该测试在系统临时目录建立隔离目标，验证：
 
 - 已有 `opencode.json` 属性被保留。
-- 30 个 Agent 被复制。
+- 31 个 Agent 被复制。
 - `-SkillsVersion` 指定版本的 skills 被复制到 `.opencode/skills/<版本>/`，且 SKILL.md / docs/overview.md 齐全。
 - 不存在的版本目录会被安装器拒绝且不产生 `.opencode/skills/`。
 - 目标项目根 `AGENTS.md` 内容保持不变，且不会被安装器注入 `instructions`。
@@ -110,7 +110,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 
 1. 打开目标 `opencode.json`，确认已有配置仍在。
 2. 确认 `instructions` 包含且只包含一份 `UEGameStudio/AGENTS.md`，没有由安装器新增的 `AGENTS.md`。
-3. 确认 `.opencode/agent/` 有 30 个 Agent。
+3. 确认 `.opencode/agent/` 有 31 个 Agent。
 4. 确认 `.opencode/skills/<版本>/<skill>/SKILL.md` 存在（例如 `.opencode/skills/ue5.6/editor-actor-subsystem/SKILL.md`）。
 5. 重启 opencode，使配置、Agent 和 skill 重新加载。
 6. 使用 `/agents` 或当前版本等价命令确认阵容。

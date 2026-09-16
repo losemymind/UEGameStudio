@@ -86,7 +86,7 @@ try {
     Assert-True ($freshConfig.instructions[0] -eq 'UEGameStudio/AGENTS.md') 'Fresh config must add UEGameStudio/AGENTS.md.'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $freshRoot 'AGENTS.md'))) 'Installer must not create project-owned AGENTS.md.'
 
-    Write-Host 'Installer tests passed: automatic root AGENTS separation, 30-agent copy, ue5.6 skills copy, version enforcement, UEGameStudio-only merge, fresh config, and idempotence.'
+    Write-Host 'Installer tests passed: automatic root AGENTS separation, 31-agent copy, ue5.6 skills copy, version enforcement, UEGameStudio-only merge, fresh config, and idempotence.'
 }
 finally {
     if (Test-Path -LiteralPath $testRoot) {

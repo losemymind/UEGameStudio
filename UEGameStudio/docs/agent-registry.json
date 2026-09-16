@@ -465,10 +465,10 @@
       "permission": {
         "task": "deny",
         "bash": "deny",
-        "webfetch": "deny",
-        "websearch": "deny",
+        "webfetch": "allow",
+        "websearch": "allow",
         "external_directory": "deny",
-        "edit": "restricted:.opencode/task-plans/**;.adr/performance-*.md"
+        "edit": "allow"
       }
     }
   ]

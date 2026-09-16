@@ -4,12 +4,12 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 盘点日期 | 2026-09-12 |
+| 盘点日期 | 2026-09-16 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 Git 中已删除的旧 Agent |
-| 机器可读注册表 | `docs/agent-registry.json`（30 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
-| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 57 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
-| 当前数量 | 30 Agent + 57 SKILL.md + 58 docs/overview.md |
+| 机器可读注册表 | `docs/agent-registry.json`（31 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
+| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 63 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
+| 当前数量 | 31 Agent + 63 SKILL.md + 58 docs/overview.md |
 | 运行模式 | 全部为 `mode: subagent` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
 
@@ -17,13 +17,21 @@
 
 | 类别 | 数量 |
 | --- | --- |
-| SKILL.md 总数 | 57 |
+| SKILL.md 总数 | 63 |
 | docs/overview.md 总数 | 58 |
 | 蒸馏 Kismet 库数 | 21 |
 | 蒸馏函数总数（累计估算） | ~3400+ |
+| 性能优化 skill（2026-09-16 新增） | 6 |
 | 完整度 | 100% |
 
 ## 当前技能完成情况
+
+### 2026-09-16 性能架构能力补齐
+- ✅ 新增 Agent `performance-architecture-specialist`（性能架构专家，technical 层），阵容由 30 增至 31；负责 HLOD/快速流送/Mass Entity/Foliage/PCG 架构选型、CPU/GPU/内存/加载预算拆解、跨系统架构契约与 `.adr/performance-*.md` 技术 ADR，不实施、不测量、不验证。
+- ✅ 新增 6 个 UE5 性能优化 skill：`rendering-optimization`、`world-optimization`、`mass-entity`、`animation-optimization`、`streaming-optimization`、`network-optimization`（均含 `SKILL.md` + `evals.json`，`risk: critical`），技能库由 57 增至 63。
+- ✅ `docs/agent-registry.json` 同步为 31 条；`scripts/test-install.ps1` 断言更新为 31 Agent。
+- ✅ **缺陷修复**：该 Agent 原 frontmatter 将 `edit` 写成 `restricted:.opencode/task-plans/**;.adr/performance-*.md`——`restricted:` 是注册表/校验脚本的内部摘要表示，不是合法权限取值（opencode 只接受 `allow`/`ask`/`deny` 或 glob 对象），导致目标项目加载时报 `ConfigInvalidError`。已改为 `edit: allow`，并删除不在 opencode 权限键表内的 `retrieve`/`net`，补齐与其余 Agent 同构的显式权限矩阵。
+- ✅ **门禁加固**：`scripts/verify-registry.ps1` 新增 permission 校验——顶层键必须属于 opencode 权限键集合，取值必须为 `allow`/`ask`/`deny` 或 glob 对象；此类「只在加载时才炸」的非法权限写法现在会在门禁阶段直接 FAIL。
 
 ### 2026-09-14 标准化整改（贴合 agent-creator / skill-creator 规范）
 - ✅ 30 个 Agent 按 agent-creator 规范重排：frontmatter 增 `name`（= 文件名，kebab-case）；正文统一为七段结构（角色定位 / 职责范围〔必须做·拒绝做〕 / 工作方式 / 工具与权限 / 协作协议〔含升级路径〕 / 完成标准 / 限制与边界）。原有职责边界、权限矩阵（`"*": deny` + 逐键显式）、门禁 ID、`BLOCKED_*`/`DRAFT_ONLY` 协议、三权分离与委派契约均逐字保留。`validate_agents.py --strict` = 30/30 通过。
@@ -83,6 +91,8 @@
 
 2026-09-12 会话交接时修正阵容与文档漂移：删除未随提交实际移除的孤儿文件 `batch-g3-coordinator.md`，清理 4 个遗留空 skill 目录，并将注册表、交接文件与本报告同步为磁盘真实现状；`verify-registry.ps1` 与 `test-install.ps1` 均通过（30 Agent / 57 skill）。`.opencode/` 已移出版本控制并加入 `.gitignore`。同日经用户裁决，`cb84600` 连带删除的三个模板文件（`agents/_template.md`、`skills/_skill-template.md`、`skills/_skill-anatomy.md`）全部不恢复，仅清理其文档引用。
 
+2026-09-16 补齐性能架构决策能力：新增 `performance-architecture-specialist`（阵容 30 → 31）与 6 个 UE5 性能优化 skill（技能库 57 → 63，均随附 `evals.json`），注册表与安装器断言同步。同日修复该 Agent 的非法 `edit` 权限写法（`restricted:` 字面值导致目标项目 `ConfigInvalidError`），并给 `verify-registry.ps1` 增加 permission 键名与取值校验，使该类错误在门禁阶段即可发现。同时收敛其权属：任务树写入权归还总控编排专家，ADR 统一落入项目根 `.adr/` 并由技术总监裁定，正文「权限边界」措辞改为「职责边界（专业自律，非运行时强制）」。
+
 ## 当前阵容总览
 
 ```text
@@ -107,6 +117,7 @@
 │  ├─ UE 技术美术工程师
 │  ├─ 游戏音频技术专家
 │  ├─ UE 工具与资产管线工程师
+│  ├─ 性能架构专家
 │  ├─ 性能剖析专家
 │  └─ UE 游戏构建专家
 └─ 游戏制作人
@@ -181,6 +192,7 @@ QA 测试专家：验证实际功能和构建包行为
 | [UE 游戏世界构建师](../agents/technical/ue-world-builder.md) | `ue-world-builder` | Map、World Partition、Data Layer、Level Instance、PCG 与最终空间组装 | 只拥有地图级 Package 和白名单实例参数；禁止 Blueprint CDO、Construction Script 与类资产 |
 | [角色动画工程师](../agents/technical/character-animation-engineer.md) | `character-animation-engineer` | Retarget、AnimBP、Montage、Motion Warping、Control Rig、IK 与动画优化 | 动画资产及动画专属 C++；禁止战斗结算和模型源资产创作 |
 | [UE UI 工程师](../agents/technical/ue-ui-engineer.md) | `ue-ui-engineer` | UMG、CommonUI、Widget C++、数据绑定、输入焦点、HUD、菜单与适用的 UI 可访问性 | UI 源码和 Widget 资产；禁止核心玩法、任务和战斗计算 |
+| [性能架构专家](../agents/technical/performance-architecture-specialist.md) | `performance-architecture-specialist` | HLOD/快速流送/Mass Entity/Foliage/PCG 架构选型、CPU/GPU/内存/加载预算拆解、跨系统架构契约与性能 ADR 草案 | 只产出 `.adr/performance-*.md` 草案；任务树由总控写回；不实施、不测量、不验证 |
 
 功能实施遵循“公共底座—具体业务—专业集成”的依赖方向。关卡任务专家拥有任务设计语义，UE 游戏玩法工程师拥有运行时权威任务状态、Save/Load 和多人复制，世界构建师只摆放实例，UI 只读展示。具体玩法只通过批准接口调用 AI、动画、UI、音频和视觉表现，不能因为需要引用资产而取得其写入权。
 
@@ -237,7 +249,11 @@ QA 测试专家：验证实际功能和构建包行为
 
 ### 当前权限结论
 
-30 个 Agent（含本轮新增的 `localization-lqa-specialist` 与 `security-engineer`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。
+31 个 Agent（含本轮新增的 `performance-architecture-specialist`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。性能架构专家持有 `edit: allow`（经用户 2026-09-16 裁决，以文件正确性优先于机械收窄），其**职责边界**（专业自律，非运行时强制）限定为只产出性能 ADR 草案，不修改源码、配置、资产，也不写入 `.opencode/task-plans/**`。
+
+> **任务树与 ADR 写入权**：`.opencode/task-plans/**` 由总控编排专家唯一写入；专业 Agent 只提交可落盘内容，由其写回节点。ADR 统一存放于项目根 `.adr/`，编号、状态与台账归技术总监；`performance-architecture-specialist` 只提交 `performance-*.md` 候选草案。
+
+> 权限写法约束：`permission` 取值只能是 `allow`/`ask`/`deny`，或 `glob → action` 对象。`restricted:` 一类串是注册表内部摘要表示，写入 frontmatter 会导致 opencode 加载失败；`scripts/verify-registry.ps1` 现已对此校验。
 
 ## 主要协作链路
 
@@ -341,6 +357,7 @@ QA 测试专家：验证实际功能和构建包行为
 | 资产合规 | 已覆盖 | 资产合规与审计专家 |
 | 功能与包体 QA | 已覆盖 | QA 测试专家 |
 | 性能测量与瓶颈定位 | 已覆盖 | 性能剖析专家 |
+| 跨系统性能架构选型与预算拆解 | 已覆盖 | 性能架构专家（只出架构与 ADR，不实施不测量） |
 | 本地 Build/Cook/Stage/Package | 已覆盖 | UE 游戏构建专家 |
 | UE 纯文本核心系统实现 | 已覆盖 | UE 核心系统工程师 |
 | 具体 UE 玩法、GAS 与多人网络同步 | 已覆盖 | UE 游戏玩法工程师 |
@@ -364,7 +381,8 @@ QA 测试专家：验证实际功能和构建包行为
 | --- | --- | --- | --- |
 | 已解决 | 缺失统一机器可读的 Agent 注册表 | ~~28 个 Agent 仍只能通过目录扫描发现~~ | `docs/agent-registry.json` 已建立；编排与报告可读取该注册表，并由 `scripts/verify-registry.ps1` 与实际 Agent frontmatter 双向校验，漂移即 FAIL |
 | 中 | 二进制资产实施依赖可用的 UE/DCC 控制能力 | 角色定义具备边界，但环境没有对应工具时只能输出计划 | 在具体项目接入时验证 Editor、Commandlet、DCC 与音频工具链 |
-| 中 | 已解决 | ~~当前无独立本地化/LQA 与安全专业 Agent~~ | | 本地化与 LQA、安全专业评审已按其设计落盘；路由、能力矩阵与注册表已同步更新 |
+| 已解决 | 当前无独立本地化/LQA 与安全专业 Agent | ~~能力缺口~~ | 本地化与 LQA、安全专业评审已按其设计落盘；路由、能力矩阵与注册表已同步更新 |
+| 已解决 | 非法权限取值只能等到 opencode 加载时才暴露 | 曾导致目标项目 `ConfigInvalidError`，安装失败 | `verify-registry.ps1` 已增加 permission 键名与取值校验，非法写法在门禁阶段 FAIL |
 
 ## 当前成熟度判断
 
@@ -374,10 +392,10 @@ QA 测试专家：验证实际功能和构建包行为
 | 世界设定与设计研究 | 覆盖较完整 |
 | 数值与经济设计 | 已具备专业分工和门禁 |
 | 技术方案与生产规划 | 决策层和实施层均已覆盖 |
-| 质量、性能与构建 | 已具备独立验证角色 |
+| 质量、性能与构建 | 已具备独立验证角色，并补充跨系统性能架构决策角色 |
 | 游戏功能开发 | 已形成公共底座、具体业务、专项集成与世界组装链路 |
 | 视听内容生产 | 已形成方向、管理、制作、技术化、管线和独立审计链路 |
-| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环和确定性治理整改已完成；统一注册表已落地，本地化/LQA 与安全专业能力缺口已补齐；进入真实项目后仍需验证编辑器/DCC 工具可用性 |
+| 总体结论 | `READY_WITH_CONCERNS`：本地 UE 游戏生产角色闭环和确定性治理整改已完成；统一注册表已落地，本地化/LQA、安全专业与性能架构能力已补齐，permission 门禁已加固；进入真实项目后仍需验证编辑器/DCC 工具可用性 |
 
 ## 后续建设原则
 
@@ -392,3 +410,5 @@ QA 测试专家：验证实际功能和构建包行为
 9. 继续保持“制定—实施—验证”分离，实施者不能批准自己的创意、合规、性能或 QA 门禁。
 10. 新 Agent 继续采用英文 kebab-case ID、中文专业正文和 `mode: subagent`。
 11. 所有能力严格止于本地开发和构建游戏包，不扩展到商店、认证、正式发布与 LiveOps。
+12. permission 取值只能是 `allow`/`ask`/`deny` 或 glob 对象；`restricted:` 只是注册表摘要表示，禁止写入 frontmatter。新增或修改 Agent 后必须运行 `verify-registry.ps1`，由门禁拦截非法权限写法。
+13. `.opencode/task-plans/**` 由总控编排专家唯一写入，专业 Agent 只提交可落盘内容；ADR 统一存放于项目根 `.adr/`，编号与状态归技术总监，其他 Agent 只提交候选草案。

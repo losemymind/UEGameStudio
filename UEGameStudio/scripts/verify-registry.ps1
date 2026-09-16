@@ -25,7 +25,7 @@ Assert-NoCondition (Test-Path -LiteralPath $registryPath -PathType Leaf) "regist
 $registry = Get-Content -LiteralPath $registryPath -Raw | ConvertFrom-Json
 Assert-NoCondition ($null -ne $registry -and $registry.agents -is [System.Array]) 'registry must contain an agents array.'
 
-$actualFiles = @(Get-ChildItem -LiteralPath $agentsDir -Recurse -Filter '*.md' -File | Where-Object Name -ne '_ template.md')
+$actualFiles = @(Get-ChildItem -LiteralPath $agentsDir -Recurse -Filter '*.md' -File)
 $actualFiles = @($actualFiles | Where-Object { $_.Name -ne '_template.md' })
 
 Assert-NoCondition ($registry.agentCount -eq $actualFiles.Count) "agentCount in registry ($($registry.agentCount)) does not match actual files ($($actualFiles.Count))."
@@ -112,6 +112,45 @@ $wild = $block | Where-Object { $_ -match '^[ \t]*"\*"\s*:' } | Select-Object -F
     return $summary
 }
 
+function Get-PermissionIssues {
+    param([string[]]$Frontmatter, [string]$AgentId)
+    $allowedKeys = @('read', 'edit', 'glob', 'grep', 'list', 'bash', 'task', 'skill', 'lsp', 'question', 'webfetch', 'websearch', 'external_directory', 'doom_loop')
+    $allowedActions = @('allow', 'ask', 'deny')
+    $permIndex = -1
+    for ($i = 0; $i -lt $Frontmatter.Count; $i++) {
+        if ($Frontmatter[$i] -match '^permission\s*:') { $permIndex = $i; break }
+    }
+    if ($permIndex -lt 0) { return @("${AgentId}: frontmatter has no permission block.") }
+    $block = @()
+    for ($i = $permIndex + 1; $i -lt $Frontmatter.Count; $i++) {
+        if ($Frontmatter[$i] -match '^\S') { break }
+        $block += $Frontmatter[$i]
+    }
+    $issues = @()
+    $topIndent = $null
+    foreach ($line in $block) {
+        if ($line.Trim() -eq '') { continue }
+        if ($line -notmatch '^([ \t]*)(\S.*)$') { continue }
+        $indent = $Matches[1].Length
+        $rest = $Matches[2]
+        if ($null -eq $topIndent) { $topIndent = $indent }
+        $isTopLevel = ($indent -le $topIndent)
+        if ($rest -notmatch '^([^:]+):\s*(.*)$') {
+            $issues += "${AgentId}: unparsable permission line '$($line.Trim())'"
+            continue
+        }
+        $key = $Matches[1].Trim().Trim('"')
+        $value = $Matches[2].Trim().Trim('"')
+        if ($isTopLevel -and $key -ne '*' -and ($allowedKeys -notcontains $key)) {
+            $issues += "${AgentId}: unknown permission key '$key'"
+        }
+        if ($value -ne '' -and ($allowedActions -notcontains $value)) {
+            $issues += "${AgentId}: permission '$key' has invalid action '$value' (expected allow, ask, deny, or an object of glob rules)"
+        }
+    }
+    return $issues
+}
+
 function Get-BodyTitle {
     param([string]$Path)
     $t = Select-String -LiteralPath $Path -Pattern '^# ' | Select-Object -First 1
@@ -135,6 +174,7 @@ foreach ($entry in $registry.agents) {
 
     $summary = Get-PermissionSummary -Frontmatter $fm
     if ($summary['default'] -ne 'deny') { $issues += "${id}: default permission is '$($summary['default'])', expected deny" }
+    $issues += Get-PermissionIssues -Frontmatter $fm -AgentId $id
     foreach ($k in @('task', 'bash', 'webfetch', 'external_directory', 'edit')) {
         if ($entry.permission.$k -ne $summary[$k]) {
             $issues += "${id}: permission.$k is '$($summary[$k])', registry has '$($entry.permission.$k)'"
