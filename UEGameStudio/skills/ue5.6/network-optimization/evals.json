@@ -1,0 +1,41 @@
+{
+  "skill_name": "network-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "query": "我的UE5.6多人游戏Bandwidth超限导致玩家卡顿，如何配置MaxBandwidth？",
+      "should_trigger": true,
+      "expected_output": "在DefaultEngine.ini中设置MaxBandwidth=100000，MaxClientBandwidth=50000，确保≤客户端上行带宽×0.8。"
+    },
+    {
+      "id": 2,
+      "query": "如何优化Replication Graph以减少网络流量？",
+      "should_trigger": true,
+      "expected_output": "创建自定义UReplicationGraph子类，仅将AlwaysRelevant Actors放入AlwaysRelevant列表，其余使用DistanceBasedNode。"
+    },
+    {
+      "id": 3,
+      "query": "预测回滚导致动画抖动，如何优化？",
+      "should_trigger": true,
+      "expected_output": "设置RollbackError阈值≥50cm，仅对关键gameplay对象（如Player Character）启用预测回滚，其他对象使用Interpolation。"
+    },
+    {
+      "id": 4,
+      "query": "Interest Overlap计算导致服务器CPU峰值，如何降低频率？",
+      "should_trigger": true,
+      "expected_output": "将Interest计算频率降至≤10 Hz，并启用NetDormancy减少不活跃Actor的更新。"
+    },
+    {
+      "id": 5,
+      "query": "这个技能能用来优化单机游戏吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    },
+    {
+      "id": 6,
+      "query": "Replication Graph支持NetDormancy吗？",
+      "should_trigger": true,
+      "expected_output": "不支持。必须使用Dormant属性替代NetDormancy。"
+    }
+  ]
+}

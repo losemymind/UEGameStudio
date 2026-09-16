@@ -63,7 +63,12 @@ function Get-FmValue {
     param([string[]]$Frontmatter, [string]$Key)
     $match = $Frontmatter | Where-Object { $_ -match "^$Key\s*:" } | Select-Object -First 1
     if ($null -eq $match) { return $null }
-    return ($match -replace "^$Key\s*:\s*", '').Trim()
+    $value = ($match -replace "^$Key\s*:\s*", '').Trim()
+    # Remove surrounding quotes if present
+    if ($value.Length -ge 2 -and $value.StartsWith('"') -and $value.EndsWith('"')) {
+        $value = $value.Trim('"')
+    }
+    return $value
 }
 
 function Get-PermissionSummary {

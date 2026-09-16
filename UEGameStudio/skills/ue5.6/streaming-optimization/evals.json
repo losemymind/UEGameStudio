@@ -1,0 +1,41 @@
+{
+  "skill_name": "streaming-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "query": "我的项目内存池泄漏导致OOM，如何排查？",
+      "should_trigger": true,
+      "expected_output": "检查所有MemoryPool::Allocate()调用处是否都有对应的Release()调用，特别是在OnComponentDestroyed回调中。"
+    },
+    {
+      "id": 2,
+      "query": "关卡流送时卡顿，如何配置StreamingDistance？",
+      "should_trigger": true,
+      "expected_output": "开放世界项目StreamingDistance建议≥5000，竞速游戏建议≥8000。"
+    },
+    {
+      "id": 3,
+      "query": "Texture Streaming导致画面模糊，如何调整MaxStreamingTextureSize？",
+      "should_trigger": true,
+      "expected_output": "PC平台≥2048，移动端≥1024，确保不超过显存带宽限制。"
+    },
+    {
+      "id": 4,
+      "query": "异步加载Actor无法在BeginPlay前访问，怎么办？",
+      "should_trigger": true,
+      "expected_output": "必须等待OnActorLoaded回调后才能访问加载的Actor，或使用FTickableGameObject延迟初始化。"
+    },
+    {
+      "id": 5,
+      "query": "这个技能能用于烘焙关卡吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    },
+    {
+      "id": 6,
+      "query": "Texture Group设置为TG_Default会被Streaming管理吗？",
+      "should_trigger": true,
+      "expected_output": "不会。必须显式指定Texture Group（如Mobile或Default），TG_Default不会被Streaming管理。"
+    }
+  ]
+}

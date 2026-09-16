@@ -39,7 +39,7 @@ try {
     & $installer -TargetProject $testRoot -SkillsVersion 'ue5.6' -NoConfigBackup
 
     $installedAgents = @(Get-ChildItem -LiteralPath (Join-Path $testRoot '.opencode\agent') -Recurse -Filter '*.md' -File)
-    Assert-True ($installedAgents.Count -eq 30) "Expected 30 installed agents, found $($installedAgents.Count)."
+    Assert-True ($installedAgents.Count -eq 31) "Expected 31 installed agents, found $($installedAgents.Count)."
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $testRoot '.opencode\agent\_template.md'))) 'Template must not be installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\AGENTS.md')) 'UEGameStudio/AGENTS.md was not installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\docs\formal-project-validation.md')) 'Validation method was not installed.'

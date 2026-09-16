@@ -1,0 +1,41 @@
+{
+  "skill_name": "mass-entity",
+  "evals": [
+    {
+      "id": 1,
+      "query": "我的Mass Entity运行时崩溃，提示'Mass has not been cooked'，怎么办？",
+      "should_trigger": true,
+      "expected_output": "在Project Settings > Packaging中勾选'Cook Mass Data'，或使用命令行-run=Cook手动Cook Mass数据。"
+    },
+    {
+      "id": 2,
+      "query": "如何将传统Actor迁移到Mass Entity？",
+      "should_trigger": true,
+      "expected_output": "创建UActorDistributor子类，注册到UMassEntitySystem，并在蓝图中使用'MassActor'代替'AActor'。"
+    },
+    {
+      "id": 3,
+      "query": "Actor Distributor和Entity Descriptor有什么关系？",
+      "should_trigger": true,
+      "expected_output": "Actor Distributor负责将Actor状态映射到Mass Data，Entity Descriptor定义Entity的Component和Tags，两者必须一一对应。"
+    },
+    {
+      "id": 4,
+      "query": "Mass Entity支持Tick函数吗？",
+      "should_trigger": true,
+      "expected_output": "不支持。Mass Entity必须改为使用FMassEntityTask进行批量更新。"
+    },
+    {
+      "id": 5,
+      "query": "这个技能能用来优化网络同步吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    },
+    {
+      "id": 6,
+      "query": "运行时缺少Mass Cooked数据会怎样？",
+      "should_trigger": true,
+      "expected_output": "会导致FError::Throw运行时崩溃，必须提前检查MassEntitySubsystem->IsCooked()。"
+    }
+  ]
+}

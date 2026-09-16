@@ -1,0 +1,35 @@
+{
+  "skill_name": "rendering-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "query": "我的UE5.6项目HLOD没有生成，导致Draw Call激增，应该怎么办？",
+      "should_trigger": true,
+      "expected_output": "指导使用-run=BuildHLOD命令行生成HLOD数据，或在UE Editor中通过Project Settings启用HLOD自动生成功能。"
+    },
+    {
+      "id": 2,
+      "query": "如何配置LOD链以避免角色切换时的可见突变？",
+      "should_trigger": true,
+      "expected_output": "检查Mesh Asset的LOD Settings，确保Screen Size链平滑过渡（相邻LOD差异≥0.1），多边形面数递减比例保持≥50%。"
+    },
+    {
+      "id": 3,
+      "query": "我想优化Niagara粒子系统的性能，如何配置预算？",
+      "should_trigger": true,
+      "expected_output": "在DefaultNiagara.ini中配置Budget Allocator，设置ParticleCount的MinBudget和MaxBudget参数。"
+    },
+    {
+      "id": 4,
+      "query": "UE5.5的HLOD生成流程和UE5.6一样吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    },
+    {
+      "id": 5,
+      "query": "这个技能能用来优化音效吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    }
+  ]
+}

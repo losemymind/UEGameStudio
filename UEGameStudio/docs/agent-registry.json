@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "registryType": "uegamestudio-agent-roster",
-  "generatedAt": "2026-08-31T00:00:00+08:00",
-  "agentCount": 30,
+  "generatedAt": "2026-09-16T00:00:00+08:00",
+  "agentCount": 31,
   "notes": "机器可读权威注册表。实际存在校验以 UEGameStudio/docs/agent-registry.json 与实际 agents/**/*.md frontmatter 双向比对为准。除 permission 白名单字段外全部默认 deny。",
   "agents": [
     {
@@ -453,6 +453,22 @@
         "webfetch": "allow",
         "external_directory": "allow",
         "edit": "allow"
+      }
+    },
+    {
+      "id": "performance-architecture-specialist",
+      "file": "technical/performance-architecture-specialist.md",
+      "layer": "technical",
+      "title": "性能架构专家",
+      "mode": "subagent",
+      "description": "UE5 性能架构决策专家：针对场景需求（大量模型/植被/NPC/大世界）选择 HLOD/快速流送/Mass Entity/Foliage/PCG 优化策略，产出性能预算与 ADR，供实施 Agent 落地。不负责性能测量与具体实施。",
+      "permission": {
+        "task": "deny",
+        "bash": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "external_directory": "deny",
+        "edit": "restricted:.opencode/task-plans/**;.adr/performance-*.md"
       }
     }
   ]

@@ -1,0 +1,41 @@
+{
+  "skill_name": "world-optimization",
+  "evals": [
+    {
+      "id": 1,
+      "query": "我的UE5.6大型开放世界项目流送时卡顿，如何配置WorldPartition Streaming Policy？",
+      "should_trigger": true,
+      "expected_output": "在DefaultWorldPartition.ini中配置StreamingPolicy，调整ViewDistance、RenderDistance和StreamingDistance参数。"
+    },
+    {
+      "id": 2,
+      "query": "Data Layer应该按物理位置还是功能划分？",
+      "should_trigger": true,
+      "expected_output": "按功能划分（如Game/Level1/StaticGeometry, Gameplay/Characters），避免单个Data Layer含多个不相关关卡。"
+    },
+    {
+      "id": 3,
+      "query": "PCG生成性能回退，如何优化？",
+      "should_trigger": true,
+      "expected_output": "在PCGSettings.ini中配置MaxInstancesPerBatch=100，InstanceSpacing=50.0，并启用bEnableCulling。"
+    },
+    {
+      "id": 4,
+      "query": "Foliage Actor和Mass Foliage有什么区别？",
+      "should_trigger": true,
+      "expected_output": "Mass Foliage适用于静态植被（数量≥10,000），Draw Call≤10；Foliage Actor适用于需要Tick或碰撞响应的动态交互植被。"
+    },
+    {
+      "id": 5,
+      "query": "这个技能能用于移动平台吗？",
+      "should_trigger": false,
+      "expected_output": ""
+    },
+    {
+      "id": 6,
+      "query": "怎么检查 streaming 命中率？",
+      "should_trigger": true,
+      "expected_output": "打开Window > Developer Tools > profiling > Streaming，观察流送命中率（目标≥95%）。"
+    }
+  ]
+}
