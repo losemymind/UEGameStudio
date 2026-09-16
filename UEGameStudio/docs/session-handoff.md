@@ -4,13 +4,13 @@
 
 ## 仓库状态速览
 
-- **git**：分支 `master`，remote `origin`（`https://github.com/losemymind/UEGameStudio.git`）；HEAD `1994e1d`（已与 `origin/master` 同步）。**本会话改动仍在工作区未提交**（经用户指示不擅自提交或推送）。
+- **git**：分支 `master`，remote `origin`（`https://github.com/losemymind/UEGameStudio.git`）；本会话提交 `e8f61ec` 已推送，与 `origin/master` 同步。
 - **成品结构**：`UEGameStudio/` = `agents/`、`skills/ue5.6/`、`docs/`、`scripts/`、`AGENTS.md`、`INSTALL.md`。
 - **Agent 阵容**：31 个，分布 orchestration / directors / academic / design / technical(12) / production / qa 共 7 层；全部 `mode: subagent`；`docs/agent-registry.json` 31 条与磁盘一致。
 - **技能库**：`skills/ue5.6/` 共 63 个 skill（63 SKILL.md + 58 docs/overview.md），21 个 Kismet 库；其中 6 个性能优化 skill 随附 `evals.json`。
 - **门禁**：`verify-registry.ps1` = `REGISTRY_VERIFY: PASS (31 agents verified)`；`test-install.ps1` = 通过（31 Agent / 63 skill / 幂等）；`validate_agents.py --strict` = 31/31；`validate_skills.py --strict` = 63/63（仅余 evals.json 建议项）。
 
-## 本会话已完成改动（工作区，未提交）
+## 本会话已完成改动（已提交 `e8f61ec` 并推送）
 
 1. **修复 `performance-architecture-specialist` 非法权限（目标项目加载报错根因）**
    - 原 frontmatter `edit: restricted:.opencode/task-plans/**;.adr/performance-*.md`：`restricted:` 是注册表/校验脚本的内部摘要表示，不是 opencode 合法取值（只接受 `allow`/`ask`/`deny` 或 glob 对象），导致 ME 项目安装后报 `ConfigInvalidError: Expected PermissionActionConfig`。
@@ -28,13 +28,14 @@
 4. **文档漂移修正（30 → 31 Agent、57 → 63 skill）**
    - `INSTALL.md` 5 处计数、根 `AGENTS.md` 阵容计数与 technical 层描述、`test-install.ps1` 提示文案。
    - `agent-roster-report.md`：报告信息、技能统计、新增 2026-09-16 条目、阵容树、功能层与能力矩阵、权限结论（含 `edit: allow` 依据、`职责边界` 措辞与任务树/ADR 权属说明）、治理问题表（顺带修了 1 处列数错行）、后续建设原则第 12 条。
-5. **副作用说明**：`.opencode/` 仍不入版本控制；未执行任何 `git add`/`commit`/`push`；根目录 `opencode.jsonc`（仅 `$schema`）保留不动。
+5. **副作用说明**：`.opencode/` 未纳入版本控制；根目录 `opencode.jsonc`（仅 `$schema`）保留不动。改动共 9 个文件，均位于 `UEGameStudio/` 与根 `AGENTS.md`。
 
 ## 已知待办 / 潜在风险
 
-- **本会话改动未提交**：需用户明确指示后才提交推送（工作区含 2 个 Agent/脚本类改动 + 文档改动）。
+- **本会话改动已提交推送**（`e8f61ec`）；本文件为随之同步的收尾提交。
 - **ME 目标项目**：`E:\GitHub\ME` 侧报错与安装由用户自行处理，本会话只修工作区源；ME 当前该文件已被临时改为 `edit: allow`，重装覆盖前请自行确认。
 - **evals.json 缺口**：57 个旧 skill 无独立触发用例（6 个性能 skill 已有）；如需触发回归需后续补齐。
+- **`.adr/` 目录尚未在目标项目中建立**：本次只登记了 ADR 存放约定与权属；实际项目首次写 ADR 时由 `technical-director` 创建目录。
 - **真实项目工具验证**：`.uasset` / DCC / 音频 / 性能 / 构建行为仍需在目标 UE 项目实测（见 `UEGameStudio/docs/formal-project-validation.md`）。
 - **可选扩展**（非必须）：UE 5.7 兼容性清单、按使用率蒸馏插件库、补充已有 skill 的场景示例。
 
