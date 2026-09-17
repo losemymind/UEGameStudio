@@ -11,6 +11,7 @@
 | UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 63 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
 | 当前数量 | 31 Agent + 63 SKILL.md + 58 docs/overview.md |
 | 运行模式 | 全部为 `mode: subagent` |
+| 委派深度配置 | `orchestration-director` 需要目标项目 `opencode.json` 的 `subagent_depth >= 2` 才能委派专业 Agent（opencode 默认 `1`，会在权限检查前直接拦截 `task`）；`scripts/install.ps1` 现已自动确保，详见 `docs/orchestration-director-runbook.md` |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
 
 ## 当前技能覆盖统计（Batch-G++++++）
@@ -32,6 +33,16 @@
 - ✅ `docs/agent-registry.json` 同步为 31 条；`scripts/test-install.ps1` 断言更新为 31 Agent。
 - ✅ **缺陷修复**：该 Agent 原 frontmatter 将 `edit` 写成 `restricted:.opencode/task-plans/**;.adr/performance-*.md`——`restricted:` 是注册表/校验脚本的内部摘要表示，不是合法权限取值（opencode 只接受 `allow`/`ask`/`deny` 或 glob 对象），导致目标项目加载时报 `ConfigInvalidError`。已改为 `edit: allow`，并删除不在 opencode 权限键表内的 `retrieve`/`net`，补齐与其余 Agent 同构的显式权限矩阵。
 - ✅ **门禁加固**：`scripts/verify-registry.ps1` 新增 permission 校验——顶层键必须属于 opencode 权限键集合，取值必须为 `allow`/`ask`/`deny` 或 glob 对象；此类「只在加载时才炸」的非法权限写法现在会在门禁阶段直接 FAIL。
+
+### 2026-09-16 委派深度缺陷修复（总控编排专家）
+
+- ✅ **根因定位**：`orchestration-director` 无法启动其他 subagent，根因是 opencode 的 `subagent_depth` **默认值为 1**，与 `bash` 权限无关。`task` 工具在**权限检查之前**先做深度门禁（`while (b.parentID) h++; if (h >= subagent_depth ?? 1) return fail(...)`），主 Agent 调用编排专家时 `h=1`，`1 >= 1` 直接失败，错误文案为 `Subagent depth limit reached (1). Increase "subagent_depth" to allow nested subagents.`。
+- ✅ **误判排除**：`task` 是 opencode 官方 schema 的合法权限键，编排专家本就持有 `task: allow`；`bash` 与 `task` 为两条独立权限且无相关性（5 个可委派角色均为 `bash: deny`，另有 22 个 Agent 为 `bash: allow` 但 `task: deny`）；深度门禁先于权限查询，放宽权限不改变结果。
+- ✅ **安装侧修复**：`scripts/install.ps1` 写入目标项目 `opencode.json` 时确保 `subagent_depth >= 2`——缺失或 `< 2` 时写入/提升为 `2`，已存在且 `>= 2` 时保留原值不降级，非整数时报错且不改写文件。`scripts/test-install.ps1` 增加对应断言（既有配置补 `2`、全新配置为 `2`、二次运行为 `2`、既有 `5` 不被降级、非整数配置报错且文件未变）。
+- ✅ **结论更正**：本报告同日的初版登记曾把此问题记为「宿主侧环境限制、无法在成品内消除」。该结论错误，已由本次安装器修复取代；`bash` 亦非原因。
+- ✅ **新增 `docs/orchestration-director-runbook.md`**：记录症状与结论、`task` 深度门禁机制与期望链路、`bash` 误判排查三条证据、安装侧修复、宿主侧验证与降级处置（路径 A 顶层/配置修正、路径 B 宿主代执行）、委派契约模板与边界。该文件位于 `docs/`，仅作仓库参考，不随安装部署。
+- ✅ 顺带修正 `session-handoff.md` 第 6 版中已过期的提交指针（`e8f61ec` → 实际收尾提交 `fa639bc`）。
+- ⚠️ **未处理项**：`E:\GitHub\ME` 目标项目的 `opencode.json` 仍缺 `subagent_depth`，按用户本次裁决**不由本仓库代为修改**；重装本成品或手工补写该键即可解除拦截。
 
 ### 2026-09-14 标准化整改（贴合 agent-creator / skill-creator 规范）
 - ✅ 30 个 Agent 按 agent-creator 规范重排：frontmatter 增 `name`（= 文件名，kebab-case）；正文统一为七段结构（角色定位 / 职责范围〔必须做·拒绝做〕 / 工作方式 / 工具与权限 / 协作协议〔含升级路径〕 / 完成标准 / 限制与边界）。原有职责边界、权限矩阵（`"*": deny` + 逐键显式）、门禁 ID、`BLOCKED_*`/`DRAFT_ONLY` 协议、三权分离与委派契约均逐字保留。`validate_agents.py --strict` = 30/30 通过。
@@ -92,6 +103,8 @@
 2026-09-12 会话交接时修正阵容与文档漂移：删除未随提交实际移除的孤儿文件 `batch-g3-coordinator.md`，清理 4 个遗留空 skill 目录，并将注册表、交接文件与本报告同步为磁盘真实现状；`verify-registry.ps1` 与 `test-install.ps1` 均通过（30 Agent / 57 skill）。`.opencode/` 已移出版本控制并加入 `.gitignore`。同日经用户裁决，`cb84600` 连带删除的三个模板文件（`agents/_template.md`、`skills/_skill-template.md`、`skills/_skill-anatomy.md`）全部不恢复，仅清理其文档引用。
 
 2026-09-16 补齐性能架构决策能力：新增 `performance-architecture-specialist`（阵容 30 → 31）与 6 个 UE5 性能优化 skill（技能库 57 → 63，均随附 `evals.json`），注册表与安装器断言同步。同日修复该 Agent 的非法 `edit` 权限写法（`restricted:` 字面值导致目标项目 `ConfigInvalidError`），并给 `verify-registry.ps1` 增加 permission 键名与取值校验，使该类错误在门禁阶段即可发现。同时收敛其权属：任务树写入权归还总控编排专家，ADR 统一落入项目根 `.adr/` 并由技术总监裁定，正文「权限边界」措辞改为「职责边界（专业自律，非运行时强制）」。
+
+2026-09-16 修复总控编排专家委派缺陷：定位到 `orchestration-director` 无法启动其他 subagent 的根因是 opencode `subagent_depth` 默认值 `1`（`task` 的深度门禁先于权限检查，主 Agent → 编排专家的 `h=1` 被 `1 >= 1` 拦截），与 `bash` 权限无关；`scripts/install.ps1` 现确保目标项目 `opencode.json` 的 `subagent_depth >= 2`，`test-install.ps1` 增加对应断言，并新增 `docs/orchestration-director-runbook.md` 记录机制、误判排查与降级处置。本报告同日初版「宿主侧环境限制、无法在成品内消除」的结论已作废更正。
 
 ## 当前阵容总览
 
@@ -255,6 +268,8 @@ QA 测试专家：验证实际功能和构建包行为
 
 > 权限写法约束：`permission` 取值只能是 `allow`/`ask`/`deny`，或 `glob → action` 对象。`restricted:` 一类串是注册表内部摘要表示，写入 frontmatter 会导致 opencode 加载失败；`scripts/verify-registry.ps1` 现已对此校验。
 
+> **委派深度配置（总控编排专家）**：`orchestration-director` 的 `task: allow` 需配合目标项目 `opencode.json` 的 `subagent_depth >= 2` 才能生效。opencode 默认值为 `1`，且 `task` 的深度门禁在权限检查**之前**执行，因此主机（主 Agent）→ 编排专家（`h=1`）→ 专业 Agent 的链路会被拦截；`scripts/install.ps1` 现自动确保该键（缺失或 `< 2` 时写入/提升为 `2`，不覆盖更大值）。若某环境无法设置该键，编排专家应返回 `BLOCKED_TOOLING` 并由宿主接管执行。此问题与 `bash` 权限无关，**不得**以放宽权限（含 `"*": allow`）替代深度配置。详见 `docs/orchestration-director-runbook.md`。
+
 ## 主要协作链路
 
 ### 总控需求与规划门禁
@@ -383,6 +398,7 @@ QA 测试专家：验证实际功能和构建包行为
 | 中 | 二进制资产实施依赖可用的 UE/DCC 控制能力 | 角色定义具备边界，但环境没有对应工具时只能输出计划 | 在具体项目接入时验证 Editor、Commandlet、DCC 与音频工具链 |
 | 已解决 | 当前无独立本地化/LQA 与安全专业 Agent | ~~能力缺口~~ | 本地化与 LQA、安全专业评审已按其设计落盘；路由、能力矩阵与注册表已同步更新 |
 | 已解决 | 非法权限取值只能等到 opencode 加载时才暴露 | 曾导致目标项目 `ConfigInvalidError`，安装失败 | `verify-registry.ps1` 已增加 permission 键名与取值校验，非法写法在门禁阶段 FAIL |
+| 已解决 | 总控编排专家无法委派专业 Agent（opencode `subagent_depth` 默认 1 拦截 `task`） | 默认配置下主 Agent → 编排专家 → 专业 Agent 链路不可用，编排层无法工作 | `scripts/install.ps1` 现确保目标项目 `opencode.json` 的 `subagent_depth >= 2`；`test-install.ps1` 已加断言。详见 `docs/orchestration-director-runbook.md` |
 
 ## 当前成熟度判断
 

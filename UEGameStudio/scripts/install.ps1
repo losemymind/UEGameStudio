@@ -160,6 +160,21 @@ else {
     $config.instructions = [string[]]$instructionList
 }
 
+$minimumSubagentDepth = 2
+$subagentDepthProperty = $config.PSObject.Properties['subagent_depth']
+if ($null -eq $subagentDepthProperty) {
+    $config | Add-Member -NotePropertyName 'subagent_depth' -NotePropertyValue $minimumSubagentDepth
+}
+else {
+    $currentSubagentDepth = 0
+    if (-not [int]::TryParse([string]$config.subagent_depth, [ref]$currentSubagentDepth)) {
+        throw 'Existing opencode.json subagent_depth must be an integer. It was not modified.'
+    }
+    if ($currentSubagentDepth -lt $minimumSubagentDepth) {
+        $config.subagent_depth = $minimumSubagentDepth
+    }
+}
+
 $json = $config | ConvertTo-Json -Depth 100
 $temporaryConfig = "$configPath.uegamestudio-$([guid]::NewGuid().ToString('N')).tmp"
 $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
@@ -171,3 +186,4 @@ Write-Host "Installed skills ($SkillsVersion): $($skillDirs.Count) skills to $(J
 Write-Host "Installed project instructions: $(Join-Path $targetProductRoot 'AGENTS.md')"
 Write-Host "Installed validation method: $(Join-Path $targetProductDocs 'formal-project-validation.md')"
 Write-Host "Updated opencode configuration: $configPath"
+Write-Host "Nested subagent delegation: subagent_depth = $($config.subagent_depth) (required by orchestration-director)"

@@ -55,12 +55,14 @@ try {
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'PROJECT.md' }).Count -eq 1) 'Existing instruction was lost or duplicated.'
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'AGENTS.md' }).Count -eq 0) 'Installer must not inject project AGENTS.md into instructions.'
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'UEGameStudio/AGENTS.md' }).Count -eq 1) 'UEGameStudio/AGENTS.md must appear exactly once.'
+    Assert-True ($config.subagent_depth -eq 2) 'Existing config must receive subagent_depth = 2 so orchestration-director can delegate.'
 
     & $installer -TargetProject $testRoot -SkillsVersion 'ue5.6' -NoConfigBackup
 
     $configAfterSecondRun = Get-Content -LiteralPath (Join-Path $testRoot 'opencode.json') -Raw | ConvertFrom-Json
     Assert-True (@($configAfterSecondRun.instructions | Where-Object { $_ -eq 'AGENTS.md' }).Count -eq 0) 'Second run injected project AGENTS.md.'
     Assert-True (@($configAfterSecondRun.instructions | Where-Object { $_ -eq 'UEGameStudio/AGENTS.md' }).Count -eq 1) 'Second run duplicated UEGameStudio/AGENTS.md.'
+    Assert-True ($configAfterSecondRun.subagent_depth -eq 2) 'Second run must not change or duplicate subagent_depth.'
 
     $missingVersionRoot = Join-Path $testRoot 'MissingVersionProject'
     New-Item -ItemType Directory -Path $missingVersionRoot | Out-Null
@@ -85,8 +87,33 @@ try {
     Assert-True (@($freshConfig.instructions).Count -eq 1) 'Fresh config must contain only the UEGameStudio instruction.'
     Assert-True ($freshConfig.instructions[0] -eq 'UEGameStudio/AGENTS.md') 'Fresh config must add UEGameStudio/AGENTS.md.'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $freshRoot 'AGENTS.md'))) 'Installer must not create project-owned AGENTS.md.'
+    Assert-True ($freshConfig.subagent_depth -eq 2) 'Fresh config must set subagent_depth = 2.'
 
-    Write-Host 'Installer tests passed: automatic root AGENTS separation, 31-agent copy, ue5.6 skills copy, version enforcement, UEGameStudio-only merge, fresh config, and idempotence.'
+    $customDepthRoot = Join-Path $testRoot 'CustomDepthProject'
+    New-Item -ItemType Directory -Path $customDepthRoot | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $customDepthRoot 'CustomDepth.uproject'), '{"FileVersion":3}', $utf8NoBom)
+    [System.IO.File]::WriteAllText((Join-Path $customDepthRoot 'opencode.json'), '{ "subagent_depth": 5 }', $utf8NoBom)
+    & $installer -TargetProject $customDepthRoot -SkillsVersion 'ue5.6' -NoConfigBackup
+
+    $customDepthConfig = Get-Content -LiteralPath (Join-Path $customDepthRoot 'opencode.json') -Raw | ConvertFrom-Json
+    Assert-True ($customDepthConfig.subagent_depth -eq 5) 'Installer must not lower an existing larger subagent_depth.'
+
+    $invalidDepthRoot = Join-Path $testRoot 'InvalidDepthProject'
+    New-Item -ItemType Directory -Path $invalidDepthRoot | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $invalidDepthRoot 'InvalidDepth.uproject'), '{"FileVersion":3}', $utf8NoBom)
+    [System.IO.File]::WriteAllText((Join-Path $invalidDepthRoot 'opencode.json'), '{ "subagent_depth": "two" }', $utf8NoBom)
+    $invalidDepthError = $null
+    try {
+        & $installer -TargetProject $invalidDepthRoot -SkillsVersion 'ue5.6' -NoConfigBackup -ErrorAction Stop
+        throw 'Expected installer to fail for a non-integer subagent_depth.'
+    }
+    catch {
+        $invalidDepthError = $_.Exception.Message
+    }
+    Assert-True ($null -ne $invalidDepthError) 'Installer must fail for a non-integer subagent_depth.'
+    Assert-True ((Get-Content -LiteralPath (Join-Path $invalidDepthRoot 'opencode.json') -Raw) -match '"two"') 'A non-integer subagent_depth config must be left unmodified.'
+
+    Write-Host 'Installer tests passed: automatic root AGENTS separation, 31-agent copy, ue5.6 skills copy, version enforcement, UEGameStudio-only merge, fresh config, subagent_depth delegation gate, and idempotence.'
 }
 finally {
     if (Test-Path -LiteralPath $testRoot) {

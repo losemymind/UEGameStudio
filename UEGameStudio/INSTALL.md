@@ -14,6 +14,7 @@
 | `scripts/test-install.ps1` | 安装器的隔离回归测试 |
 | `docs/session-handoff.md` | 成品仓库会话交接参考，不部署到目标项目 |
 | `docs/agent-roster-report.md` | 当前 Agent 阵容报告，不部署到目标项目 |
+| `docs/orchestration-director-runbook.md` | 总控编排专家委派深度与降级处置参考，不部署到目标项目 |
 
 项目范围严格截止于本地 UE 游戏构建包，不包含商店提交、平台认证、正式发布、部署或 LiveOps。
 
@@ -46,7 +47,8 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 4. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
 5. 解析并保留目标工程已有 `opencode.json` 配置。
 6. 幂等加入 `UEGameStudio/AGENTS.md`，不产生重复项；根 `AGENTS.md` 继续由 OpenCode 自动加载。
-7. 修改已有配置前创建 `opencode.json.uegamestudio-<时间>.bak`。
+7. 确保 `subagent_depth >= 2`，使 `orchestration-director` 能够委派专业 Agent（缺失或小于 2 时写入/提升为 2，不覆盖更大的已有值）。
+8. 修改已有配置前创建 `opencode.json.uegamestudio-<时间>.bak`。
 
 如果目标目录暂时没有 `.uproject`，只有在明确的安装测试中使用：
 
@@ -58,18 +60,21 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 
 ## 4. `opencode.json` 结果
 
-目标项目根 `AGENTS.md` 由 OpenCode 自动加载，`opencode.json` 只需显式加入 UEGameStudio 的嵌套规则：
+目标项目根 `AGENTS.md` 由 OpenCode 自动加载，`opencode.json` 只需显式加入 UEGameStudio 的嵌套规则，并放开子代理委派深度：
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
+  "subagent_depth": 2,
   "instructions": [
     "UEGameStudio/AGENTS.md"
   ]
 }
 ```
 
-若目标工程已有 provider、model、permission、MCP 或其他 instruction，安装器会全部保留，只追加 `UEGameStudio/AGENTS.md`。若没有 `opencode.json`，上面就是安装器创建的最小配置。
+`subagent_depth` 是 opencode 的顶层配置键，默认值为 `1`，该默认值会阻止子代理再启动子代理。`orchestration-director` 需要在主 Agent 之下再委派专业 Agent，因此该值必须至少为 `2`（链路：主 Agent → 编排专家 → 专业 Agent）。改为 `2` 后，专业 Agent 自身仍不能继续下沉委派，符合三权分离。
+
+若目标工程已有 provider、model、permission、MCP 或其他 instruction，安装器会全部保留，只追加 `UEGameStudio/AGENTS.md` 并确保 `subagent_depth >= 2`。若没有 `opencode.json`，上面就是安装器创建的最小配置。`opencode.json` 的改动需要重启会话才生效。
 
 安装器不会把 `AGENTS.md` 写入 `instructions`；即使目标根目录存在该文件，它也由 OpenCode 默认发现机制加载。
 
@@ -83,7 +88,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 2. 将 `skills/<目标版本>/` 的子目录复制到 `<目标项目>/.opencode/skills/<目标版本>/`。
 3. 将本目录 `AGENTS.md` 复制到 `<目标项目>/UEGameStudio/AGENTS.md`。
 4. 将 `docs/formal-project-validation.md` 复制到 `<目标项目>/UEGameStudio/docs/`。
-5. 备份并人工合并目标 `opencode.json`，保留全部现有 instruction，仅追加 `UEGameStudio/AGENTS.md`。
+5. 备份并人工合并目标 `opencode.json`，保留全部现有 instruction，仅追加 `UEGameStudio/AGENTS.md`，并确保 `subagent_depth >= 2`。
 
 不要直接用示例 JSON 覆盖已有 `opencode.json`，否则可能丢失 provider、权限或其他项目配置。
 
@@ -103,6 +108,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 - 不存在的版本目录会被安装器拒绝且不产生 `.opencode/skills/`。
 - 目标项目根 `AGENTS.md` 内容保持不变，且不会被安装器注入 `instructions`。
 - 新建配置只加入 `UEGameStudio/AGENTS.md`。
+- `subagent_depth` 被写为 `2`，二次运行保持 `2`，已有更大值不被降级，非整数取值报错且不改写配置。
 - `UEGameStudio/AGENTS.md` 和正式项目验证方法被部署。
 - 连续执行两次结果保持幂等。
 
@@ -110,11 +116,12 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 
 1. 打开目标 `opencode.json`，确认已有配置仍在。
 2. 确认 `instructions` 包含且只包含一份 `UEGameStudio/AGENTS.md`，没有由安装器新增的 `AGENTS.md`。
-3. 确认 `.opencode/agent/` 有 31 个 Agent。
-4. 确认 `.opencode/skills/<版本>/<skill>/SKILL.md` 存在（例如 `.opencode/skills/ue5.6/editor-actor-subsystem/SKILL.md`）。
-5. 重启 opencode，使配置、Agent 和 skill 重新加载。
-6. 使用 `/agents` 或当前版本等价命令确认阵容。
-7. 向 `orchestration-director` 提交一个只读项目发现任务，验证它读取两层 AGENTS 指令并执行最小充分路由。
+3. 确认 `subagent_depth` 存在且 `>= 2`；缺失或为 `1` 时 `orchestration-director` 无法委派专业 Agent。
+4. 确认 `.opencode/agent/` 有 31 个 Agent。
+5. 确认 `.opencode/skills/<版本>/<skill>/SKILL.md` 存在（例如 `.opencode/skills/ue5.6/editor-actor-subsystem/SKILL.md`）。
+6. 重启 opencode，使配置、Agent 和 skill 重新加载。
+7. 使用 `/agents` 或当前版本等价命令确认阵容。
+8. 向 `orchestration-director` 提交一个只读项目发现任务，验证它读取两层 AGENTS 指令、委派到专业 Agent 并执行最小充分路由。
 
 ## 7. 正式项目实测与自动修复
 
@@ -133,6 +140,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 - 同名 Agent、UEGameStudio 指令和验证方法会被更新。
 - `-SkillsVersion` 指定版本的 skills 会被更新到 `.opencode/skills/<版本>/`。
 - `instructions` 不会重复。
+- `subagent_depth` 会被确保为至少 `2`；已有更大值保留不变。
 - 已有项目配置会保留。
 - 安装器不会自动删除成品中已经移除的旧 Agent；升级前后应比较实际安装 manifest，明确批准后再删除陈旧文件。
 
@@ -149,6 +157,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 ## 10. 安全要求
 
 - 不要为方便把所有 Agent 权限改成 `"*": allow`。
+- 委派失败优先检查 `subagent_depth`，不要靠放宽权限解决；`task` 的深度门禁先于权限检查，放宽权限不会改变结果。
 - 不要在安装现场修改 Agent frontmatter 或放宽专业边界。
 - `.uasset`、`.umap` 只能通过 UE Editor 或受控自动化修改。
 - 不恢复 Git 已删除的旧 Agent，不清理目标项目已有变更。
