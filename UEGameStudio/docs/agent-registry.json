@@ -276,9 +276,9 @@
       }
     },
     {
-      "id": "orchestration-director",
-      "file": "orchestration/orchestration-director.md",
-      "layer": "orchestration",
+      "id": "gamestudio-orchestrator",
+      "file": "gamestudio/gamestudio-orchestrator.md",
+      "layer": "gamestudio",
       "title": "总控编排专家",
       "mode": "subagent",
       "description": "统筹复杂 UE 游戏项目任务的强制需求澄清、递归任务树落盘、专业 Agent 路由、依赖编排、状态治理、质量门禁、冲突升级与结果综合；在任务跨越多个专业域或需要协作闭环时使用",

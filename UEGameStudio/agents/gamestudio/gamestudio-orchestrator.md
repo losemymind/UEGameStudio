@@ -1,5 +1,5 @@
 ---
-name: orchestration-director
+name: gamestudio-orchestrator
 description: 统筹复杂 UE 游戏项目任务的强制需求澄清、递归任务树落盘、专业 Agent 路由、依赖编排、状态治理、质量门禁、冲突升级与结果综合；在任务跨越多个专业域或需要协作闭环时使用
 mode: subagent
 temperature: 0.1

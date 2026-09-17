@@ -55,7 +55,7 @@ try {
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'PROJECT.md' }).Count -eq 1) 'Existing instruction was lost or duplicated.'
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'AGENTS.md' }).Count -eq 0) 'Installer must not inject project AGENTS.md into instructions.'
     Assert-True (@($config.instructions | Where-Object { $_ -eq 'UEGameStudio/AGENTS.md' }).Count -eq 1) 'UEGameStudio/AGENTS.md must appear exactly once.'
-    Assert-True ($config.subagent_depth -eq 2) 'Existing config must receive subagent_depth = 2 so orchestration-director can delegate.'
+    Assert-True ($config.subagent_depth -eq 2) 'Existing config must receive subagent_depth = 2 so gamestudio-orchestrator can delegate.'
 
     & $installer -TargetProject $testRoot -SkillsVersion 'ue5.6' -NoConfigBackup
 

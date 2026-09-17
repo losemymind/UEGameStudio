@@ -10,7 +10,7 @@
 E:\GitHub\UEGameStudio\
 ├── UEGameStudio\          ← 成品目录（自包含，可独立安装）
 │   ├── agents\            ← 31 个 opencode subagent（按 7 个分层子目录组织）
-│   │   ├── orchestration\   总控编排专家（工作流引擎，建议入口）
+│   │   ├── gamestudio\      总控编排专家（工作流引擎，建议入口）
 │   │   ├── directors\       游戏总设计师、技术总监、游戏制作人、视听总监
 │   │   ├── academic\        人类学家、地理学家、历史学家、叙事学家、心理学家
 │   │   ├── design\          数值、经济、关卡与任务设计

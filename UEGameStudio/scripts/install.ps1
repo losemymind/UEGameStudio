@@ -186,4 +186,4 @@ Write-Host "Installed skills ($SkillsVersion): $($skillDirs.Count) skills to $(J
 Write-Host "Installed project instructions: $(Join-Path $targetProductRoot 'AGENTS.md')"
 Write-Host "Installed validation method: $(Join-Path $targetProductDocs 'formal-project-validation.md')"
 Write-Host "Updated opencode configuration: $configPath"
-Write-Host "Nested subagent delegation: subagent_depth = $($config.subagent_depth) (required by orchestration-director)"
+Write-Host "Nested subagent delegation: subagent_depth = $($config.subagent_depth) (required by gamestudio-orchestrator)"
