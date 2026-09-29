@@ -39,7 +39,10 @@ try {
     & $installer -TargetProject $testRoot -SkillsVersion 'ue5.6' -NoConfigBackup
 
     $installedAgents = @(Get-ChildItem -LiteralPath (Join-Path $testRoot '.opencode\agent') -Recurse -Filter '*.md' -File)
-    Assert-True ($installedAgents.Count -eq 31) "Expected 31 installed agents, found $($installedAgents.Count)."
+    Assert-True ($installedAgents.Count -eq 33) "Expected 33 installed agents, found $($installedAgents.Count)."
+    @('performance-profiler', 'performance-architecture-specialist', 'ue-rendering-performance-analyst', 'ue-runtime-performance-analyst') | ForEach-Object {
+        Assert-True (Test-Path -LiteralPath (Join-Path $testRoot ".opencode\agent\technical\$_.md")) "Performance agent $_ was not installed."
+    }
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $testRoot '.opencode\agent\_template.md'))) 'Template must not be installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\AGENTS.md')) 'UEGameStudio/AGENTS.md was not installed.'
     Assert-True (Test-Path -LiteralPath (Join-Path $testRoot 'UEGameStudio\docs\formal-project-validation.md')) 'Validation method was not installed.'
@@ -47,6 +50,10 @@ try {
         $skillRoot = Join-Path $testRoot ".opencode\skills\ue5.6\$_"
         Assert-True (Test-Path -LiteralPath (Join-Path $skillRoot 'SKILL.md')) "SKILL.md of $_ (ue5.6) was not installed."
         Assert-True (Test-Path -LiteralPath (Join-Path $skillRoot 'docs\overview.md')) "docs/overview.md of $_ (ue5.6) was not installed."
+    }
+    $perfSkillRoot = Join-Path $testRoot '.opencode\skills\ue5.6\performance-diagnostics'
+    @('SKILL.md', 'evals.json', 'references\profiling.md', 'references\rendering.md', 'references\runtime.md', 'references\source-index.md') | ForEach-Object {
+        Assert-True (Test-Path -LiteralPath (Join-Path $perfSkillRoot $_)) "Performance diagnostics file $_ was not installed."
     }
     Assert-True ((Get-Content -LiteralPath (Join-Path $testRoot 'AGENTS.md') -Raw) -eq "# Project-owned instructions`n") 'Project-owned AGENTS.md was modified.'
 
@@ -113,7 +120,7 @@ try {
     Assert-True ($null -ne $invalidDepthError) 'Installer must fail for a non-integer subagent_depth.'
     Assert-True ((Get-Content -LiteralPath (Join-Path $invalidDepthRoot 'opencode.json') -Raw) -match '"two"') 'A non-integer subagent_depth config must be left unmodified.'
 
-    Write-Host 'Installer tests passed: automatic root AGENTS separation, 31-agent copy, ue5.6 skills copy, version enforcement, UEGameStudio-only merge, fresh config, subagent_depth delegation gate, and idempotence.'
+    Write-Host 'Installer tests passed: automatic root AGENTS separation, 33-agent copy, ue5.6 skills copy including performance diagnostics, version enforcement, UEGameStudio-only merge, fresh config, subagent_depth delegation gate, and idempotence.'
 }
 finally {
     if (Test-Path -LiteralPath $testRoot) {

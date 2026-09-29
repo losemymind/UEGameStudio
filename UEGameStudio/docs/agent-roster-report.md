@@ -4,28 +4,34 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 盘点日期 | 2026-09-17 |
+| 盘点日期 | 2026-09-29 |
 | 盘点范围 | `UEGameStudio/agents/**/*.md` |
 | 统计规则 | 仅统计当前实际存在的 Agent 定义；排除 Git 中已删除的旧 Agent |
-| 机器可读注册表 | `docs/agent-registry.json`（31 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
-| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 63 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
-| 当前数量 | 31 Agent + 63 SKILL.md + 58 docs/overview.md |
+| 机器可读注册表 | `docs/agent-registry.json`（33 条记录，与 `scripts/verify-registry.ps1` 双向校验） |
+| UE 版本 skills | `skills/<ue-版本>/<skill>/SKILL.md`，当前 `ue5.6/` 共 64 个 skill；方法数 ≤ 10 的 skill 不建 `docs/overview.md`（skills 不入 agent 注册表） |
+| 当前数量 | 33 Agent + 64 SKILL.md + 58 docs/overview.md |
 | 运行模式 | 全部为 `mode: subagent` |
 | 委派深度配置 | `gamestudio-orchestrator` 需要目标项目 `opencode.json` 的 `subagent_depth >= 2` 才能委派专业 Agent（opencode 默认 `1`，会在权限检查前直接拦截 `task`）；`scripts/install.ps1` 现已自动确保 |
 | 项目边界 | 本地 UE 游戏开发至生成本地游戏构建包；不包含商店提交、平台认证、正式发布与 LiveOps |
 
-## 当前技能覆盖统计（Batch-G++++++）
+## 当前技能覆盖统计
 
 | 类别 | 数量 |
 | --- | --- |
-| SKILL.md 总数 | 63 |
+| SKILL.md 总数 | 64 |
 | docs/overview.md 总数 | 58 |
 | 蒸馏 Kismet 库数 | 21 |
 | 蒸馏函数总数（累计估算） | ~3400+ |
-| 性能优化 skill（2026-09-16 新增） | 6 |
-| 完整度 | 100% |
+| 性能相关 skill | 7（含 2026-09-29 新增的诊断入口） |
+| 静态规范校验 | 64/64 通过；来源正文覆盖与真实 UE 项目实测见 `session-handoff.md` |
 
 ## 当前技能完成情况
+
+### 2026-09-29 Epic 性能学习路径整合
+
+- 新增 `performance-diagnostics`，含 profiling/rendering/runtime 专题参考、31 条子链接与逐条核对范围；目录级条目仅作进一步阅读入口，视频字幕未核对。该 skill 为诊断和复测主入口，六个已有性能实施 skill 保留并增加版本与实测提示。
+- 以该方法更新 `performance-profiler` 和 `performance-architecture-specialist`；新增只读的 `ue-rendering-performance-analyst` 与 `ue-runtime-performance-analyst`。剖析角色独立执行 `PERF-BUDGET`，专题角色解释证据，架构角色只出 ADR 草案，实施仍由资源所有者负责。
+- 阵容由 31 增至 33，technical 层由 12 增至 14，技能库由 63 增至 64；注册表、路由、安装器断言同步更新。
 
 ### 2026-09-16 性能架构能力补齐
 - ✅ 新增 Agent `performance-architecture-specialist`（性能架构专家，technical 层），阵容由 30 增至 31；负责 HLOD/快速流送/Mass Entity/Foliage/PCG 架构选型、CPU/GPU/内存/加载预算拆解、跨系统架构契约与 `.adr/performance-*.md` 技术 ADR，不实施、不测量、不验证。
@@ -132,6 +138,8 @@
 │  ├─ UE 工具与资产管线工程师
 │  ├─ 性能架构专家
 │  ├─ 性能剖析专家
+│  ├─ UE 渲染性能分析专家
+│  ├─ UE 运行时性能分析专家
 │  └─ UE 游戏构建专家
 └─ 游戏制作人
    ├─ 游戏资产生产管理专家
@@ -206,6 +214,8 @@ QA 测试专家：验证实际功能和构建包行为
 | [角色动画工程师](../agents/technical/character-animation-engineer.md) | `character-animation-engineer` | Retarget、AnimBP、Montage、Motion Warping、Control Rig、IK 与动画优化 | 动画资产及动画专属 C++；禁止战斗结算和模型源资产创作 |
 | [UE UI 工程师](../agents/technical/ue-ui-engineer.md) | `ue-ui-engineer` | UMG、CommonUI、Widget C++、数据绑定、输入焦点、HUD、菜单与适用的 UI 可访问性 | UI 源码和 Widget 资产；禁止核心玩法、任务和战斗计算 |
 | [性能架构专家](../agents/technical/performance-architecture-specialist.md) | `performance-architecture-specialist` | HLOD/快速流送/Mass Entity/Foliage/PCG 架构选型、CPU/GPU/内存/加载预算拆解、跨系统架构契约与性能 ADR 草案 | 只产出 `.adr/performance-*.md` 草案；任务树由总控写回；不实施、不测量、不验证 |
+| [UE 渲染性能分析专家](../agents/technical/ue-rendering-performance-analyst.md) | `ue-rendering-performance-analyst` | 渲染线程、RHI、GPU Pass、Nanite/Lumen/VSM/TSR 与 PSO 证据解释和 A/B 实验建议 | 只读分析；不改资产与配置，不裁定性能门禁 |
+| [UE 运行时性能分析专家](../agents/technical/ue-runtime-performance-analyst.md) | `ue-runtime-performance-analyst` | Game Thread、内存/GC、加载流送、动画物理、网络与长尾卡顿证据解释 | 只读分析；不改系统与配置，不裁定性能门禁 |
 
 功能实施遵循“公共底座—具体业务—专业集成”的依赖方向。关卡任务专家拥有任务设计语义，UE 游戏玩法工程师拥有运行时权威任务状态、Save/Load 和多人复制，世界构建师只摆放实例，UI 只读展示。具体玩法只通过批准接口调用 AI、动画、UI、音频和视觉表现，不能因为需要引用资产而取得其写入权。
 
@@ -262,7 +272,7 @@ QA 测试专家：验证实际功能和构建包行为
 
 ### 当前权限结论
 
-31 个 Agent（含本轮新增的 `performance-architecture-specialist`）均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。性能架构专家持有 `edit: allow`（经用户 2026-09-16 裁决，以文件正确性优先于机械收窄），其**职责边界**（专业自律，非运行时强制）限定为只产出性能 ADR 草案，不修改源码、配置、资产，也不写入 `.opencode/task-plans/**`。
+33 个 Agent 均以 `"*": deny` 为默认权限。人类学家现与其他学术专家一致，仅开放读取、检索、联网研究、技能读取和提问能力，禁止编辑、命令执行、委派、LSP 与外部目录。关卡任务设计、本地化与 LQA、资产生产管理保留职责所需的 `edit`，但正文已将其限定为任务授权的纯文本交付路径；资产生产管理和本地化与 LQA 的 Bash 与外部目录能力也具有任务级白名单和只读操作边界；安全专业评审与资产合规审计同型，只能诊断与验证、禁止编辑与外部目录。性能架构专家持有 `edit: allow`（经用户 2026-09-16 裁决，以文件正确性优先于机械收窄），其**职责边界**（专业自律，非运行时强制）限定为只产出性能 ADR 草案，不修改源码、配置、资产，也不写入 `.opencode/task-plans/**`。
 
 > **任务树与 ADR 写入权**：`.opencode/task-plans/**` 由总控编排专家唯一写入；专业 Agent 只提交可落盘内容，由其写回节点。ADR 统一存放于项目根 `.adr/`，编号、状态与台账归技术总监；`performance-architecture-specialist` 只提交 `performance-*.md` 候选草案。
 
@@ -372,6 +382,8 @@ QA 测试专家：验证实际功能和构建包行为
 | 资产合规 | 已覆盖 | 资产合规与审计专家 |
 | 功能与包体 QA | 已覆盖 | QA 测试专家 |
 | 性能测量与瓶颈定位 | 已覆盖 | 性能剖析专家 |
+| 渲染线程与 GPU 专题证据分析 | 已覆盖 | UE 渲染性能分析专家；门禁仍归性能剖析专家 |
+| 运行时、内存与流送卡顿专题证据分析 | 已覆盖 | UE 运行时性能分析专家；门禁仍归性能剖析专家 |
 | 跨系统性能架构选型与预算拆解 | 已覆盖 | 性能架构专家（只出架构与 ADR，不实施不测量） |
 | 本地 Build/Cook/Stage/Package | 已覆盖 | UE 游戏构建专家 |
 | UE 纯文本核心系统实现 | 已覆盖 | UE 核心系统工程师 |

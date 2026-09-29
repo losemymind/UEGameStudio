@@ -11,6 +11,10 @@ risk: critical
 
 本技能提供UE5.6网络系统（Netcode）性能优化的标准化流程，覆盖Replication Graph配置与调优、Bandwidth Budget分配、角色预测回滚（Prediction & Rollback）机制、Interest Overlap计算与优化。确保在多人在线游戏（MMO/MOBA/TPS）中实现低延迟、高吞吐、稳定的网络通信。
 
+## 测量入口与版本核对
+
+实施前先用 [performance-diagnostics](../performance-diagnostics/SKILL.md) 确认目标构建、设备、场景和瓶颈。下列命令、配置与数值仅是候选示例，必须按 UE5.6 项目实际 API/CVar 核对，并以同条件 A/B 结果判断效果；不得作为通用默认值或性能门禁。
+
 ## 何时使用此技能
 
 - 当用户需要优化Replication Graph以减少网络流量时使用

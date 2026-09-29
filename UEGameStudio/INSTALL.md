@@ -2,12 +2,12 @@
 
 ## 1. 成品内容
 
-本目录包含 31 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
+本目录包含 33 个有效 Agent、项目级统一指令、正式项目验证方法和安装脚本：
 
 | 路径 | 说明 |
 | --- | --- |
 | `AGENTS.md` | 安装后由目标项目 `opencode.json` 加载的 UEGameStudio 统一规则 |
-| `agents/` | 31 个 `mode: subagent` 专业 Agent |
+| `agents/` | 33 个 `mode: subagent` 专业 Agent |
 | `skills/` | 按 UE 版本组织的 skill（`skills/<ue-版本>/<skill>/SKILL.md`），部署到目标项目 `.opencode/skills/`；只安装目标引擎版本 |
 | `docs/formal-project-validation.md` | 正式 UE 项目中的完整实测、故障注入和自动修复方法 |
 | `scripts/install.ps1` | 幂等安装/升级脚本，复制 Agent 并安全合并 `opencode.json` |
@@ -40,7 +40,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\install.ps1 `
 
 安装器会：
 
-1. 将 31 个 Agent 复制到 `<目标项目>/.opencode/agent/`。
+1. 将 33 个 Agent 复制到 `<目标项目>/.opencode/agent/`。
 2. 将 `-SkillsVersion` 指定版本的 skills 复制到 `<目标项目>/.opencode/skills/<版本>/`。
 3. 复制 `AGENTS.md` 到 `<目标项目>/UEGameStudio/AGENTS.md`。
 4. 复制验证方法到 `<目标项目>/UEGameStudio/docs/formal-project-validation.md`。
@@ -102,7 +102,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 该测试在系统临时目录建立隔离目标，验证：
 
 - 已有 `opencode.json` 属性被保留。
-- 31 个 Agent 被复制。
+- 33 个 Agent 被复制。
 - `-SkillsVersion` 指定版本的 skills 被复制到 `.opencode/skills/<版本>/`，且 SKILL.md / docs/overview.md 齐全。
 - 不存在的版本目录会被安装器拒绝且不产生 `.opencode/skills/`。
 - 目标项目根 `AGENTS.md` 内容保持不变，且不会被安装器注入 `instructions`。
@@ -116,7 +116,7 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 1. 打开目标 `opencode.json`，确认已有配置仍在。
 2. 确认 `instructions` 包含且只包含一份 `UEGameStudio/AGENTS.md`，没有由安装器新增的 `AGENTS.md`。
 3. 确认 `subagent_depth` 存在且 `>= 2`；缺失或为 `1` 时 `gamestudio-orchestrator` 无法委派专业 Agent。
-4. 确认 `.opencode/agent/` 有 31 个 Agent。
+4. 确认 `.opencode/agent/` 有 33 个 Agent。
 5. 确认 `.opencode/skills/<版本>/<skill>/SKILL.md` 存在（例如 `.opencode/skills/ue5.6/editor-actor-subsystem/SKILL.md`）。
 6. 重启 opencode，使配置、Agent 和 skill 重新加载。
 7. 使用 `/agents` 或当前版本等价命令确认阵容。
@@ -141,9 +141,25 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 - `instructions` 不会重复。
 - `subagent_depth` 会被确保为至少 `2`；已有更大值保留不变。
 - 已有项目配置会保留。
-- 安装器不会自动删除成品中已经移除的旧 Agent；升级前后应比较实际安装 manifest，明确批准后再删除陈旧文件。
 
-升级后重启 opencode。
+### 8.1 旧 ID 清理
+
+升级前如已安装过旧版本（`orchestration-director`），安装器不会自动删除旧文件。
+
+升级前后应比较实际安装 manifest，明确批准后手动删除以下旧文件：
+
+- `.opencode/agent/orchestration/orchestration-director.md`（目录 `orchestration/` 也如已存在且为空，可删除）
+
+### 8.2 清理步骤（如有）
+
+如果需要清理旧 ID：
+
+1. 关闭 opencode。
+2. 打开 `<目标项目>/.opencode/agent/`。
+3. 确认 `orchestration/` 目录存在且只包含 `orchestration-director.md`。
+4. 删除 `orchestration/orchestration-director.md` 文件。
+5. 如 `orchestration/` 目录为空，删除该目录。
+6. 重启 opencode。
 
 ## 9. 卸载
 
@@ -153,11 +169,12 @@ powershell -ExecutionPolicy Bypass -File .\UEGameStudio\scripts\test-install.ps1
 4. 从 `opencode.json.instructions` 删除 `UEGameStudio/AGENTS.md`；项目根 `AGENTS.md` 是否保留由项目自行决定。
 5. 重启 opencode。
 
-## 10. 安全要求
+## 11. 安全要求
 
 - 不要为方便把所有 Agent 权限改成 `"*": allow`。
 - 委派失败优先检查 `subagent_depth`，不要靠放宽权限解决；`task` 的深度门禁先于权限检查，放宽权限不会改变结果。
 - 不要在安装现场修改 Agent frontmatter 或放宽专业边界。
 - `.uasset`、`.umap` 只能通过 UE Editor 或受控自动化修改。
+- 历史版本 `orchestration-director` 由安装器自动替换为 `gamestudio-orchestrator`，但旧文件不会自动删除，需按 `8.1 旧 ID 清理` 手动清理。
 - 不恢复 Git 已删除的旧 Agent，不清理目标项目已有变更。
 - 缺工具或输入时返回对应 `BLOCKED_*`，不得伪造实施或验证结果。

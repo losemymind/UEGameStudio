@@ -42,6 +42,9 @@
 - `ue-gameplay-engineer`：具体 Gameplay、GAS 业务、运行时任务真值、Save/Load、Replication、RPC、预测和 Late Join。
 - `game-ai-engineer`：感知、决策、StateTree/BT/BB/EQS；只请求 Gameplay 行为，不拥有伤害、死亡或任务真值。
 - `ue-world-builder`：Map、空间组装和授权实例参数；不得修改 Blueprint CDO、类图、Construction Script 或组件模板。
+- `performance-profiler`：目标构建的性能采集、瓶颈定位、独立复测及 `PERF-BUDGET`；不直接实施修复。
+- `ue-rendering-performance-analyst` 与 `ue-runtime-performance-analyst`：按 `performance-diagnostics` 分析各自专题证据并提出实验；只读，不替代性能门禁。
+- `performance-architecture-specialist`：根据测量证据提交跨系统预算分配与性能 ADR 草案；技术总监裁决预算与正式 ADR。
 - 动画、UI、视觉源资产、技术美术、音频和工具管线分别只写自己的专业对象。
 - 每个具体文件、UE Package、源资产或可生产子 Asset ID 只能有一个内容写入主责。
 

@@ -11,6 +11,10 @@ risk: critical
 
 本技能提供UE5.6 Mass Entity架构的标准化实施流程，覆盖Mass核心概念（Actor Distributor、Entity Descriptor、Cooker）、Mass与Gameplay Actor集成、以及运行时数据一致性保障。基于ECS（Entity Component System）模式，大幅提升大批量实体（≥ 10,000）的更新性能与内存效率。
 
+## 测量入口与版本核对
+
+实施前先用 [performance-diagnostics](../performance-diagnostics/SKILL.md) 确认目标构建、设备、场景和瓶颈。下列命令、配置与数值仅是候选示例，必须按 UE5.6 项目实际 API/CVar 核对，并以同条件 A/B 结果判断效果；不得作为通用默认值或性能门禁。
+
 ## 何时使用此技能
 
 - 当用户需要将传统Actor迁移到Mass Entity时使用

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "registryType": "uegamestudio-agent-roster",
-  "generatedAt": "2026-09-16T00:00:00+08:00",
-  "agentCount": 31,
+  "generatedAt": "2026-09-29T00:00:00+08:00",
+  "agentCount": 33,
   "notes": "机器可读权威注册表。实际存在校验以 UEGameStudio/docs/agent-registry.json 与实际 agents/**/*.md frontmatter 双向比对为准。除 permission 白名单字段外全部默认 deny。",
   "agents": [
     {
@@ -296,7 +296,7 @@
       "layer": "technical",
       "title": "性能剖析专家",
       "mode": "subagent",
-      "description": "在目标 UE 版本、平台、配置和可重复场景中采集并分析 CPU、GPU、内存、加载与卡顿证据，对照批准预算定位性能瓶颈；在性能门禁或优化前后验证时使用",
+      "description": "以可复现帧时间、卡顿、内存、加载和渲染证据诊断 UE 性能瓶颈，设计同条件对照实验，并独立执行优化前后复测与 PERF-BUDGET 门禁",
       "permission": {
         "task": "deny",
         "bash": "allow",
@@ -461,7 +461,7 @@
       "layer": "technical",
       "title": "性能架构专家",
       "mode": "subagent",
-      "description": "UE5 性能架构决策专家：针对场景需求（大量模型/植被/NPC/大世界）选择 HLOD/快速流送/Mass Entity/Foliage/PCG 优化策略，产出性能预算与 ADR，供实施 Agent 落地。不负责性能测量与具体实施。",
+      "description": "根据 UE 性能剖析证据和批准预算，比较跨系统渲染、流送、Mass、世界构建与运行时方案，拆解预算并产出性能 ADR 草案；不负责测量、实施和门禁。",
       "permission": {
         "task": "deny",
         "bash": "deny",
@@ -469,6 +469,36 @@
         "websearch": "allow",
         "external_directory": "deny",
         "edit": "allow"
+      }
+    },
+    {
+      "id": "ue-rendering-performance-analyst",
+      "file": "technical/ue-rendering-performance-analyst.md",
+      "layer": "technical",
+      "title": "UE 渲染性能分析专家",
+      "mode": "subagent",
+      "description": "分析 UE 渲染线程与 GPU 证据，定位 Nanite、Lumen、VSM、TSR、材质、灯光、粒子、分辨率和 PSO 成本；在 profiler 发现渲染瓶颈或画质取舍需要专题分析时使用",
+      "permission": {
+        "task": "deny",
+        "bash": "allow",
+        "webfetch": "allow",
+        "external_directory": "allow",
+        "edit": "deny"
+      }
+    },
+    {
+      "id": "ue-runtime-performance-analyst",
+      "file": "technical/ue-runtime-performance-analyst.md",
+      "layer": "technical",
+      "title": "UE 运行时性能分析专家",
+      "mode": "subagent",
+      "description": "分析 UE 游戏线程、任务调度、内存与 GC、加载流送、动画物理、网络和移动端运行时卡顿证据；在 profiler 发现非渲染瓶颈或长尾卡顿时使用",
+      "permission": {
+        "task": "deny",
+        "bash": "allow",
+        "webfetch": "allow",
+        "external_directory": "allow",
+        "edit": "deny"
       }
     }
   ]

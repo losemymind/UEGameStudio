@@ -1,0 +1,29 @@
+{
+  "skill_name": "performance-diagnostics",
+  "evals": [
+    {
+      "id": 1,
+      "query": "UE5.6 打包版在目标 PC 上每隔几秒卡一帧，我有 Insights trace，怎么查？",
+      "should_trigger": true,
+      "expected_output": "确认构建、设备、场景与缓存状态，从异常帧的时间范围定位线程和事件，区分根因与级联表现，再提出单变量 A/B 实验。"
+    },
+    {
+      "id": 2,
+      "query": "Lumen 场景从 12 ms 掉到 20 ms，如何判断是 GPU 瓶颈并验证优化？",
+      "should_trigger": true,
+      "expected_output": "先核对分辨率、质量、VSync 和 CPU/GPU 重叠，再读 GPU Pass 证据，固定条件比较帧时间及画质代价。"
+    },
+    {
+      "id": 3,
+      "query": "UE 游戏从地图 A 切到 B 后内存持续增长，该用什么证据排查？",
+      "should_trigger": true,
+      "expected_output": "分别采集进程、UObject、资源驻留与峰值，固定地图循环和缓存状态，用 Memory Insights 等适用工具对齐增长区间。"
+    },
+    {
+      "id": 4,
+      "query": "UE 启动就崩溃，帮我分析调用栈。",
+      "should_trigger": false,
+      "expected_output": ""
+    }
+  ]
+}

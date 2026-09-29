@@ -11,6 +11,10 @@ risk: critical
 
 本技能提供UE5.6渲染性能优化的标准化流程，覆盖HLOD系统配置、Draw Call合并、LOD链设计、Niagara粒子系统预算与贴图压缩策略。基于UE5.6的最新渲染架构，确保在不损失视觉质量的前提下显著提升帧率与流畅度。
 
+## 测量入口与版本核对
+
+实施前先用 [performance-diagnostics](../performance-diagnostics/SKILL.md) 确认目标构建、设备、场景和瓶颈。下列命令、配置与数值仅是候选示例，必须按 UE5.6 项目实际 API/CVar 核对，并以同条件 A/B 结果判断效果；不得作为通用默认值或性能门禁。
+
 ## 何时使用此技能
 
 - 当用户需要生成或检查HLOD（Hierarchical Level of Detail）数据时使用
